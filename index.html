@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPCH Crystal Club</title>
+<style>
+:root{
+  --bg:#f3f0e9;
+  --panel:#fffdf9;
+  --ink:#20262d;
+  --muted:#6d737b;
+  --line:#d9d3c7;
+  --soft:#eee7dc;
+  --danger:#9b3c3c;
+  --shadow:0 8px 24px rgba(30,25,18,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
+.app{padding:24px;min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:18px}
+h1{margin:0;font-size:30px;letter-spacing:.03em}
+#dateLabel{margin-top:5px;color:var(--muted);font-size:14px}
+button,input,select,textarea{font:inherit}
+button{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:10px 13px;cursor:pointer;color:var(--ink)}
+button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
+.actions,.toolbar,.modal-actions,.overlay-actions{display:flex;gap:8px;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
+.stat strong{display:block;font-size:22px}
+.stat span{font-size:11px;color:var(--muted);letter-spacing:.08em}
+.toolbar{margin-bottom:16px}
+.toolbar input,.toolbar select{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:10px 12px}
+.toolbar input{flex:1;min-width:220px}
+.board{display:grid;grid-template-columns:repeat(4,minmax(235px,1fr));gap:12px;overflow-x:auto}
+.column{background:rgba(255,255,255,.45);border:1px solid var(--line);border-radius:16px;min-height:560px;padding:10px}
+.column-head{display:flex;justify-content:space-between;align-items:center;padding:7px 5px 12px;font-weight:700}
+.count{background:var(--soft);color:var(--muted);font-size:12px;border-radius:999px;padding:3px 8px}
+.dropzone{min-height:490px}
+.dropzone.over{outline:2px dashed #96866e;outline-offset:2px;border-radius:10px}
+.empty{color:#9a948b;font-size:12px;padding:10px 5px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:10px;box-shadow:0 5px 14px rgba(30,25,18,.05);cursor:grab}
+.card.dragging{opacity:.4}
+.card h3{font-size:15px;margin:0 0 8px}
+.card-top{display:flex;justify-content:space-between;gap:6px;margin-bottom:8px}
+.pill{font-size:10px;font-weight:700;letter-spacing:.05em;border-radius:999px;padding:4px 7px;background:var(--soft)}
+.meta{font-size:12px;color:var(--muted);line-height:1.55}
+.card-actions{display:flex;justify-content:flex-end;gap:5px;margin-top:9px}
+.card-actions button{font-size:11px;padding:5px 7px;border-radius:7px}
+.guest-card{border-left:4px solid #8d795e}
+.handover-card{border-left:4px solid #687789}
+.order-status{font-weight:700}
+.schedule-overlay{
+  position:fixed;
+  top:18px;
+  right:18px;
+  width:330px;
+  max-height:calc(100vh - 36px);
+  overflow:auto;
+  z-index:100;
+  background:rgba(34,32,24,.80);
+  color:#fffaf0;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:18px;
+  padding:17px;
+  box-shadow:0 18px 42px rgba(0,0,0,.28);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  transition:.18s ease;
+}
+.schedule-overlay.hidden{opacity:0;pointer-events:none;transform:translateX(15px)}
+.schedule-overlay h2{margin:0;font-size:17px}
+.overlay-date{font-size:12px;color:#d4cbbd;margin:4px 0 10px}
+.overlay-actions{justify-content:flex-end;margin-bottom:6px}
+.overlay-actions button{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.22);padding:6px 8px;font-size:11px}
+.schedule-item{display:grid;grid-template-columns:50px 1fr auto;gap:7px;padding:10px 0;border-top:1px solid rgba(255,255,255,.13);font-size:12px}
+.schedule-item small{display:block;color:#c8beae;margin-top:3px}
+.schedule-item.done{opacity:.45;text-decoration:line-through}
+.schedule-toggle{
+  position:fixed;top:18px;right:18px;z-index:101;display:none;
+  background:rgba(34,32,24,.80);color:#fff;border-color:rgba(255,255,255,.2)
+}
+.schedule-toggle.visible{display:block}
+.modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.42);z-index:200;padding:20px}
+.modal.open{display:grid}
+.modal-card{width:min(620px,100%);max-height:90vh;overflow:auto;background:var(--panel);border-radius:18px;padding:18px;box-shadow:0 25px 60px rgba(0,0,0,.25)}
+.modal-card.wide{width:min(880px,100%)}
+.modal-card h2{margin:0 0 14px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.full{grid-column:1/-1}
+.field label{font-size:12px;color:var(--muted)}
+.field input,.field select,.field textarea{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff}
+.field textarea{min-height:76px;resize:vertical}
+.modal-actions{justify-content:flex-end;margin-top:14px}
+.type-picker{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.type-picker button{padding:18px 8px;font-weight:700}
+.weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.weekdays label{background:#fff;border:1px solid var(--line);border-radius:9px;padding:8px;text-align:center;font-size:11px}
+.schedule-list{margin-top:16px;border-top:1px solid var(--line)}
+.schedule-row{display:grid;grid-template-columns:70px 1fr 150px auto;gap:9px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);font-size:12px}
+.schedule-row small{display:block;color:var(--muted);margin-top:2px}
+.schedule-row button{font-size:11px;padding:5px 7px}
+.hidden-field{display:none!important}
+@media(max-width:900px){.stats{grid-template-columns:1fr 1fr}.board{grid-template-columns:repeat(4,260px)}}
+@media(max-width:650px){.app{padding:14px}header{flex-direction:column;align-items:flex-start}.schedule-overlay{left:12px;right:12px;width:auto;max-height:45vh}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.type-picker{grid-template-columns:1fr 1fr}.schedule-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="app">
+<header>
+  <div>
+    <h1>GPCH CRYSTAL CLUB</h1>
+    <div id="dateLabel">CRYSTAL CLUB OPERATIONS</div>
+  </div>
+  <div class="actions">
+    <button class="primary" id="addBtn">+ Add</button>
+    <button id="manageScheduleBtn">Manage Schedule</button>
+    <button id="toggleScheduleBtn">Toggle Schedule</button>
+  </div>
+</header>
+
+<section class="stats">
+  <div class="stat"><strong id="statTodo">0</strong><span>TO DO</span></div>
+  <div class="stat"><strong id="statOrder">0</strong><span>TO ORDER</span></div>
+  <div class="stat"><strong id="statGuest">0</strong><span>GUEST NOTES</span></div>
+  <div class="stat"><strong id="statHandover">0</strong><span>HANDOVER</span></div>
+</section>
+
+<div class="toolbar">
+  <input id="searchBox" type="search" placeholder="Search task, item, room, guest or note">
+  <select id="columnFilter">
+    <option value="all">All Columns</option>
+    <option value="todo">To Do</option>
+    <option value="order">To Order</option>
+    <option value="guest">Guest Notes</option>
+    <option value="handover">Handover</option>
+  </select>
+</div>
+
+<main class="board">
+  <section class="column">
+    <div class="column-head"><span>TO DO</span><span class="count" id="countTodo">0</span></div>
+    <div class="dropzone" id="todoZone" data-type="todo"><div class="empty">No tasks yet.</div></div>
+  </section>
+  <section class="column">
+    <div class="column-head"><span>TO ORDER</span><span class="count" id="countOrder">0</span></div>
+    <div class="dropzone" id="orderZone" data-type="order"><div class="empty">Nothing to order yet.</div></div>
+  </section>
+  <section class="column">
+    <div class="column-head"><span>GUEST NOTES</span><span class="count" id="countGuest">0</span></div>
+    <div class="dropzone" id="guestZone" data-type="guest"><div class="empty">No guest notes yet.</div></div>
+  </section>
+  <section class="column">
+    <div class="column-head"><span>HANDOVER</span><span class="count" id="countHandover">0</span></div>
+    <div class="dropzone" id="handoverZone" data-type="handover"><div class="empty">No handover notes yet.</div></div>
+  </section>
+</main>
+</div>
+
+<aside class="schedule-overlay" id="scheduleOverlay">
+  <h2>TODAY'S SCHEDULED TASKS</h2>
+  <div class="overlay-date" id="overlayDate"></div>
+  <div class="overlay-actions">
+    <button id="overlayManageBtn">Manage</button>
+    <button id="hideOverlayBtn">Hide</button>
+  </div>
+  <div id="todaySchedule"><div style="font-size:12px;color:#c8beae;padding:12px 0">No scheduled tasks today.</div></div>
+</aside>
+
+<div class="modal" id="typeModal">
+  <div class="modal-card">
+    <h2>Add to Crystal Club Board</h2>
+    <div class="type-picker">
+      <button data-addtype="todo">TO DO</button>
+      <button data-addtype="order">TO ORDER</button>
+      <button data-addtype="guest">GUEST NOTE</button>
+      <button data-addtype="handover">HANDOVER</button>
+    </div>
+    <div class="modal-actions"><button data-close="typeModal">Cancel</button></div>
+  </div>
+</div>
+
+<div class="modal" id="entryModal">
+  <div class="modal-card">
+    <h2 id="entryHeading">Add</h2>
+    <div class="form-grid" id="entryFields"></div>
+    <div class="modal-actions">
+      <button data-close="entryModal">Cancel</button>
+      <button class="primary" id="saveEntryBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="scheduleModal">
+  <div class="modal-card wide">
+    <h2>Manage Scheduled Tasks</h2>
+    <input type="hidden" id="schedId">
+    <div class="form-grid">
+      <div class="field full"><label>Task</label><input id="schedTitle"></div>
+      <div class="field"><label>Time</label><input id="schedTime" type="time" value="09:00"></div>
+      <div class="field"><label>Category</label><select id="schedCategory"><option>ADMIN</option><option>F&B</option><option>VIP</option><option>GUEST</option><option>MAINTENANCE</option><option>HANDOVER</option></select></div>
+      <div class="field full"><label>Schedule Type</label><select id="schedType"><option value="weekly">Weekly</option><option value="first_days">First N days of month</option><option value="last_days">Last N days of month</option><option value="monthly_day">Specific day of month</option><option value="one_off">One-off date</option></select></div>
+      <div class="field full" id="weeklyFields"><label>Weekdays</label><div class="weekdays">
+        <label><input class="wd" type="checkbox" value="1"> Mon</label>
+        <label><input class="wd" type="checkbox" value="2"> Tue</label>
+        <label><input class="wd" type="checkbox" value="3"> Wed</label>
+        <label><input class="wd" type="checkbox" value="4"> Thu</label>
+        <label><input class="wd" type="checkbox" value="5"> Fri</label>
+        <label><input class="wd" type="checkbox" value="6"> Sat</label>
+        <label><input class="wd" type="checkbox" value="0"> Sun</label>
+      </div></div>
+      <div class="field full hidden-field" id="countFields"><label id="countLabel">Number of days</label><input id="schedCount" type="number" min="1" max="10" value="3"></div>
+      <div class="field full hidden-field" id="dayFields"><label>Day of month</label><input id="schedDay" type="number" min="1" max="31" value="1"></div>
+      <div class="field full hidden-field" id="dateFields"><label>Date</label><input id="schedDate" type="date"></div>
+    </div>
+    <div class="modal-actions">
+      <button id="clearSchedBtn">Clear</button>
+      <button data-close="scheduleModal">Close</button>
+      <button class="primary" id="saveSchedBtn">Add Scheduled Task</button>
+    </div>
+    <div class="schedule-list" id="scheduleList"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var BOARD_KEY="gpch_crystal_board_v51";
+var SCHED_KEY="gpch_crystal_schedule_v51";
+var DONE_KEY="gpch_crystal_schedule_done_v51";
+
+function makeId(){
+  return "id_"+Date.now()+"_"+Math.random().toString(36).slice(2,9);
+}
+function clone(obj){
+  return JSON.parse(JSON.stringify(obj));
+}
+function getStored(key,fallback){
+  try{
+    var raw=localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : clone(fallback);
+  }catch(e){
+    return clone(fallback);
+  }
+}
+function setStored(key,value){
+  try{localStorage.setItem(key,JSON.stringify(value));}catch(e){}
+}
+function esc(value){
+  return String(value==null?"":value).replace(/[&<>"']/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c];
+  });
+}
+function currentDateKey(){
+  var d=new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function longDate(){
+  try{
+    return new Intl.DateTimeFormat("en-SG",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(new Date()).toUpperCase();
+  }catch(e){
+    return new Date().toDateString().toUpperCase();
+  }
+}
+
+var defaultItems=[
+  {id:"demo1",type:"todo",title:"Check evening cocktail setup",priority:"ROUTINE",due:"16:30",owner:"Crystal Club",notes:""},
+  {id:"demo2",type:"order",title:"Printer cartridge",quantity:"1",urgency:"ATTENTION",orderStatus:"TO ORDER",source:"",notes:""},
+  {id:"demo3",type:"guest",title:"Vegetarian breakfast preference",room:"1428",guest:"Mr Tan",arrival:"",departure:"",importance:"NORMAL",notes:"Confirm available selections with guest."},
+  {id:"demo4",type:"handover",title:"Printer connection issue unresolved",room:"",from:"PM Shift",nextShift:"AM Shift",priority:"ATTENTION",followup:"09:00",notes:"Follow up with IT."}
+];
+var defaultSchedule=[
+  {id:"sched1",title:"Prepare / print required food tags",time:"15:30",category:"F&B",type:"weekly",days:[0,1,2,3,4,5,6]}
+];
+
+var items=getStored(BOARD_KEY,defaultItems);
+var schedule=getStored(SCHED_KEY,defaultSchedule);
+var done=getStored(DONE_KEY,{});
+var editingItemId=null;
+var editingType=null;
+
+var zoneIds={todo:"todoZone",order:"orderZone",guest:"guestZone",handover:"handoverZone"};
+var countIds={todo:"countTodo",order:"countOrder",guest:"countGuest",handover:"countHandover"};
+var statIds={todo:"statTodo",order:"statOrder",guest:"statGuest",handover:"statHandover"};
+
+function cardHtml(x){
+  var top="",body="",cls="";
+  if(x.type==="todo"){
+    top='<span class="pill">'+esc(x.priority||"ROUTINE")+'</span>';
+    body+=(x.due?'<div>Due: '+esc(x.due)+'</div>':"");
+    body+=(x.owner?'<div>Assigned: '+esc(x.owner)+'</div>':"");
+    body+=(x.notes?'<div>'+esc(x.notes)+'</div>':"");
+  }
+  if(x.type==="order"){
+    top='<span class="pill">'+esc(x.urgency||"ROUTINE")+'</span><span class="pill order-status">'+esc(x.orderStatus||"TO ORDER")+'</span>';
+    body+=(x.quantity?'<div>Quantity: '+esc(x.quantity)+'</div>':"");
+    body+=(x.source?'<div>Supplier / Department: '+esc(x.source)+'</div>':"");
+    body+=(x.notes?'<div>'+esc(x.notes)+'</div>':"");
+  }
+  if(x.type==="guest"){
+    cls=" guest-card";
+    top='<span class="pill">'+esc(x.importance||"NORMAL")+'</span>';
+    body+=(x.room?'<div>Room: '+esc(x.room)+'</div>':"");
+    body+=(x.guest?'<div>Guest: '+esc(x.guest)+'</div>':"");
+    body+=(x.arrival?'<div>Arrival: '+esc(x.arrival)+'</div>':"");
+    body+=(x.departure?'<div>Departure: '+esc(x.departure)+'</div>':"");
+    body+=(x.notes?'<div>'+esc(x.notes)+'</div>':"");
+  }
+  if(x.type==="handover"){
+    cls=" handover-card";
+    top='<span class="pill">'+esc(x.priority||"ROUTINE")+'</span>';
+    body+=(x.room?'<div>Room / Area: '+esc(x.room)+'</div>':"");
+    body+=(x.from?'<div>From: '+esc(x.from)+'</div>':"");
+    body+=(x.nextShift?'<div>For: '+esc(x.nextShift)+'</div>':"");
+    body+=(x.followup?'<div>Follow-up: '+esc(x.followup)+'</div>':"");
+    body+=(x.notes?'<div>'+esc(x.notes)+'</div>':"");
+  }
+  return '<article class="card'+cls+'" draggable="true" data-id="'+esc(x.id)+'">'+
+    '<div class="card-top">'+top+'</div><h3>'+esc(x.title)+'</h3><div class="meta">'+body+'</div>'+
+    '<div class="card-actions">'+(x.type==="order"?'<button data-action="advance">Advance Status</button>':"")+
+    '<button data-action="edit">Edit</button><button data-action="delete">Delete</button></div></article>';
+}
+
+function renderBoard(){
+  var q=document.getElementById("searchBox").value.toLowerCase().trim();
+  var filter=document.getElementById("columnFilter").value;
+
+  ["todo","order","guest","handover"].forEach(function(type){
+    var zone=document.getElementById(zoneIds[type]);
+    var visible=items.filter(function(x){
+      if(x.type!==type) return false;
+      if(filter!=="all" && filter!==type) return false;
+      if(!q) return true;
+      try{return JSON.stringify(x).toLowerCase().indexOf(q)!==-1;}catch(e){return true;}
+    });
+
+    zone.innerHTML=visible.length ? visible.map(cardHtml).join("") : '<div class="empty">'+
+      (type==="todo"?"No tasks yet.":type==="order"?"Nothing to order yet.":type==="guest"?"No guest notes yet.":"No handover notes yet.")+
+      '</div>';
+
+    document.getElementById(countIds[type]).textContent=visible.length;
+    document.getElementById(statIds[type]).textContent=items.filter(function(x){return x.type===type;}).length;
+  });
+
+  bindCards();
+}
+
+function bindCards(){
+  Array.prototype.forEach.call(document.querySelectorAll(".card"),function(card){
+    card.addEventListener("dragstart",function(e){
+      card.classList.add("dragging");
+      e.dataTransfer.setData("text/plain",card.getAttribute("data-id"));
+    });
+    card.addEventListener("dragend",function(){card.classList.remove("dragging");});
+
+    Array.prototype.forEach.call(card.querySelectorAll("button[data-action]"),function(btn){
+      btn.addEventListener("click",function(){
+        var id=card.getAttribute("data-id");
+        var x=items.find(function(i){return i.id===id;});
+        if(!x) return;
+        var action=btn.getAttribute("data-action");
+
+        if(action==="delete"){
+          if(confirm("Delete this card?")){
+            items=items.filter(function(i){return i.id!==id;});
+            setStored(BOARD_KEY,items);
+            renderBoard();
+          }
+        }
+        if(action==="edit") openEntry(x.type,x);
+        if(action==="advance"){
+          var states=["TO ORDER","ORDERED","RECEIVED"];
+          var idx=states.indexOf(x.orderStatus||"TO ORDER");
+          x.orderStatus=states[(idx+1)%states.length];
+          setStored(BOARD_KEY,items);
+          renderBoard();
+        }
+      });
+    });
+  });
+}
+
+["todo","order","guest","handover"].forEach(function(type){
+  var zone=document.getElementById(zoneIds[type]);
+  zone.addEventListener("dragover",function(e){e.preventDefault();zone.classList.add("over");});
+  zone.addEventListener("dragleave",function(){zone.classList.remove("over");});
+  zone.addEventListener("drop",function(e){
+    e.preventDefault();zone.classList.remove("over");
+    var id=e.dataTransfer.getData("text/plain");
+    var x=items.find(function(i){return i.id===id;});
+    if(x){x.type=type;setStored(BOARD_KEY,items);renderBoard();}
+  });
+});
+
+var fieldDefs={
+  todo:[
+    ["title","Task","text"],["priority","Priority","select",["ROUTINE","ATTENTION","URGENT"]],
+    ["due","Due Time","time"],["owner","Assigned To","text"],["notes","Notes","textarea"]
+  ],
+  order:[
+    ["title","Item","text"],["quantity","Quantity","text"],["urgency","Urgency","select",["ROUTINE","ATTENTION","URGENT"]],
+    ["orderStatus","Order Status","select",["TO ORDER","ORDERED","RECEIVED"]],["source","Supplier / Department","text"],["notes","Notes","textarea"]
+  ],
+  guest:[
+    ["title","Guest Note","text"],["room","Room","text"],["guest","Guest Name","text"],["arrival","Arrival","date"],
+    ["departure","Departure","date"],["importance","Importance","select",["NORMAL","ATTENTION","IMPORTANT"]],["notes","Details / Action Required","textarea"]
+  ],
+  handover:[
+    ["title","Handover Note","text"],["room","Room / Area","text"],["from","From","text"],["nextShift","For Next Shift","text"],
+    ["priority","Priority","select",["ROUTINE","ATTENTION","URGENT"]],["followup","Follow-up Time","time"],["notes","Details","textarea"]
+  ]
+};
+
+function typeLabel(type){
+  return {todo:"TO DO",order:"TO ORDER",guest:"GUEST NOTE",handover:"HANDOVER"}[type]||"ITEM";
+}
+function openEntry(type,obj){
+  editingType=type;
+  editingItemId=obj ? obj.id : null;
+  document.getElementById("entryHeading").textContent=(obj?"Edit ":"Add ")+typeLabel(type);
+  var box=document.getElementById("entryFields");
+  box.innerHTML="";
+
+  fieldDefs[type].forEach(function(def){
+    var key=def[0],label=def[1],kind=def[2],opts=def[3]||[],value=obj&&obj[key]!=null?obj[key]:"";
+    var wrap=document.createElement("div");
+    wrap.className="field "+((kind==="textarea"||key==="title")?"full":"");
+    var inner='<label>'+esc(label)+'</label>';
+    if(kind==="select"){
+      inner+='<select id="field_'+key+'">'+opts.map(function(o){return '<option'+(o===value?' selected':'')+'>'+esc(o)+'</option>';}).join("")+'</select>';
+    }else if(kind==="textarea"){
+      inner+='<textarea id="field_'+key+'">'+esc(value)+'</textarea>';
+    }else{
+      inner+='<input id="field_'+key+'" type="'+esc(kind)+'" value="'+esc(value)+'">';
+    }
+    wrap.innerHTML=inner;
+    box.appendChild(wrap);
+  });
+
+  document.getElementById("typeModal").classList.remove("open");
+  document.getElementById("entryModal").classList.add("open");
+}
+
+document.getElementById("saveEntryBtn").addEventListener("click",function(){
+  var obj=editingItemId ? items.find(function(i){return i.id===editingItemId;}) : {id:makeId(),type:editingType};
+  if(!obj) return;
+
+  fieldDefs[editingType].forEach(function(def){
+    var key=def[0];
+    obj[key]=document.getElementById("field_"+key).value.trim();
+  });
+
+  if(!obj.title){alert("Please enter a title.");return;}
+  if(!editingItemId) items.push(obj);
+
+  setStored(BOARD_KEY,items);
+  document.getElementById("entryModal").classList.remove("open");
+  editingItemId=null;editingType=null;
+  renderBoard();
+});
+
+function scheduleMatchesToday(t){
+  var d=new Date(),dom=d.getDate(),last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+  if(t.type==="weekly") return (t.days||[]).indexOf(d.getDay())!==-1;
+  if(t.type==="first_days") return dom<=Number(t.count||1);
+  if(t.type==="last_days") return dom>last-Number(t.count||1);
+  if(t.type==="monthly_day") return dom===Number(t.day);
+  if(t.type==="one_off") return currentDateKey()===t.date;
+  return false;
+}
+
+function renderTodaySchedule(){
+  var box=document.getElementById("todaySchedule");
+  var key=currentDateKey();
+  var today=schedule.filter(scheduleMatchesToday).sort(function(a,b){return String(a.time).localeCompare(String(b.time));});
+  if(!today.length){
+    box.innerHTML='<div style="font-size:12px;color:#c8beae;padding:12px 0">No scheduled tasks today.</div>';
+    return;
+  }
+  box.innerHTML="";
+  today.forEach(function(t){
+    var checked=!!(done[key]&&done[key][t.id]);
+    var row=document.createElement("label");
+    row.className="schedule-item"+(checked?" done":"");
+    row.innerHTML='<div><strong>'+esc(t.time)+'</strong></div><div>'+esc(t.title)+'<small>'+esc(t.category)+'</small></div><input type="checkbox"'+(checked?' checked':'')+'>';
+    row.querySelector("input").addEventListener("change",function(e){
+      if(!done[key]) done[key]={};
+      done[key][t.id]=e.target.checked;
+      setStored(DONE_KEY,done);
+      renderTodaySchedule();
+    });
+    box.appendChild(row);
+  });
+}
+
+function scheduleDescription(t){
+  var names=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  if(t.type==="weekly"){
+    return (t.days||[]).length===7 ? "Every day" : (t.days||[]).map(function(d){return names[d];}).join(", ");
+  }
+  if(t.type==="first_days") return "First "+t.count+" days of month";
+  if(t.type==="last_days") return "Last "+t.count+" days of month";
+  if(t.type==="monthly_day") return "Day "+t.day+" of every month";
+  return t.date||"One-off";
+}
+
+function updateScheduleFields(){
+  var type=document.getElementById("schedType").value;
+  document.getElementById("weeklyFields").classList.toggle("hidden-field",type!=="weekly");
+  document.getElementById("countFields").classList.toggle("hidden-field",type!=="first_days"&&type!=="last_days");
+  document.getElementById("dayFields").classList.toggle("hidden-field",type!=="monthly_day");
+  document.getElementById("dateFields").classList.toggle("hidden-field",type!=="one_off");
+  document.getElementById("countLabel").textContent=type==="last_days"?"Number of final days":"Number of first days";
+}
+
+function clearScheduleForm(){
+  document.getElementById("schedId").value="";
+  document.getElementById("schedTitle").value="";
+  document.getElementById("schedTime").value="09:00";
+  document.getElementById("schedCategory").value="ADMIN";
+  document.getElementById("schedType").value="weekly";
+  Array.prototype.forEach.call(document.querySelectorAll(".wd"),function(x){x.checked=false;});
+  document.getElementById("schedCount").value="3";
+  document.getElementById("schedDay").value="1";
+  document.getElementById("schedDate").value="";
+  document.getElementById("saveSchedBtn").textContent="Add Scheduled Task";
+  updateScheduleFields();
+}
+
+function renderScheduleList(){
+  var box=document.getElementById("scheduleList");
+  box.innerHTML="";
+  schedule.slice().sort(function(a,b){return String(a.time).localeCompare(String(b.time));}).forEach(function(t){
+    var row=document.createElement("div");
+    row.className="schedule-row";
+    row.innerHTML='<strong>'+esc(t.time)+'</strong><div><strong>'+esc(t.title)+'</strong><small>'+esc(t.category)+'</small></div><small>'+esc(scheduleDescription(t))+'</small><div><button data-edit>Edit</button> <button data-delete>Delete</button></div>';
+    row.querySelector("[data-edit]").addEventListener("click",function(){
+      document.getElementById("schedId").value=t.id;
+      document.getElementById("schedTitle").value=t.title;
+      document.getElementById("schedTime").value=t.time;
+      document.getElementById("schedCategory").value=t.category;
+      document.getElementById("schedType").value=t.type;
+      Array.prototype.forEach.call(document.querySelectorAll(".wd"),function(x){x.checked=(t.days||[]).indexOf(Number(x.value))!==-1;});
+      document.getElementById("schedCount").value=t.count||3;
+      document.getElementById("schedDay").value=t.day||1;
+      document.getElementById("schedDate").value=t.date||"";
+      document.getElementById("saveSchedBtn").textContent="Save Changes";
+      updateScheduleFields();
+    });
+    row.querySelector("[data-delete]").addEventListener("click",function(){
+      if(confirm("Delete this scheduled task?")){
+        schedule=schedule.filter(function(x){return x.id!==t.id;});
+        setStored(SCHED_KEY,schedule);
+        renderScheduleList();
+        renderTodaySchedule();
+      }
+    });
+    box.appendChild(row);
+  });
+}
+
+document.getElementById("saveSchedBtn").addEventListener("click",function(){
+  var id=document.getElementById("schedId").value;
+  var type=document.getElementById("schedType").value;
+  var t={
+    id:id||makeId(),
+    title:document.getElementById("schedTitle").value.trim(),
+    time:document.getElementById("schedTime").value,
+    category:document.getElementById("schedCategory").value,
+    type:type
+  };
+  if(!t.title){alert("Enter a scheduled task.");return;}
+
+  if(type==="weekly"){
+    t.days=Array.prototype.map.call(document.querySelectorAll(".wd:checked"),function(x){return Number(x.value);});
+    if(!t.days.length){alert("Select at least one weekday.");return;}
+  }else if(type==="first_days"||type==="last_days"){
+    t.count=Number(document.getElementById("schedCount").value||1);
+  }else if(type==="monthly_day"){
+    t.day=Number(document.getElementById("schedDay").value||1);
+  }else if(type==="one_off"){
+    t.date=document.getElementById("schedDate").value;
+    if(!t.date){alert("Select a date.");return;}
+  }
+
+  if(id){
+    var idx=schedule.findIndex(function(x){return x.id===id;});
+    if(idx!==-1) schedule[idx]=t;
+  }else schedule.push(t);
+
+  setStored(SCHED_KEY,schedule);
+  clearScheduleForm();
+  renderScheduleList();
+  renderTodaySchedule();
+});
+
+function openScheduleManager(){
+  renderScheduleList();
+  document.getElementById("scheduleModal").classList.add("open");
+}
+
+document.getElementById("addBtn").addEventListener("click",function(){document.getElementById("typeModal").classList.add("open");});
+Array.prototype.forEach.call(document.querySelectorAll("[data-addtype]"),function(btn){
+  btn.addEventListener("click",function(){openEntry(btn.getAttribute("data-addtype"),null);});
+});
+Array.prototype.forEach.call(document.querySelectorAll("[data-close]"),function(btn){
+  btn.addEventListener("click",function(){document.getElementById(btn.getAttribute("data-close")).classList.remove("open");});
+});
+document.getElementById("manageScheduleBtn").addEventListener("click",openScheduleManager);
+document.getElementById("overlayManageBtn").addEventListener("click",openScheduleManager);
+document.getElementById("schedType").addEventListener("change",updateScheduleFields);
+document.getElementById("clearSchedBtn").addEventListener("click",clearScheduleForm);
+document.getElementById("searchBox").addEventListener("input",renderBoard);
+document.getElementById("columnFilter").addEventListener("change",renderBoard);
+function toggleScheduleOverlay(){
+  document.getElementById("scheduleOverlay").classList.toggle("hidden");
+}
+document.getElementById("hideOverlayBtn").addEventListener("click",toggleScheduleOverlay);
+document.getElementById("toggleScheduleBtn").addEventListener("click",toggleScheduleOverlay);
+
+document.getElementById("dateLabel").textContent=longDate();
+document.getElementById("overlayDate").textContent=longDate();
+updateScheduleFields();
+renderBoard();
+renderTodaySchedule();
+setInterval(renderTodaySchedule,30000);
+
+})();
+</script>
+</body>
+</html>
