@@ -25,21 +25,31 @@ button,input,select,textarea{font:inherit}
 button{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:10px 13px;cursor:pointer;color:var(--ink)}
 button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 .actions,.toolbar,.modal-actions,.overlay-actions{display:flex;gap:8px;flex-wrap:wrap}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
 .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
 .stat strong{display:block;font-size:22px}
 .stat span{font-size:11px;color:var(--muted);letter-spacing:.08em}
 .toolbar{margin-bottom:16px}
 .toolbar input,.toolbar select{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:10px 12px}
 .toolbar input{flex:1;min-width:220px}
-.board{display:grid;grid-template-columns:repeat(4,minmax(235px,1fr));gap:12px;overflow-x:auto}
-.column{background:rgba(255,255,255,.45);border:1px solid var(--line);border-radius:16px;min-height:560px;padding:10px}
-.column-head{display:flex;justify-content:space-between;align-items:center;padding:7px 5px 12px;font-weight:700}
+.board{display:grid;grid-template-columns:repeat(5,minmax(235px,1fr));gap:12px;overflow-x:auto}
+.column{border:1px solid var(--line);border-radius:16px;min-height:560px;padding:10px;box-shadow:0 8px 20px rgba(30,25,18,.05)}
+.column-head{display:flex;justify-content:space-between;align-items:center;padding:10px 11px;margin:-10px -10px 12px;border-radius:15px 15px 10px 10px;font-weight:800;letter-spacing:.02em}
+.column-todo{background:linear-gradient(180deg,#eef7ff 0%,#f8fbff 100%);border-color:#cfe5f8}
+.column-todo .column-head{background:#d8edff;color:#24577d}
+.column-order{background:linear-gradient(180deg,#fff7dc 0%,#fffdf4 100%);border-color:#ead79a}
+.column-order .column-head{background:#ffe7a8;color:#7a5410}
+.column-receive{background:linear-gradient(180deg,#eef9ee 0%,#f9fdf9 100%);border-color:#cfe7cf}
+.column-receive .column-head{background:#d8f0d8;color:#2d6b3a}
+.column-guest{background:linear-gradient(180deg,#fff0f6 0%,#fff9fb 100%);border-color:#ebcddd}
+.column-guest .column-head{background:#f8dce9;color:#7a3458}
+.column-handover{background:linear-gradient(180deg,#f2efff 0%,#fbfaff 100%);border-color:#d8d1ee}
+.column-handover .column-head{background:#e2dcfa;color:#55448a}
 .count{background:var(--soft);color:var(--muted);font-size:12px;border-radius:999px;padding:3px 8px}
 .dropzone{min-height:490px}
 .dropzone.over{outline:2px dashed #96866e;outline-offset:2px;border-radius:10px}
 .empty{color:#9a948b;font-size:12px;padding:10px 5px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:10px;box-shadow:0 5px 14px rgba(30,25,18,.05);cursor:grab}
+.card{background:rgba(255,255,255,.94);border:1px solid rgba(120,110,95,.18);border-radius:13px;padding:12px;margin-bottom:10px;box-shadow:0 6px 16px rgba(30,25,18,.07);cursor:grab}
 .card.dragging{opacity:.4}
 .card h3{font-size:15px;margin:0 0 8px}
 .card-top{display:flex;justify-content:space-between;gap:6px;margin-bottom:8px}
@@ -49,6 +59,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 .card-actions button{font-size:11px;padding:5px 7px;border-radius:7px}
 .guest-card{border-left:4px solid #8d795e}
 .handover-card{border-left:4px solid #687789}
+.receive-card{border-left:4px solid #6c9f72}
 .order-status{font-weight:700}
 .schedule-overlay{
   position:fixed;
@@ -93,7 +104,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 .field input,.field select,.field textarea{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff}
 .field textarea{min-height:76px;resize:vertical}
 .modal-actions{justify-content:flex-end;margin-top:14px}
-.type-picker{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.type-picker{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
 .type-picker button{padding:18px 8px;font-weight:700}
 .weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
 .weekdays label{background:#fff;border:1px solid var(--line);border-radius:9px;padding:8px;text-align:center;font-size:11px}
@@ -102,7 +113,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 .schedule-row small{display:block;color:var(--muted);margin-top:2px}
 .schedule-row button{font-size:11px;padding:5px 7px}
 .hidden-field{display:none!important}
-@media(max-width:900px){.stats{grid-template-columns:1fr 1fr}.board{grid-template-columns:repeat(4,260px)}}
+@media(max-width:900px){.stats{grid-template-columns:1fr 1fr}.board{grid-template-columns:repeat(5,260px)}}
 @media(max-width:650px){.app{padding:14px}header{flex-direction:column;align-items:flex-start}.schedule-overlay{left:12px;right:12px;width:auto;max-height:45vh}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.type-picker{grid-template-columns:1fr 1fr}.schedule-row{grid-template-columns:1fr}}
 </style>
 </head>
@@ -124,6 +135,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 <section class="stats">
   <div class="stat"><strong id="statTodo">0</strong><span>TO DO</span></div>
   <div class="stat"><strong id="statOrder">0</strong><span>TO ORDER</span></div>
+  <div class="stat"><strong id="statReceive">0</strong><span>TO RECEIVE</span></div>
   <div class="stat"><strong id="statGuest">0</strong><span>GUEST NOTES</span></div>
   <div class="stat"><strong id="statHandover">0</strong><span>HANDOVER</span></div>
 </section>
@@ -134,25 +146,30 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
     <option value="all">All Columns</option>
     <option value="todo">To Do</option>
     <option value="order">To Order</option>
+    <option value="receive">To Receive</option>
     <option value="guest">Guest Notes</option>
     <option value="handover">Handover</option>
   </select>
 </div>
 
 <main class="board">
-  <section class="column">
+  <section class="column column-todo">
     <div class="column-head"><span>TO DO</span><span class="count" id="countTodo">0</span></div>
     <div class="dropzone" id="todoZone" data-type="todo"><div class="empty">No tasks yet.</div></div>
   </section>
-  <section class="column">
+  <section class="column column-order">
     <div class="column-head"><span>TO ORDER</span><span class="count" id="countOrder">0</span></div>
     <div class="dropzone" id="orderZone" data-type="order"><div class="empty">Nothing to order yet.</div></div>
   </section>
-  <section class="column">
+  <section class="column column-receive">
+    <div class="column-head"><span>TO RECEIVE</span><span class="count" id="countReceive">0</span></div>
+    <div class="dropzone" id="receiveZone" data-type="receive"><div class="empty">Nothing pending receipt.</div></div>
+  </section>
+  <section class="column column-guest">
     <div class="column-head"><span>GUEST NOTES</span><span class="count" id="countGuest">0</span></div>
     <div class="dropzone" id="guestZone" data-type="guest"><div class="empty">No guest notes yet.</div></div>
   </section>
-  <section class="column">
+  <section class="column column-handover">
     <div class="column-head"><span>HANDOVER</span><span class="count" id="countHandover">0</span></div>
     <div class="dropzone" id="handoverZone" data-type="handover"><div class="empty">No handover notes yet.</div></div>
   </section>
@@ -175,6 +192,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
     <div class="type-picker">
       <button data-addtype="todo">TO DO</button>
       <button data-addtype="order">TO ORDER</button>
+      <button data-addtype="receive">TO RECEIVE</button>
       <button data-addtype="guest">GUEST NOTE</button>
       <button data-addtype="handover">HANDOVER</button>
     </div>
@@ -282,9 +300,9 @@ var done=getStored(DONE_KEY,{});
 var editingItemId=null;
 var editingType=null;
 
-var zoneIds={todo:"todoZone",order:"orderZone",guest:"guestZone",handover:"handoverZone"};
-var countIds={todo:"countTodo",order:"countOrder",guest:"countGuest",handover:"countHandover"};
-var statIds={todo:"statTodo",order:"statOrder",guest:"statGuest",handover:"statHandover"};
+var zoneIds={todo:"todoZone",order:"orderZone",receive:"receiveZone",guest:"guestZone",handover:"handoverZone"};
+var countIds={todo:"countTodo",order:"countOrder",receive:"countReceive",guest:"countGuest",handover:"countHandover"};
+var statIds={todo:"statTodo",order:"statOrder",receive:"statReceive",guest:"statGuest",handover:"statHandover"};
 
 function cardHtml(x){
   var top="",body="",cls="";
@@ -296,6 +314,13 @@ function cardHtml(x){
   }
   if(x.type==="order"){
     top='<span class="pill">'+esc(x.urgency||"ROUTINE")+'</span><span class="pill order-status">'+esc(x.orderStatus||"TO ORDER")+'</span>';
+    body+=(x.quantity?'<div>Quantity: '+esc(x.quantity)+'</div>':"");
+    body+=(x.source?'<div>Supplier / Department: '+esc(x.source)+'</div>':"");
+    body+=(x.notes?'<div>'+esc(x.notes)+'</div>':"");
+  }
+  if(x.type==="receive"){
+    cls=" receive-card";
+    top='<span class="pill order-status">'+esc(x.orderStatus||"AWAITING RECEIPT")+'</span>';
     body+=(x.quantity?'<div>Quantity: '+esc(x.quantity)+'</div>':"");
     body+=(x.source?'<div>Supplier / Department: '+esc(x.source)+'</div>':"");
     body+=(x.notes?'<div>'+esc(x.notes)+'</div>':"");
@@ -320,7 +345,9 @@ function cardHtml(x){
   }
   return '<article class="card'+cls+'" draggable="true" data-id="'+esc(x.id)+'">'+
     '<div class="card-top">'+top+'</div><h3>'+esc(x.title)+'</h3><div class="meta">'+body+'</div>'+
-    '<div class="card-actions">'+(x.type==="order"?'<button data-action="advance">Advance Status</button>':"")+
+    '<div class="card-actions">'+
+    (x.type==="order"?'<button data-action="move-receive">Move to Receive</button>':"")+
+    (x.type==="receive"?'<button data-action="received">Mark Received</button>':"")+
     '<button data-action="edit">Edit</button><button data-action="delete">Delete</button></div></article>';
 }
 
@@ -328,7 +355,7 @@ function renderBoard(){
   var q=document.getElementById("searchBox").value.toLowerCase().trim();
   var filter=document.getElementById("columnFilter").value;
 
-  ["todo","order","guest","handover"].forEach(function(type){
+  ["todo","order","receive","guest","handover"].forEach(function(type){
     var zone=document.getElementById(zoneIds[type]);
     var visible=items.filter(function(x){
       if(x.type!==type) return false;
@@ -338,7 +365,7 @@ function renderBoard(){
     });
 
     zone.innerHTML=visible.length ? visible.map(cardHtml).join("") : '<div class="empty">'+
-      (type==="todo"?"No tasks yet.":type==="order"?"Nothing to order yet.":type==="guest"?"No guest notes yet.":"No handover notes yet.")+
+      (type==="todo"?"No tasks yet.":type==="order"?"Nothing to order yet.":type==="receive"?"Nothing pending receipt.":type==="guest"?"No guest notes yet.":"No handover notes yet.")+
       '</div>';
 
     document.getElementById(countIds[type]).textContent=visible.length;
@@ -371,19 +398,25 @@ function bindCards(){
           }
         }
         if(action==="edit") openEntry(x.type,x);
-        if(action==="advance"){
-          var states=["TO ORDER","ORDERED","RECEIVED"];
-          var idx=states.indexOf(x.orderStatus||"TO ORDER");
-          x.orderStatus=states[(idx+1)%states.length];
+        if(action==="move-receive"){
+          x.type="receive";
+          x.orderStatus="AWAITING RECEIPT";
           setStored(BOARD_KEY,items);
           renderBoard();
+        }
+        if(action==="received"){
+          if(confirm("Mark this item as received and remove it from the board?")){
+            items=items.filter(function(i){return i.id!==id;});
+            setStored(BOARD_KEY,items);
+            renderBoard();
+          }
         }
       });
     });
   });
 }
 
-["todo","order","guest","handover"].forEach(function(type){
+["todo","order","receive","guest","handover"].forEach(function(type){
   var zone=document.getElementById(zoneIds[type]);
   zone.addEventListener("dragover",function(e){e.preventDefault();zone.classList.add("over");});
   zone.addEventListener("dragleave",function(){zone.classList.remove("over");});
@@ -402,7 +435,11 @@ var fieldDefs={
   ],
   order:[
     ["title","Item","text"],["quantity","Quantity","text"],["urgency","Urgency","select",["ROUTINE","ATTENTION","URGENT"]],
-    ["orderStatus","Order Status","select",["TO ORDER","ORDERED","RECEIVED"]],["source","Supplier / Department","text"],["notes","Notes","textarea"]
+    ["orderStatus","Order Status","select",["TO ORDER","ORDERED"]],["source","Supplier / Department","text"],["notes","Notes","textarea"]
+  ],
+  receive:[
+    ["title","Item","text"],["quantity","Quantity","text"],["orderStatus","Receipt Status","select",["AWAITING RECEIPT","PARTIALLY RECEIVED"]],
+    ["source","Supplier / Department","text"],["notes","Notes","textarea"]
   ],
   guest:[
     ["title","Guest Note","text"],["room","Room","text"],["guest","Guest Name","text"],["arrival","Arrival","date"],
@@ -415,7 +452,7 @@ var fieldDefs={
 };
 
 function typeLabel(type){
-  return {todo:"TO DO",order:"TO ORDER",guest:"GUEST NOTE",handover:"HANDOVER"}[type]||"ITEM";
+  return {todo:"TO DO",order:"TO ORDER",receive:"TO RECEIVE",guest:"GUEST NOTE",handover:"HANDOVER"}[type]||"ITEM";
 }
 function openEntry(type,obj){
   editingType=type;
@@ -536,7 +573,7 @@ function renderScheduleList(){
   schedule.slice().sort(function(a,b){return String(a.time).localeCompare(String(b.time));}).forEach(function(t){
     var row=document.createElement("div");
     row.className="schedule-row";
-    row.innerHTML='<strong>'+esc(t.time)+'</strong><div><strong>'+esc(t.title)+'</strong><small>'+esc(t.category)+'</small></div><small>'+esc(scheduleDescription(t))+'</small><div><button data-edit>Edit</button> <button data-delete>Delete</button></div>';
+    row.innerHTML='<strong>'+esc(t.time)+'</strong><div><strong>'+esc(t.title)+'</strong><small>'+esc(t.category)+'</small></div><small>'+esc(scheduleDescription(t))+'</small><div><button type="button" data-edit>Edit</button> <button type="button" data-delete>Delete</button></div>';
     row.querySelector("[data-edit]").addEventListener("click",function(){
       document.getElementById("schedId").value=t.id;
       document.getElementById("schedTitle").value=t.title;
@@ -550,13 +587,17 @@ function renderScheduleList(){
       document.getElementById("saveSchedBtn").textContent="Save Changes";
       updateScheduleFields();
     });
-    row.querySelector("[data-delete]").addEventListener("click",function(){
-      if(confirm("Delete this scheduled task?")){
-        schedule=schedule.filter(function(x){return x.id!==t.id;});
-        setStored(SCHED_KEY,schedule);
-        renderScheduleList();
-        renderTodaySchedule();
+    row.querySelector("[data-delete]").addEventListener("click",function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      if(!confirm("Delete this scheduled task?")) return;
+      schedule=schedule.filter(function(x){return String(x.id)!==String(t.id);});
+      setStored(SCHED_KEY,schedule);
+      if(document.getElementById("schedId").value===String(t.id)){
+        clearScheduleForm();
       }
+      renderScheduleList();
+      renderTodaySchedule();
     });
     box.appendChild(row);
   });
