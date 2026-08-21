@@ -105,7 +105,21 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 .field textarea{min-height:76px;resize:vertical}
 .modal-actions{justify-content:flex-end;margin-top:14px}
 .type-picker{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
-.type-picker button{padding:18px 8px;font-weight:700}
+.type-picker button{
+  padding:18px 8px;
+  font-weight:800;
+  border-width:2px;
+  transition:transform .15s ease,box-shadow .15s ease;
+}
+.type-picker button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 7px 16px rgba(30,25,18,.10);
+}
+.type-picker button[data-addtype="todo"]{background:#d8edff;border-color:#b8d9f4;color:#24577d}
+.type-picker button[data-addtype="order"]{background:#ffe7a8;border-color:#e6cb7d;color:#7a5410}
+.type-picker button[data-addtype="receive"]{background:#d8f0d8;border-color:#b9dcb9;color:#2d6b3a}
+.type-picker button[data-addtype="guest"]{background:#f8dce9;border-color:#e5bdd1;color:#7a3458}
+.type-picker button[data-addtype="handover"]{background:#e2dcfa;border-color:#c8bdea;color:#55448a}
 .weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
 .weekdays label{background:#fff;border:1px solid var(--line);border-radius:9px;padding:8px;text-align:center;font-size:11px}
 .schedule-list{margin-top:16px;border-top:1px solid var(--line)}
