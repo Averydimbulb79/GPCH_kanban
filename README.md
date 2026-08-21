@@ -1,796 +1,343 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GPCH Crystal Club</title>
-<style>
-:root{
-  --bg:#f3f0e9;
-  --panel:#fffdf9;
-  --ink:#20262d;
-  --muted:#6d737b;
-  --line:#d9d3c7;
-  --soft:#eee7dc;
-  --danger:#9b3c3c;
-  --shadow:0 8px 24px rgba(30,25,18,.08);
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
-.app{padding:24px;min-height:100vh}
-header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:18px}
-h1{margin:0;font-size:30px;letter-spacing:.03em}
-#dateLabel{margin-top:5px;color:var(--muted);font-size:14px}
-button,input,select,textarea{font:inherit}
-button{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:10px 13px;cursor:pointer;color:var(--ink)}
-button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
-.actions,.toolbar,.modal-actions,.overlay-actions{display:flex;gap:8px;flex-wrap:wrap}
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
-.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
-.stat strong{display:block;font-size:22px}
-.stat span{font-size:11px;color:var(--muted);letter-spacing:.08em}
-.toolbar{margin-bottom:16px}
-.toolbar input,.toolbar select{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:10px 12px}
-.toolbar input{flex:1;min-width:220px}
-.board{display:grid;grid-template-columns:repeat(5,minmax(235px,1fr));gap:12px;overflow-x:auto}
-.column{border:1px solid var(--line);border-radius:16px;min-height:560px;padding:10px;box-shadow:0 8px 20px rgba(30,25,18,.05)}
-.column-head{display:flex;justify-content:space-between;align-items:center;padding:10px 11px;margin:-10px -10px 12px;border-radius:15px 15px 10px 10px;font-weight:800;letter-spacing:.02em}
-.column-todo{background:linear-gradient(180deg,#eef7ff 0%,#f8fbff 100%);border-color:#cfe5f8}
-.column-todo .column-head{background:#d8edff;color:#24577d}
-.column-order{background:linear-gradient(180deg,#fff7dc 0%,#fffdf4 100%);border-color:#ead79a}
-.column-order .column-head{background:#ffe7a8;color:#7a5410}
-.column-receive{background:linear-gradient(180deg,#eef9ee 0%,#f9fdf9 100%);border-color:#cfe7cf}
-.column-receive .column-head{background:#d8f0d8;color:#2d6b3a}
-.column-guest{background:linear-gradient(180deg,#fff0f6 0%,#fff9fb 100%);border-color:#ebcddd}
-.column-guest .column-head{background:#f8dce9;color:#7a3458}
-.column-handover{background:linear-gradient(180deg,#f2efff 0%,#fbfaff 100%);border-color:#d8d1ee}
-.column-handover .column-head{background:#e2dcfa;color:#55448a}
-.count{background:var(--soft);color:var(--muted);font-size:12px;border-radius:999px;padding:3px 8px}
-.dropzone{min-height:490px}
-.dropzone.over{outline:2px dashed #96866e;outline-offset:2px;border-radius:10px}
-.empty{color:#9a948b;font-size:12px;padding:10px 5px}
-.card{background:rgba(255,255,255,.94);border:1px solid rgba(120,110,95,.18);border-radius:13px;padding:12px;margin-bottom:10px;box-shadow:0 6px 16px rgba(30,25,18,.07);cursor:grab}
-.card.dragging{opacity:.4}
-.card h3{font-size:15px;margin:0 0 8px}
-.card-top{display:flex;justify-content:space-between;gap:6px;margin-bottom:8px}
-.pill{font-size:10px;font-weight:700;letter-spacing:.05em;border-radius:999px;padding:4px 7px;background:var(--soft)}
-.meta{font-size:12px;color:var(--muted);line-height:1.55}
-.card-actions{display:flex;justify-content:flex-end;gap:5px;margin-top:9px}
-.card-actions button{font-size:11px;padding:5px 7px;border-radius:7px}
-.guest-card{border-left:4px solid #8d795e}
-.handover-card{border-left:4px solid #687789}
-.receive-card{border-left:4px solid #6c9f72}
-.order-status{font-weight:700}
-.schedule-overlay{
-  position:fixed;
-  top:18px;
-  right:18px;
-  width:330px;
-  max-height:calc(100vh - 36px);
-  overflow:auto;
-  z-index:100;
-  background:rgba(34,32,24,.80);
-  color:#fffaf0;
-  border:1px solid rgba(255,255,255,.18);
-  border-radius:18px;
-  padding:17px;
-  box-shadow:0 18px 42px rgba(0,0,0,.28);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
-  transition:.18s ease;
-}
-.schedule-overlay.hidden{opacity:0;pointer-events:none;transform:translateX(15px)}
-.schedule-overlay h2{margin:0;font-size:17px}
-.overlay-date{font-size:12px;color:#d4cbbd;margin:4px 0 10px}
-.overlay-actions{justify-content:flex-end;margin-bottom:6px}
-.overlay-actions button{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.22);padding:6px 8px;font-size:11px}
-.schedule-item{display:grid;grid-template-columns:50px 1fr auto;gap:7px;padding:10px 0;border-top:1px solid rgba(255,255,255,.13);font-size:12px}
-.schedule-item small{display:block;color:#c8beae;margin-top:3px}
-.schedule-item.done{opacity:.45;text-decoration:line-through}
-.schedule-toggle{
-  position:fixed;top:18px;right:18px;z-index:101;display:none;
-  background:rgba(34,32,24,.80);color:#fff;border-color:rgba(255,255,255,.2)
-}
-.schedule-toggle.visible{display:block}
-.modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.42);z-index:200;padding:20px}
-.modal.open{display:grid}
-.modal-card{width:min(620px,100%);max-height:90vh;overflow:auto;background:var(--panel);border-radius:18px;padding:18px;box-shadow:0 25px 60px rgba(0,0,0,.25)}
-.modal-card.wide{width:min(880px,100%)}
-.modal-card h2{margin:0 0 14px}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.field{display:flex;flex-direction:column;gap:5px}
-.field.full{grid-column:1/-1}
-.field label{font-size:12px;color:var(--muted)}
-.field input,.field select,.field textarea{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff}
-.field textarea{min-height:76px;resize:vertical}
-.modal-actions{justify-content:flex-end;margin-top:14px}
-.type-picker{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
-.type-picker button{padding:18px 8px;font-weight:700}
-.weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.weekdays label{background:#fff;border:1px solid var(--line);border-radius:9px;padding:8px;text-align:center;font-size:11px}
-.schedule-list{margin-top:16px;border-top:1px solid var(--line)}
-.schedule-row{display:grid;grid-template-columns:70px 1fr 150px auto;gap:9px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);font-size:12px}
-.schedule-row small{display:block;color:var(--muted);margin-top:2px}
-.schedule-row button{font-size:11px;padding:5px 7px}
-.hidden-field{display:none!important}
-@media(max-width:900px){.stats{grid-template-columns:1fr 1fr}.board{grid-template-columns:repeat(5,260px)}}
-@media(max-width:650px){.app{padding:14px}header{flex-direction:column;align-items:flex-start}.schedule-overlay{left:12px;right:12px;width:auto;max-height:45vh}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.type-picker{grid-template-columns:1fr 1fr}.schedule-row{grid-template-columns:1fr}}
-</style>
-</head>
-<body>
+# GPCH_kanban
 
-<div class="app">
-<header>
-  <div>
-    <h1>GPCH CRYSTAL CLUB</h1>
-    <div id="dateLabel">CRYSTAL CLUB OPERATIONS</div>
-  </div>
-  <div class="actions">
-    <button class="primary" id="addBtn">+ Add</button>
-    <button id="manageScheduleBtn">Manage Schedule</button>
-    <button id="toggleScheduleBtn">Toggle Schedule</button>
-    <button id="exportDataBtn">Export Data</button>
-    <button id="importDataBtn">Import Data</button>
-    <input id="importFileInput" type="file" accept=".json,application/json" style="display:none">
-  </div>
-</header>
+A single-page operational Kanban dashboard designed for GPCH Crystal Club to organise daily tasks, ordering, receiving, guest notes, shift handovers and recurring operational schedules in one browser-based workspace.
 
-<section class="stats">
-  <div class="stat"><strong id="statTodo">0</strong><span>TO DO</span></div>
-  <div class="stat"><strong id="statOrder">0</strong><span>TO ORDER</span></div>
-  <div class="stat"><strong id="statReceive">0</strong><span>TO RECEIVE</span></div>
-  <div class="stat"><strong id="statGuest">0</strong><span>GUEST NOTES</span></div>
-  <div class="stat"><strong id="statHandover">0</strong><span>HANDOVER</span></div>
-</section>
+## Live Dashboard
 
-<div class="toolbar">
-  <input id="searchBox" type="search" placeholder="Search task, item, room, guest or note">
-  <select id="columnFilter">
-    <option value="all">All Columns</option>
-    <option value="todo">To Do</option>
-    <option value="order">To Order</option>
-    <option value="receive">To Receive</option>
-    <option value="guest">Guest Notes</option>
-    <option value="handover">Handover</option>
-  </select>
-</div>
+https://averydimbulb79.github.io/GPCH_kanban/
 
-<main class="board">
-  <section class="column column-todo">
-    <div class="column-head"><span>TO DO</span><span class="count" id="countTodo">0</span></div>
-    <div class="dropzone" id="todoZone" data-type="todo"><div class="empty">No tasks yet.</div></div>
-  </section>
-  <section class="column column-order">
-    <div class="column-head"><span>TO ORDER</span><span class="count" id="countOrder">0</span></div>
-    <div class="dropzone" id="orderZone" data-type="order"><div class="empty">Nothing to order yet.</div></div>
-  </section>
-  <section class="column column-receive">
-    <div class="column-head"><span>TO RECEIVE</span><span class="count" id="countReceive">0</span></div>
-    <div class="dropzone" id="receiveZone" data-type="receive"><div class="empty">Nothing pending receipt.</div></div>
-  </section>
-  <section class="column column-guest">
-    <div class="column-head"><span>GUEST NOTES</span><span class="count" id="countGuest">0</span></div>
-    <div class="dropzone" id="guestZone" data-type="guest"><div class="empty">No guest notes yet.</div></div>
-  </section>
-  <section class="column column-handover">
-    <div class="column-head"><span>HANDOVER</span><span class="count" id="countHandover">0</span></div>
-    <div class="dropzone" id="handoverZone" data-type="handover"><div class="empty">No handover notes yet.</div></div>
-  </section>
-</main>
-</div>
+## Current Version
 
-<aside class="schedule-overlay" id="scheduleOverlay">
-  <h2>TODAY'S SCHEDULED TASKS</h2>
-  <div class="overlay-date" id="overlayDate"></div>
-  <div class="overlay-actions">
-    <button id="overlayManageBtn">Manage</button>
-    <button id="hideOverlayBtn">Hide</button>
-  </div>
-  <div id="todaySchedule"><div style="font-size:12px;color:#c8beae;padding:12px 0">No scheduled tasks today.</div></div>
-</aside>
+Version 5.5
 
-<div class="modal" id="typeModal">
-  <div class="modal-card">
-    <h2>Add to Crystal Club Board</h2>
-    <div class="type-picker">
-      <button data-addtype="todo">TO DO</button>
-      <button data-addtype="order">TO ORDER</button>
-      <button data-addtype="receive">TO RECEIVE</button>
-      <button data-addtype="guest">GUEST NOTE</button>
-      <button data-addtype="handover">HANDOVER</button>
-    </div>
-    <div class="modal-actions"><button data-close="typeModal">Cancel</button></div>
-  </div>
-</div>
+## Core Features
 
-<div class="modal" id="entryModal">
-  <div class="modal-card">
-    <h2 id="entryHeading">Add</h2>
-    <div class="form-grid" id="entryFields"></div>
-    <div class="modal-actions">
-      <button data-close="entryModal">Cancel</button>
-      <button class="primary" id="saveEntryBtn">Save</button>
-    </div>
-  </div>
-</div>
+### Kanban Board
 
-<div class="modal" id="scheduleModal">
-  <div class="modal-card wide">
-    <h2>Manage Scheduled Tasks</h2>
-    <input type="hidden" id="schedId">
-    <div class="form-grid">
-      <div class="field full"><label>Task</label><input id="schedTitle"></div>
-      <div class="field"><label>Time</label><input id="schedTime" type="time" value="09:00"></div>
-      <div class="field"><label>Category</label><select id="schedCategory"><option>ADMIN</option><option>F&B</option><option>VIP</option><option>GUEST</option><option>MAINTENANCE</option><option>HANDOVER</option></select></div>
-      <div class="field full"><label>Schedule Type</label><select id="schedType"><option value="weekly">Weekly</option><option value="first_days">First N days of month</option><option value="last_days">Last N days of month</option><option value="monthly_day">Specific day of month</option><option value="one_off">One-off date</option></select></div>
-      <div class="field full" id="weeklyFields"><label>Weekdays</label><div class="weekdays">
-        <label><input class="wd" type="checkbox" value="1"> Mon</label>
-        <label><input class="wd" type="checkbox" value="2"> Tue</label>
-        <label><input class="wd" type="checkbox" value="3"> Wed</label>
-        <label><input class="wd" type="checkbox" value="4"> Thu</label>
-        <label><input class="wd" type="checkbox" value="5"> Fri</label>
-        <label><input class="wd" type="checkbox" value="6"> Sat</label>
-        <label><input class="wd" type="checkbox" value="0"> Sun</label>
-      </div></div>
-      <div class="field full hidden-field" id="countFields"><label id="countLabel">Number of days</label><input id="schedCount" type="number" min="1" max="10" value="3"></div>
-      <div class="field full hidden-field" id="dayFields"><label>Day of month</label><input id="schedDay" type="number" min="1" max="31" value="1"></div>
-      <div class="field full hidden-field" id="dateFields"><label>Date</label><input id="schedDate" type="date"></div>
-    </div>
-    <div class="modal-actions">
-      <button id="clearSchedBtn">Clear</button>
-      <button data-close="scheduleModal">Close</button>
-      <button class="primary" id="saveSchedBtn">Add Scheduled Task</button>
-    </div>
-    <div class="schedule-list" id="scheduleList"></div>
-  </div>
-</div>
+The dashboard is organised into five operational columns:
 
-<script>
-(function(){
-"use strict";
+1. TO DO
+   General operational tasks and follow-ups.
 
-var BOARD_KEY="gpch_crystal_board_v51";
-var SCHED_KEY="gpch_crystal_schedule_v51";
-var DONE_KEY="gpch_crystal_schedule_done_v51";
-var APP_VERSION="5.5";
+2. TO ORDER
+   Items requiring ordering, replenishment or procurement.
 
-function makeId(){
-  return "id_"+Date.now()+"_"+Math.random().toString(36).slice(2,9);
-}
-function clone(obj){
-  return JSON.parse(JSON.stringify(obj));
-}
-function getStored(key,fallback){
-  try{
-    var raw=localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : clone(fallback);
-  }catch(e){
-    return clone(fallback);
-  }
-}
-function setStored(key,value){
-  try{localStorage.setItem(key,JSON.stringify(value));}catch(e){}
-}
-function esc(value){
-  return String(value==null?"":value).replace(/[&<>"']/g,function(c){
-    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c];
-  });
-}
-function currentDateKey(){
-  var d=new Date();
-  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-}
-function longDate(){
-  try{
-    return new Intl.DateTimeFormat("en-SG",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(new Date()).toUpperCase();
-  }catch(e){
-    return new Date().toDateString().toUpperCase();
-  }
-}
+3. TO RECEIVE
+   Items that have already been ordered and are awaiting delivery or collection.
 
-var defaultItems=[
-  {id:"demo1",type:"todo",title:"Check evening cocktail setup",priority:"ROUTINE",due:"16:30",owner:"Crystal Club",notes:""},
-  {id:"demo2",type:"order",title:"Printer cartridge",quantity:"1",urgency:"ATTENTION",orderStatus:"TO ORDER",source:"",notes:""},
-  {id:"demo3",type:"guest",title:"Vegetarian breakfast preference",room:"1428",guest:"Mr Tan",arrival:"",departure:"",importance:"NORMAL",notes:"Confirm available selections with guest."},
-  {id:"demo4",type:"handover",title:"Printer connection issue unresolved",room:"",from:"PM Shift",nextShift:"AM Shift",priority:"ATTENTION",followup:"09:00",notes:"Follow up with IT."}
-];
-var defaultSchedule=[
-  {id:"sched1",title:"Prepare / print required food tags",time:"15:30",category:"F&B",type:"weekly",days:[0,1,2,3,4,5,6]}
-];
+4. GUEST NOTES
+   Guest preferences, requests, room information and other service-related notes.
 
-var items=getStored(BOARD_KEY,defaultItems);
-var schedule=getStored(SCHED_KEY,defaultSchedule);
-var done=getStored(DONE_KEY,{});
-var editingItemId=null;
-var editingType=null;
+5. HANDOVER
+   Outstanding matters and information requiring communication between shifts.
 
-var zoneIds={todo:"todoZone",order:"orderZone",receive:"receiveZone",guest:"guestZone",handover:"handoverZone"};
-var countIds={todo:"countTodo",order:"countOrder",receive:"countReceive",guest:"countGuest",handover:"countHandover"};
-var statIds={todo:"statTodo",order:"statOrder",receive:"statReceive",guest:"statGuest",handover:"statHandover"};
+Cards support drag-and-drop movement between columns.
 
-function cardHtml(x){
-  var top="",body="",cls="";
-  if(x.type==="todo"){
-    top='<span class="pill">'+esc(x.priority||"ROUTINE")+'</span>';
-    body+=(x.due?'<div>Due: '+esc(x.due)+'</div>':"");
-    body+=(x.owner?'<div>Assigned: '+esc(x.owner)+'</div>':"");
-    body+=(x.notes?'<div>'+esc(x.notes)+'</div>':"");
-  }
-  if(x.type==="order"){
-    top='<span class="pill">'+esc(x.urgency||"ROUTINE")+'</span><span class="pill order-status">'+esc(x.orderStatus||"TO ORDER")+'</span>';
-    body+=(x.quantity?'<div>Quantity: '+esc(x.quantity)+'</div>':"");
-    body+=(x.source?'<div>Supplier / Department: '+esc(x.source)+'</div>':"");
-    body+=(x.notes?'<div>'+esc(x.notes)+'</div>':"");
-  }
-  if(x.type==="receive"){
-    cls=" receive-card";
-    top='<span class="pill order-status">'+esc(x.orderStatus||"AWAITING RECEIPT")+'</span>';
-    body+=(x.quantity?'<div>Quantity: '+esc(x.quantity)+'</div>':"");
-    body+=(x.source?'<div>Supplier / Department: '+esc(x.source)+'</div>':"");
-    body+=(x.notes?'<div>'+esc(x.notes)+'</div>':"");
-  }
-  if(x.type==="guest"){
-    cls=" guest-card";
-    top='<span class="pill">'+esc(x.importance||"NORMAL")+'</span>';
-    body+=(x.room?'<div>Room: '+esc(x.room)+'</div>':"");
-    body+=(x.guest?'<div>Guest: '+esc(x.guest)+'</div>':"");
-    body+=(x.arrival?'<div>Arrival: '+esc(x.arrival)+'</div>':"");
-    body+=(x.departure?'<div>Departure: '+esc(x.departure)+'</div>':"");
-    body+=(x.notes?'<div>'+esc(x.notes)+'</div>':"");
-  }
-  if(x.type==="handover"){
-    cls=" handover-card";
-    top='<span class="pill">'+esc(x.priority||"ROUTINE")+'</span>';
-    body+=(x.room?'<div>Room / Area: '+esc(x.room)+'</div>':"");
-    body+=(x.from?'<div>From: '+esc(x.from)+'</div>':"");
-    body+=(x.nextShift?'<div>For: '+esc(x.nextShift)+'</div>':"");
-    body+=(x.followup?'<div>Follow-up: '+esc(x.followup)+'</div>':"");
-    body+=(x.notes?'<div>'+esc(x.notes)+'</div>':"");
-  }
-  return '<article class="card'+cls+'" draggable="true" data-id="'+esc(x.id)+'">'+
-    '<div class="card-top">'+top+'</div><h3>'+esc(x.title)+'</h3><div class="meta">'+body+'</div>'+
-    '<div class="card-actions">'+
-    (x.type==="order"?'<button data-action="move-receive">Move to Receive</button>':"")+
-    (x.type==="receive"?'<button data-action="received">Mark Received</button>':"")+
-    '<button data-action="edit">Edit</button><button data-action="delete">Delete</button></div></article>';
-}
+Each column has its own colour identity for faster visual recognition while retaining a clean operational interface.
 
-function renderBoard(){
-  var q=document.getElementById("searchBox").value.toLowerCase().trim();
-  var filter=document.getElementById("columnFilter").value;
+## Ordering and Receiving Workflow
 
-  ["todo","order","receive","guest","handover"].forEach(function(type){
-    var zone=document.getElementById(zoneIds[type]);
-    var visible=items.filter(function(x){
-      if(x.type!==type) return false;
-      if(filter!=="all" && filter!==type) return false;
-      if(!q) return true;
-      try{return JSON.stringify(x).toLowerCase().indexOf(q)!==-1;}catch(e){return true;}
-    });
+The ordering workflow separates items that still require action from items already ordered:
 
-    zone.innerHTML=visible.length ? visible.map(cardHtml).join("") : '<div class="empty">'+
-      (type==="todo"?"No tasks yet.":type==="order"?"Nothing to order yet.":type==="receive"?"Nothing pending receipt.":type==="guest"?"No guest notes yet.":"No handover notes yet.")+
-      '</div>';
+TO ORDER → TO RECEIVE → RECEIVED
 
-    document.getElementById(countIds[type]).textContent=visible.length;
-    document.getElementById(statIds[type]).textContent=items.filter(function(x){return x.type===type;}).length;
-  });
+TO ORDER cards include a dedicated "Move to Receive" control.
 
-  bindCards();
-}
+Once an order has been placed, the card can be transferred directly to TO RECEIVE.
 
-function bindCards(){
-  Array.prototype.forEach.call(document.querySelectorAll(".card"),function(card){
-    card.addEventListener("dragstart",function(e){
-      card.classList.add("dragging");
-      e.dataTransfer.setData("text/plain",card.getAttribute("data-id"));
-    });
-    card.addEventListener("dragend",function(){card.classList.remove("dragging");});
+When the item physically arrives, it can be marked as received and removed from the active board.
 
-    Array.prototype.forEach.call(card.querySelectorAll("button[data-action]"),function(btn){
-      btn.addEventListener("click",function(){
-        var id=card.getAttribute("data-id");
-        var x=items.find(function(i){return i.id===id;});
-        if(!x) return;
-        var action=btn.getAttribute("data-action");
+This keeps pending orders and pending deliveries visually separate.
 
-        if(action==="delete"){
-          if(confirm("Delete this card?")){
-            items=items.filter(function(i){return i.id!==id;});
-            setStored(BOARD_KEY,items);
-            renderBoard();
-          }
-        }
-        if(action==="edit") openEntry(x.type,x);
-        if(action==="move-receive"){
-          x.type="receive";
-          x.orderStatus="AWAITING RECEIPT";
-          setStored(BOARD_KEY,items);
-          renderBoard();
-        }
-        if(action==="received"){
-          if(confirm("Mark this item as received and remove it from the board?")){
-            items=items.filter(function(i){return i.id!==id;});
-            setStored(BOARD_KEY,items);
-            renderBoard();
-          }
-        }
-      });
-    });
-  });
-}
+## Today's Scheduled Tasks
 
-["todo","order","receive","guest","handover"].forEach(function(type){
-  var zone=document.getElementById(zoneIds[type]);
-  zone.addEventListener("dragover",function(e){e.preventDefault();zone.classList.add("over");});
-  zone.addEventListener("dragleave",function(){zone.classList.remove("over");});
-  zone.addEventListener("drop",function(e){
-    e.preventDefault();zone.classList.remove("over");
-    var id=e.dataTransfer.getData("text/plain");
-    var x=items.find(function(i){return i.id===id;});
-    if(x){x.type=type;setStored(BOARD_KEY,items);renderBoard();}
-  });
-});
+Recurring operational duties are displayed separately from the Kanban as a floating overlay in the top-right corner.
 
-var fieldDefs={
-  todo:[
-    ["title","Task","text"],["priority","Priority","select",["ROUTINE","ATTENTION","URGENT"]],
-    ["due","Due Time","time"],["owner","Assigned To","text"],["notes","Notes","textarea"]
-  ],
-  order:[
-    ["title","Item","text"],["quantity","Quantity","text"],["urgency","Urgency","select",["ROUTINE","ATTENTION","URGENT"]],
-    ["orderStatus","Order Status","select",["TO ORDER","ORDERED"]],["source","Supplier / Department","text"],["notes","Notes","textarea"]
-  ],
-  receive:[
-    ["title","Item","text"],["quantity","Quantity","text"],["orderStatus","Receipt Status","select",["AWAITING RECEIPT","PARTIALLY RECEIVED"]],
-    ["source","Supplier / Department","text"],["notes","Notes","textarea"]
-  ],
-  guest:[
-    ["title","Guest Note","text"],["room","Room","text"],["guest","Guest Name","text"],["arrival","Arrival","date"],
-    ["departure","Departure","date"],["importance","Importance","select",["NORMAL","ATTENTION","IMPORTANT"]],["notes","Details / Action Required","textarea"]
-  ],
-  handover:[
-    ["title","Handover Note","text"],["room","Room / Area","text"],["from","From","text"],["nextShift","For Next Shift","text"],
-    ["priority","Priority","select",["ROUTINE","ATTENTION","URGENT"]],["followup","Follow-up Time","time"],["notes","Details","textarea"]
-  ]
-};
+The schedule overlay uses an 80% opaque background, allowing the Kanban underneath to remain visible while keeping scheduled tasks readable.
 
-function typeLabel(type){
-  return {todo:"TO DO",order:"TO ORDER",receive:"TO RECEIVE",guest:"GUEST NOTE",handover:"HANDOVER"}[type]||"ITEM";
-}
-function openEntry(type,obj){
-  editingType=type;
-  editingItemId=obj ? obj.id : null;
-  document.getElementById("entryHeading").textContent=(obj?"Edit ":"Add ")+typeLabel(type);
-  var box=document.getElementById("entryFields");
-  box.innerHTML="";
+The overlay does not occupy a Kanban column or reduce the usable width of the board.
 
-  fieldDefs[type].forEach(function(def){
-    var key=def[0],label=def[1],kind=def[2],opts=def[3]||[],value=obj&&obj[key]!=null?obj[key]:"";
-    var wrap=document.createElement("div");
-    wrap.className="field "+((kind==="textarea"||key==="title")?"full":"");
-    var inner='<label>'+esc(label)+'</label>';
-    if(kind==="select"){
-      inner+='<select id="field_'+key+'">'+opts.map(function(o){return '<option'+(o===value?' selected':'')+'>'+esc(o)+'</option>';}).join("")+'</select>';
-    }else if(kind==="textarea"){
-      inner+='<textarea id="field_'+key+'">'+esc(value)+'</textarea>';
-    }else{
-      inner+='<input id="field_'+key+'" type="'+esc(kind)+'" value="'+esc(value)+'">';
-    }
-    wrap.innerHTML=inner;
-    box.appendChild(wrap);
-  });
+It can be shown or hidden using:
 
-  document.getElementById("typeModal").classList.remove("open");
-  document.getElementById("entryModal").classList.add("open");
-}
+"Toggle Schedule"
 
-document.getElementById("saveEntryBtn").addEventListener("click",function(){
-  var obj=editingItemId ? items.find(function(i){return i.id===editingItemId;}) : {id:makeId(),type:editingType};
-  if(!obj) return;
+Scheduled tasks can also be marked as completed for the current day.
 
-  fieldDefs[editingType].forEach(function(def){
-    var key=def[0];
-    obj[key]=document.getElementById("field_"+key).value.trim();
-  });
+## Schedule Manager
 
-  if(!obj.title){alert("Please enter a title.");return;}
-  if(!editingItemId) items.push(obj);
+The built-in Schedule Manager supports multiple recurrence patterns:
 
-  setStored(BOARD_KEY,items);
-  document.getElementById("entryModal").classList.remove("open");
-  editingItemId=null;editingType=null;
-  renderBoard();
-});
+• Weekly tasks on selected weekdays
+• First N days of every month
+• Last N days of every month
+• Specific day of every month
+• One-off dated tasks
 
-function scheduleMatchesToday(t){
-  var d=new Date(),dom=d.getDate(),last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
-  if(t.type==="weekly") return (t.days||[]).indexOf(d.getDay())!==-1;
-  if(t.type==="first_days") return dom<=Number(t.count||1);
-  if(t.type==="last_days") return dom>last-Number(t.count||1);
-  if(t.type==="monthly_day") return dom===Number(t.day);
-  if(t.type==="one_off") return currentDateKey()===t.date;
-  return false;
-}
+Each scheduled task can contain:
 
-function renderTodaySchedule(){
-  var box=document.getElementById("todaySchedule");
-  var key=currentDateKey();
-  var today=schedule.filter(scheduleMatchesToday).sort(function(a,b){return String(a.time).localeCompare(String(b.time));});
-  if(!today.length){
-    box.innerHTML='<div style="font-size:12px;color:#c8beae;padding:12px 0">No scheduled tasks today.</div>';
-    return;
-  }
-  box.innerHTML="";
-  today.forEach(function(t){
-    var checked=!!(done[key]&&done[key][t.id]);
-    var row=document.createElement("label");
-    row.className="schedule-item"+(checked?" done":"");
-    row.innerHTML='<div><strong>'+esc(t.time)+'</strong></div><div>'+esc(t.title)+'<small>'+esc(t.category)+'</small></div><input type="checkbox"'+(checked?' checked':'')+'>';
-    row.querySelector("input").addEventListener("change",function(e){
-      if(!done[key]) done[key]={};
-      done[key][t.id]=e.target.checked;
-      setStored(DONE_KEY,done);
-      renderTodaySchedule();
-    });
-    box.appendChild(row);
-  });
-}
+• Task name
+• Time
+• Category
+• Recurrence rule
 
-function scheduleDescription(t){
-  var names=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  if(t.type==="weekly"){
-    return (t.days||[]).length===7 ? "Every day" : (t.days||[]).map(function(d){return names[d];}).join(", ");
-  }
-  if(t.type==="first_days") return "First "+t.count+" days of month";
-  if(t.type==="last_days") return "Last "+t.count+" days of month";
-  if(t.type==="monthly_day") return "Day "+t.day+" of every month";
-  return t.date||"One-off";
-}
+Scheduled tasks can be added, edited and deleted through the Schedule Manager.
 
-function updateScheduleFields(){
-  var type=document.getElementById("schedType").value;
-  document.getElementById("weeklyFields").classList.toggle("hidden-field",type!=="weekly");
-  document.getElementById("countFields").classList.toggle("hidden-field",type!=="first_days"&&type!=="last_days");
-  document.getElementById("dayFields").classList.toggle("hidden-field",type!=="monthly_day");
-  document.getElementById("dateFields").classList.toggle("hidden-field",type!=="one_off");
-  document.getElementById("countLabel").textContent=type==="last_days"?"Number of final days":"Number of first days";
-}
+## Main Controls
 
-function clearScheduleForm(){
-  document.getElementById("schedId").value="";
-  document.getElementById("schedTitle").value="";
-  document.getElementById("schedTime").value="09:00";
-  document.getElementById("schedCategory").value="ADMIN";
-  document.getElementById("schedType").value="weekly";
-  Array.prototype.forEach.call(document.querySelectorAll(".wd"),function(x){x.checked=false;});
-  document.getElementById("schedCount").value="3";
-  document.getElementById("schedDay").value="1";
-  document.getElementById("schedDate").value="";
-  document.getElementById("saveSchedBtn").textContent="Add Scheduled Task";
-  updateScheduleFields();
-}
+The dashboard provides:
 
-function renderScheduleList(){
-  var box=document.getElementById("scheduleList");
-  box.innerHTML="";
-  schedule.slice().sort(function(a,b){return String(a.time).localeCompare(String(b.time));}).forEach(function(t){
-    var row=document.createElement("div");
-    row.className="schedule-row";
-    row.innerHTML='<strong>'+esc(t.time)+'</strong><div><strong>'+esc(t.title)+'</strong><small>'+esc(t.category)+'</small></div><small>'+esc(scheduleDescription(t))+'</small><div><button type="button" data-edit>Edit</button> <button type="button" data-delete>Delete</button></div>';
-    row.querySelector("[data-edit]").addEventListener("click",function(){
-      document.getElementById("schedId").value=t.id;
-      document.getElementById("schedTitle").value=t.title;
-      document.getElementById("schedTime").value=t.time;
-      document.getElementById("schedCategory").value=t.category;
-      document.getElementById("schedType").value=t.type;
-      Array.prototype.forEach.call(document.querySelectorAll(".wd"),function(x){x.checked=(t.days||[]).indexOf(Number(x.value))!==-1;});
-      document.getElementById("schedCount").value=t.count||3;
-      document.getElementById("schedDay").value=t.day||1;
-      document.getElementById("schedDate").value=t.date||"";
-      document.getElementById("saveSchedBtn").textContent="Save Changes";
-      updateScheduleFields();
-    });
-    row.querySelector("[data-delete]").addEventListener("click",function(e){
-      e.preventDefault();
-      e.stopPropagation();
-      if(!confirm("Delete this scheduled task?")) return;
-      schedule=schedule.filter(function(x){return String(x.id)!==String(t.id);});
-      setStored(SCHED_KEY,schedule);
-      if(document.getElementById("schedId").value===String(t.id)){
-        clearScheduleForm();
-      }
-      renderScheduleList();
-      renderTodaySchedule();
-    });
-    box.appendChild(row);
-  });
-}
+• + Add
+• Manage Schedule
+• Toggle Schedule
+• Export Data
+• Import Data
+• Search
+• Column filtering
 
-document.getElementById("saveSchedBtn").addEventListener("click",function(){
-  var id=document.getElementById("schedId").value;
-  var type=document.getElementById("schedType").value;
-  var t={
-    id:id||makeId(),
-    title:document.getElementById("schedTitle").value.trim(),
-    time:document.getElementById("schedTime").value,
-    category:document.getElementById("schedCategory").value,
-    type:type
-  };
-  if(!t.title){alert("Enter a scheduled task.");return;}
+The + Add interface allows users to create:
 
-  if(type==="weekly"){
-    t.days=Array.prototype.map.call(document.querySelectorAll(".wd:checked"),function(x){return Number(x.value);});
-    if(!t.days.length){alert("Select at least one weekday.");return;}
-  }else if(type==="first_days"||type==="last_days"){
-    t.count=Number(document.getElementById("schedCount").value||1);
-  }else if(type==="monthly_day"){
-    t.day=Number(document.getElementById("schedDay").value||1);
-  }else if(type==="one_off"){
-    t.date=document.getElementById("schedDate").value;
-    if(!t.date){alert("Select a date.");return;}
-  }
+• To Do tasks
+• To Order items
+• To Receive items
+• Guest Notes
+• Handover notes
 
-  if(id){
-    var idx=schedule.findIndex(function(x){return x.id===id;});
-    if(idx!==-1) schedule[idx]=t;
-  }else schedule.push(t);
+Each type uses fields appropriate to its operational purpose rather than forcing all information into a generic task format.
 
-  setStored(SCHED_KEY,schedule);
-  clearScheduleForm();
-  renderScheduleList();
-  renderTodaySchedule();
-});
+## Search and Filtering
 
-function openScheduleManager(){
-  renderScheduleList();
-  document.getElementById("scheduleModal").classList.add("open");
-}
+The dashboard includes a universal search function for locating information across the board.
 
+Search can identify information such as:
 
-function downloadJson(filename,obj){
-  var text=JSON.stringify(obj,null,2);
-  var blob=new Blob([text],{type:"application/json"});
-  var url=URL.createObjectURL(blob);
-  var a=document.createElement("a");
-  a.href=url;
-  a.download=filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(function(){URL.revokeObjectURL(url);},1000);
-}
+• Tasks
+• Items
+• Room numbers
+• Guest names
+• Notes
+• Handover information
 
-function buildBackupObject(){
-  return {
-    app:"GPCH Crystal Club",
-    version:APP_VERSION,
-    exportedAt:new Date().toISOString(),
-    recordCounts:{
-      board:Array.isArray(items)?items.length:0,
-      scheduledTasks:Array.isArray(schedule)?schedule.length:0
-    },
-    data:{
-      board:items,
-      scheduledTasks:schedule,
-      completedSchedule:done
-    }
-  };
-}
+The board can also be filtered by operational column.
 
-function exportData(){
-  var stamp=new Date();
-  var y=stamp.getFullYear();
-  var m=String(stamp.getMonth()+1).padStart(2,"0");
-  var d=String(stamp.getDate()).padStart(2,"0");
-  var hh=String(stamp.getHours()).padStart(2,"0");
-  var mm=String(stamp.getMinutes()).padStart(2,"0");
-  downloadJson("GPCH_Crystal_Club_Backup_"+y+"-"+m+"-"+d+"_"+hh+mm+".json",buildBackupObject());
-}
+## Data Storage
 
-function validateBackup(obj){
-  if(!obj || typeof obj!=="object") return "Backup file is not a valid JSON object.";
-  if(obj.app!=="GPCH Crystal Club") return "This file is not a GPCH Crystal Club backup.";
-  if(!obj.data || typeof obj.data!=="object") return "Backup data section is missing.";
-  if(!Array.isArray(obj.data.board)) return "Board data is missing or invalid.";
-  if(!Array.isArray(obj.data.scheduledTasks)) return "Scheduled task data is missing or invalid.";
-  if(!obj.data.completedSchedule || typeof obj.data.completedSchedule!=="object") return "Completed schedule data is missing or invalid.";
-  return "";
-}
+The dashboard uses browser localStorage for persistent storage.
 
-function importDataFromObject(obj){
-  var error=validateBackup(obj);
-  if(error){ alert(error); return; }
+Board cards, scheduled tasks and schedule-completion information remain available after refreshing or closing the browser.
 
-  var currentBackup=buildBackupObject();
-  var now=new Date();
-  var y=now.getFullYear();
-  var m=String(now.getMonth()+1).padStart(2,"0");
-  var d=String(now.getDate()).padStart(2,"0");
-  var hh=String(now.getHours()).padStart(2,"0");
-  var mm=String(now.getMinutes()).padStart(2,"0");
+No external database or account is required.
 
-  var message=
-    "Import this GPCH Crystal Club backup?\n\n"+
-    "Board cards: "+obj.data.board.length+"\n"+
-    "Scheduled tasks: "+obj.data.scheduledTasks.length+"\n"+
-    "Backup version: "+(obj.version||"Unknown")+"\n\n"+
-    "Your current browser data will be backed up automatically first.";
+IMPORTANT:
 
-  if(!confirm(message)) return;
+localStorage belongs to the individual browser and device.
 
-  downloadJson(
-    "GPCH_Crystal_Club_PreImport_Backup_"+y+"-"+m+"-"+d+"_"+hh+mm+".json",
-    currentBackup
-  );
+Data entered on one computer will not automatically appear on another computer.
 
-  items=clone(obj.data.board);
-  schedule=clone(obj.data.scheduledTasks);
-  done=clone(obj.data.completedSchedule);
+For this reason, Version 5.5 introduces a portable backup and restore system.
 
-  setStored(BOARD_KEY,items);
-  setStored(SCHED_KEY,schedule);
-  setStored(DONE_KEY,done);
+## Export Data
 
-  renderBoard();
-  renderTodaySchedule();
-  renderScheduleList();
+"Export Data" creates a downloadable JSON backup of the current Crystal Club dashboard.
 
-  alert("Import complete.");
-}
+The backup includes:
 
-function handleImportFile(file){
-  if(!file) return;
-  var reader=new FileReader();
-  reader.onload=function(){
-    try{
-      importDataFromObject(JSON.parse(reader.result));
-    }catch(e){
-      alert("Could not import this file. The JSON is invalid or corrupted.");
-    }
-    document.getElementById("importFileInput").value="";
-  };
-  reader.onerror=function(){
-    alert("Could not read the selected file.");
-    document.getElementById("importFileInput").value="";
-  };
-  reader.readAsText(file);
-}
+• Kanban board cards
+• Scheduled tasks
+• Completed scheduled-task state
+• Application version
+• Export timestamp
+• Record counts
 
-document.getElementById("addBtn").addEventListener("click",function(){document.getElementById("typeModal").classList.add("open");});
-Array.prototype.forEach.call(document.querySelectorAll("[data-addtype]"),function(btn){
-  btn.addEventListener("click",function(){openEntry(btn.getAttribute("data-addtype"),null);});
-});
-Array.prototype.forEach.call(document.querySelectorAll("[data-close]"),function(btn){
-  btn.addEventListener("click",function(){document.getElementById(btn.getAttribute("data-close")).classList.remove("open");});
-});
-document.getElementById("manageScheduleBtn").addEventListener("click",openScheduleManager);
-document.getElementById("overlayManageBtn").addEventListener("click",openScheduleManager);
-document.getElementById("schedType").addEventListener("change",updateScheduleFields);
-document.getElementById("clearSchedBtn").addEventListener("click",clearScheduleForm);
-document.getElementById("searchBox").addEventListener("input",renderBoard);
-document.getElementById("columnFilter").addEventListener("change",renderBoard);
-document.getElementById("exportDataBtn").addEventListener("click",exportData);
-document.getElementById("importDataBtn").addEventListener("click",function(){
-  document.getElementById("importFileInput").click();
-});
-document.getElementById("importFileInput").addEventListener("change",function(e){
-  handleImportFile(e.target.files && e.target.files[0]);
-});
-function toggleScheduleOverlay(){
-  document.getElementById("scheduleOverlay").classList.toggle("hidden");
-}
-document.getElementById("hideOverlayBtn").addEventListener("click",toggleScheduleOverlay);
-document.getElementById("toggleScheduleBtn").addEventListener("click",toggleScheduleOverlay);
+Backup files are automatically timestamped for easier identification.
 
-document.getElementById("dateLabel").textContent=longDate();
-document.getElementById("overlayDate").textContent=longDate();
-updateScheduleFields();
-renderBoard();
-renderTodaySchedule();
-setInterval(renderTodaySchedule,30000);
+Example:
 
-})();
-</script>
-</body>
-</html>
+GPCH_Crystal_Club_Backup_2026-08-21_0955.json
+
+The exported file can be stored as a backup or transferred to another computer.
+
+## Import Data
+
+"Import Data" restores a previously exported GPCH Crystal Club JSON backup.
+
+The system validates the selected file before allowing it to replace the current data.
+
+Before importing, the dashboard displays information including:
+
+• Number of board cards
+• Number of scheduled tasks
+• Backup version
+
+The user must confirm the import before any existing data is replaced.
+
+## Import Safety Backup
+
+Importing data could otherwise overwrite information already stored on the receiving computer.
+
+To protect against this, Version 5.5 automatically exports the existing browser data immediately before an import is performed.
+
+The safety file uses a filename such as:
+
+GPCH_Crystal_Club_PreImport_Backup_2026-08-21_0955.json
+
+This provides a recovery point if the wrong backup is imported or the previous local dataset needs to be restored.
+
+## Moving to Another Computer
+
+To transfer the Crystal Club Kanban:
+
+OLD COMPUTER
+
+1. Open the dashboard.
+2. Click "Export Data".
+3. Save the generated JSON backup.
+
+NEW COMPUTER
+
+1. Open the GPCH Crystal Club dashboard.
+2. Click "Import Data".
+3. Select the exported JSON backup.
+4. Review the import information.
+5. Confirm the import.
+
+The board and scheduled-task data will then be restored in the new browser.
+
+## Technology
+
+The application is deliberately lightweight and self-contained.
+
+• HTML
+• CSS
+• Vanilla JavaScript
+• Browser localStorage
+• JSON backup and restore
+• No external JavaScript framework
+• No external database
+• No installation required
+
+The dashboard can therefore be deployed as a static webpage using GitHub Pages.
+
+## Deployment
+
+The project is hosted using GitHub Pages from the GPCH_kanban repository.
+
+Live dashboard:
+
+https://averydimbulb79.github.io/GPCH_kanban/
+
+## Version History
+
+### Version 5.5: Data Portability
+
+• Added Export Data
+• Added Import Data
+• Added portable JSON backups
+• Added application version information to backups
+• Added export timestamps
+• Added board and schedule record counts
+• Added backup-file validation
+• Added confirmation before replacing browser data
+• Added automatic pre-import safety backup
+• Added support for transferring the complete local dataset between computers
+
+### Version 5.4
+
+• Fixed scheduled-task deletion
+• Improved deletion event handling
+• Added confirmation before scheduled-task deletion
+• Scheduled tasks correctly disappear from both the Schedule Manager and Today's Scheduled Tasks after deletion
+
+### Version 5.3
+
+• Added TO RECEIVE column
+• Expanded the board from four to five operational columns
+• Added direct transfer from TO ORDER to TO RECEIVE
+• Added receipt-status workflow
+• Added Mark Received function
+• Added individual colour identities for Kanban columns
+• Improved card and column visual hierarchy
+
+### Version 5.2
+
+• Reorganised primary controls into a single header row
+• Established:
+  + Add
+  Manage Schedule
+  Toggle Schedule
+• Removed the separate floating schedule restoration button
+• Prevented schedule controls from covering the + Add control
+
+### Version 5.1
+
+• Rebuilt page rendering for improved reliability
+• Kanban columns made immediately visible on page load
+• Reduced dependency on JavaScript-generated structural elements
+• Improved browser compatibility
+• Added more defensive localStorage handling
+
+### Version 5.0
+
+• Major Crystal Club operational redesign
+• Replaced the generic Kanban workflow with purpose-specific operational columns
+• Introduced TO DO
+• Introduced TO ORDER
+• Introduced GUEST NOTES
+• Introduced HANDOVER
+• Added specialised forms for different card types
+• Added search
+• Added column filtering
+• Added drag-and-drop card movement
+• Separated Today's Scheduled Tasks from the Kanban board
+
+### Version 4.0
+
+• Converted Today's Scheduled Tasks into a floating overlay
+• Added approximately 80% opaque background
+• Added overlay hide/show functionality
+• Removed scheduled tasks from the main Kanban layout
+
+### Version 3.x
+
+• Added advanced recurring schedule management
+• Added first-days-of-month scheduling
+• Added last-days-of-month scheduling
+• Added specific monthly dates
+• Added one-off dated tasks
+• Removed the Reset Demo control to prevent accidental data loss
+• Renamed the project GPCH Crystal Club
+
+### Earlier Versions
+
+Initial prototypes established the core concepts of:
+
+• Single-page browser-based Kanban
+• Recurring operational tasks
+• Daily schedule display
+• Task cards
+• Browser persistence
+• Crystal Club-specific workflow design
+
+## Current Architecture
+
+GPCH Crystal Club remains a client-side application.
+
+GitHub Pages hosts the application itself, while operational data remains inside the user's browser.
+
+This architecture provides:
+
+• Fast loading
+• No login requirement
+• No server maintenance
+• Simple GitHub Pages deployment
+• Local data persistence
+• Portable manual backups
+
+It does not currently provide real-time multi-device synchronisation.
+
+A shared backend or cloud database would be required if the dashboard is later developed into a simultaneously shared operational board for multiple Crystal Club workstations.
+
+## Project Status
+
+Active development.
+
+The dashboard is being progressively refined around GPCH Crystal Club operational requirements, with emphasis on visibility, speed, practical shift communication, data portability and minimal administrative friction.
