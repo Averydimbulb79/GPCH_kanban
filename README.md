@@ -8,7 +8,7 @@ The dashboard brings daily tasks, ordering, receiving, guest notes, shift handov
 
 https://averydimbulb79.github.io/GPCH_kanban/
 
-Current version: 5.6
+Current version: 5.7
 
 ---
 
@@ -30,15 +30,41 @@ The "+ Add" menu uses the same colours as the corresponding columns, providing a
 
 ---
 
+## Card Creation Timestamps
+
+Every newly created card automatically records its creation date and time.
+
+Example:
+
+`Created: 22 Aug 2026, 14:11`
+
+Creation timestamps apply to all five card types:
+
+• TO DO  
+• TO ORDER  
+• TO RECEIVE  
+• GUEST NOTES  
+• HANDOVER
+
+The original timestamp is preserved when a card is edited or transferred to another column, providing a simple operational audit trail.
+
+Cards created before Version 5.7 may display:
+
+`Created: Date unavailable`
+
+because their original creation time was not previously stored.
+
+---
+
 ## Ordering Workflow
 
 The procurement workflow separates items that still need to be ordered from items already awaiting delivery.
 
-TO ORDER → TO RECEIVE → RECEIVED
+`TO ORDER → TO RECEIVE → RECEIVED`
 
 A TO ORDER card includes a "Move to Receive" control.
 
-Once the order has been placed, the card moves to TO RECEIVE and becomes an item awaiting receipt.
+Once an order has been placed, the card moves to TO RECEIVE and becomes an item awaiting receipt.
 
 When the item arrives, it can be marked as received and removed from the active board.
 
@@ -81,13 +107,11 @@ Each scheduled task can include:
 | Monthly Day | Specific calendar day every month |
 | One-Off | One specific date |
 
-This allows both routine weekly duties and month-end or month-start operational tasks to be automated.
+This supports both routine weekly duties and month-start or month-end operational tasks.
 
 ---
 
 ## Card Types
-
-Selecting "+ Add" presents five colour-coded card types.
 
 ### TO DO
 
@@ -115,7 +139,7 @@ Cards can include quantity, urgency, order status, supplier or department and no
 
 ### TO RECEIVE
 
-Suitable for items already ordered but not yet received.
+For items that have already been ordered but have not yet been received.
 
 Cards retain relevant ordering information so outstanding deliveries remain visible until completed.
 
@@ -132,7 +156,7 @@ Suitable for:
 
 ### HANDOVER
 
-Suitable for matters requiring continuity between shifts.
+For matters requiring continuity between shifts.
 
 Cards can include room or area, originating shift, receiving shift, priority, follow-up time and details.
 
@@ -174,7 +198,7 @@ The primary dashboard controls are grouped together for quick access:
 
 GPCH Crystal Club uses browser `localStorage`.
 
-This means cards and schedules remain available after:
+Cards, timestamps, schedules and other operational information remain available after:
 
 • Refreshing the page  
 • Closing the browser  
@@ -187,11 +211,11 @@ No external database or login is required.
 
 Operational data is stored in the individual browser.
 
-GitHub Pages hosts the application but does not store the Kanban data itself.
+GitHub Pages hosts the application itself but does not store the Kanban data.
 
 Data entered on one computer therefore does not automatically appear on another computer.
 
-Version 5.5 introduced data export and import to address backup and computer migration.
+Version 5.5 introduced data export and import to provide backup and computer migration.
 
 ---
 
@@ -200,6 +224,7 @@ Version 5.5 introduced data export and import to address backup and computer mig
 "Export Data" creates a portable JSON backup containing:
 
 • Kanban cards  
+• Card creation timestamps  
 • Scheduled tasks  
 • Scheduled-task completion state  
 • Application version  
@@ -210,7 +235,7 @@ Backups are automatically timestamped.
 
 Example:
 
-`GPCH_Crystal_Club_Backup_2026-08-21_1427.json`
+`GPCH_Crystal_Club_Backup_2026-08-22_1411.json`
 
 The file can be retained as a backup or transferred to another computer.
 
@@ -234,7 +259,7 @@ Before imported data replaces the current browser dataset, the application autom
 
 Example:
 
-`GPCH_Crystal_Club_PreImport_Backup_2026-08-21_1427.json`
+`GPCH_Crystal_Club_PreImport_Backup_2026-08-22_1411.json`
 
 This provides a recovery point if the wrong backup is imported.
 
@@ -257,7 +282,7 @@ This provides a recovery point if the wrong backup is imported.
 4. Review the backup information.
 5. Confirm the import.
 
-The Kanban cards and scheduled tasks will then be restored in the new browser.
+The Kanban cards, creation timestamps and scheduled-task data will then be restored in the new browser.
 
 ---
 
@@ -272,7 +297,7 @@ The application deliberately uses a lightweight architecture:
 • JSON backup and restore  
 • GitHub Pages
 
-No JavaScript framework, server-side application, external database or installation is required.
+There is no JavaScript framework, server-side application, external database or installation requirement.
 
 The entire application is contained within a single HTML page.
 
@@ -280,17 +305,27 @@ The entire application is contained within a single HTML page.
 
 # Version History
 
+## v5.7 · Card Creation Timestamps
+
+• Added automatic creation date and time to every new card  
+• Applied timestamps across all five Kanban categories  
+• Creation timestamps remain unchanged when cards are edited  
+• Creation timestamps remain attached when cards move between columns  
+• Added timestamps to exported backup data  
+• Existing legacy cards display "Date unavailable" where no original timestamp exists  
+• Added a simple operational audit trail for determining when notes and tasks were created
+
 ## v5.6 · Visual Cohesion
 
 • Colour-coded "+ Add" category buttons  
-• Add buttons now correspond visually with their destination columns  
+• Add buttons correspond visually with their destination columns  
 • Blue TO DO  
 • Amber TO ORDER  
 • Green TO RECEIVE  
 • Pink GUEST NOTE  
 • Violet HANDOVER  
 • Added subtle hover feedback  
-• Improved visual consistency throughout the interface
+• Improved overall visual consistency
 
 ## v5.5 · Data Portability
 
@@ -396,4 +431,4 @@ A shared backend or cloud database would be required if the project is later exp
 
 Active development.
 
-The dashboard continues to evolve around practical GPCH Crystal Club operations, with emphasis on visibility, speed, intuitive workflows, shift communication, recurring task management, data portability and minimal administrative friction.
+The dashboard continues to evolve around practical GPCH Crystal Club operations, with emphasis on visibility, speed, intuitive workflows, shift communication, recurring task management, data portability and operational traceability.
