@@ -266,7 +266,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 var BOARD_KEY="gpch_crystal_board_v51";
 var SCHED_KEY="gpch_crystal_schedule_v51";
 var DONE_KEY="gpch_crystal_schedule_done_v51";
-var APP_VERSION="5.7";
+var APP_VERSION="5.8";
 
 function makeId(){
   return "id_"+Date.now()+"_"+Math.random().toString(36).slice(2,9);
@@ -388,6 +388,25 @@ function cardHtml(x){
     '<button data-action="edit">Edit</button><button data-action="delete">Delete</button></div></article>';
 }
 
+function urgencyRank(x){
+  var value=String(
+    x.priority || x.urgency || x.importance || x.orderStatus || ""
+  ).toUpperCase();
+
+  var ranks={
+    "URGENT":5,
+    "IMPORTANT":4,
+    "ATTENTION":3,
+    "PARTIALLY RECEIVED":3,
+    "AWAITING RECEIPT":2,
+    "ROUTINE":1,
+    "NORMAL":1,
+    "TO ORDER":1,
+    "ORDERED":1
+  };
+  return ranks[value] || 0;
+}
+
 function renderBoard(){
   var q=document.getElementById("searchBox").value.toLowerCase().trim();
   var filter=document.getElementById("columnFilter").value;
@@ -399,6 +418,13 @@ function renderBoard(){
       if(filter!=="all" && filter!==type) return false;
       if(!q) return true;
       try{return JSON.stringify(x).toLowerCase().indexOf(q)!==-1;}catch(e){return true;}
+    }).sort(function(a,b){
+      var urgencyDifference=urgencyRank(b)-urgencyRank(a);
+      if(urgencyDifference!==0) return urgencyDifference;
+
+      var aTime=a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      var bTime=b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return bTime-aTime;
     });
 
     zone.innerHTML=visible.length ? visible.map(cardHtml).join("") : '<div class="empty">'+
