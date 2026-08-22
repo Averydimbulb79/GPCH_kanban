@@ -8,23 +8,24 @@ The dashboard consolidates daily tasks, ordering, receiving, guest notes, shift 
 
 https://averydimbulb79.github.io/GPCH_kanban/
 
-Current version: 6.0
+Current version: 6.1
 
 ---
 
 ## Core Features
 
-• Five colour-coded operational columns  
-• Urgency-based automatic card sorting  
+• Five colour-coded operational workflows  
+• Matching colour-coded dashboard summary cards  
+• Automatic urgency-based card sorting  
 • Full-window expanded column views  
 • Expanded-view search and sorting controls  
 • Card creation timestamps  
 • Drag-and-drop workflow  
 • Ordering and receiving workflow  
 • Recurring scheduled tasks  
-• Monthly and weekly scheduling rules  
-• Today's Scheduled Tasks floating overlay  
-• Search and column filtering  
+• Weekly and monthly scheduling rules  
+• Floating Today's Scheduled Tasks overlay  
+• Board-wide search and filtering  
 • JSON data export and import  
 • Automatic pre-import safety backups  
 • Persistent browser storage  
@@ -34,7 +35,7 @@ Current version: 6.0
 
 # Board Structure
 
-The dashboard uses five colour-coded operational columns.
+The dashboard uses five operational columns with a consistent colour identity.
 
 | Column | Colour | Purpose |
 | --- | --- | --- |
@@ -44,9 +45,44 @@ The dashboard uses five colour-coded operational columns.
 | GUEST NOTES | Pink | Guest preferences, requests and service information |
 | HANDOVER | Violet | Outstanding matters requiring communication between shifts |
 
-Cards can be moved between columns using drag-and-drop.
+The colour system is used consistently across:
 
-The "+ Add" interface uses the same colour system as the corresponding columns for consistent visual identification.
+• Dashboard summary cards  
+• Kanban column headers  
+• "+ Add" category buttons  
+• Expanded column windows
+
+This allows each operational category to be recognised quickly throughout the interface.
+
+---
+
+# Dashboard Summary
+
+The top of the dashboard provides an immediate count of active cards in each operational category.
+
+For example:
+
+`15 TO DO`
+
+`15 TO ORDER`
+
+`15 TO RECEIVE`
+
+`15 GUEST NOTES`
+
+`15 HANDOVER`
+
+From Version 6.1, these summary cards use the same colour identity as their corresponding Kanban columns.
+
+| Summary | Colour |
+| --- | --- |
+| TO DO | Blue |
+| TO ORDER | Amber |
+| TO RECEIVE | Green |
+| GUEST NOTES | Pink |
+| HANDOVER | Violet |
+
+The matching backgrounds, borders and text colours create a consistent visual relationship between the dashboard summary and the working board.
 
 ---
 
@@ -54,7 +90,7 @@ The "+ Add" interface uses the same colour system as the corresponding columns f
 
 The main Kanban provides a five-column overview of Crystal Club operations.
 
-Because displaying five columns simultaneously can limit usable card space on smaller laptop screens, each column can also be opened as a dedicated full-window workspace.
+Because five simultaneous columns can restrict usable card space on smaller laptop screens, each column can also be opened as a dedicated full-window workspace.
 
 Click any column header:
 
@@ -76,7 +112,7 @@ Cards are displayed in a responsive grid rather than a single narrow vertical st
 
 The number of cards displayed across each row automatically adjusts according to available screen width.
 
-This creates two complementary working modes:
+This provides two complementary working modes:
 
 `5-column board = operational overview`
 
@@ -93,14 +129,11 @@ Each expanded window provides:
 • + Add Here  
 • × Close
 
-The expanded view can also be closed by:
-
-• Clicking outside the window  
-• Pressing `Esc`
+The window can also be closed by clicking outside it or pressing `Esc`.
 
 ## Card Actions
 
-Cards remain operational inside the expanded view.
+Cards remain fully operational inside the expanded view.
 
 Depending on card type, available actions include:
 
@@ -115,13 +148,9 @@ Changes made in the expanded window immediately update the main Kanban because b
 
 # Expanded View Sorting
 
-Version 6.0 introduces dedicated sorting controls inside expanded column windows.
+Expanded column windows include dedicated sorting controls.
 
-The compact five-column Kanban continues to use automatic urgency sorting.
-
-Expanded windows allow staff to temporarily reorganise cards according to the information most useful for the task at hand.
-
-Changing the sort order does not modify the underlying card data.
+The compact five-column Kanban continues to use automatic urgency sorting, while expanded views allow temporary alternative sorting without modifying card data.
 
 ## Standard Sorting Options
 
@@ -134,68 +163,58 @@ All expanded columns support:
 • Title: A → Z  
 • Title: Z → A
 
-The default remains:
+Default:
 
 `Urgency: High → Low`
 
-## TO DO Sorting
+## TO DO
 
-Additional options:
+Additional sorting:
 
 • Due Time: Earliest First  
 • Due Time: Latest First
 
-This allows staff to switch between priority-based and time-based task management.
+## TO ORDER
 
-## TO ORDER Sorting
-
-Additional option:
+Additional sorting:
 
 • Status: A → Z
 
-Useful when reviewing items at different stages of procurement.
+## TO RECEIVE
 
-## TO RECEIVE Sorting
-
-Additional option:
+Additional sorting:
 
 • Status: A → Z
 
-Useful for separating outstanding and partially received items.
+## GUEST NOTES
 
-## GUEST NOTES Sorting
-
-Additional options:
+Additional sorting:
 
 • Arrival Date: Earliest First  
 • Departure Date: Earliest First  
 • Room Number: Low → High
 
-This allows guest information to be reorganised according to operational requirements.
+## HANDOVER
 
-## HANDOVER Sorting
-
-Additional option:
+Additional sorting:
 
 • Follow-up Time: Earliest First
-
-This helps surface handover matters requiring the earliest action.
 
 ---
 
 # Automatic Urgency Sorting
 
-The compact Kanban automatically arranges cards within each column by descending urgency.
+Cards on the main board are automatically arranged by descending urgency.
 
 The general hierarchy is:
 
 `URGENT → IMPORTANT → ATTENTION → ROUTINE / NORMAL`
 
-Where different card types use different priority terminology, the dashboard maps those values into a common urgency hierarchy.
+Different card types may use different priority terminology. The dashboard maps these values into a common urgency hierarchy.
 
 Cards with equal urgency are sorted newest first.
 
-Automatic sorting is reapplied when cards are:
+Sorting is automatically reapplied when cards are:
 
 • Created  
 • Edited  
@@ -216,7 +235,7 @@ Example:
 
 `Created: 23 Aug 2026, 14:11`
 
-Creation timestamps apply to all five card types:
+Timestamps apply to:
 
 • TO DO  
 • TO ORDER  
@@ -224,7 +243,7 @@ Creation timestamps apply to all five card types:
 • GUEST NOTES  
 • HANDOVER
 
-The original timestamp is preserved when a card is edited or moved.
+The original timestamp remains attached when a card is edited or moved.
 
 Cards created before Version 5.7 may display:
 
@@ -265,7 +284,7 @@ Cards can include:
 
 For items already ordered but awaiting delivery or collection.
 
-This separates items that still need ordering from items whose orders have already been placed.
+This separates procurement requests from outstanding deliveries.
 
 ## GUEST NOTES
 
@@ -309,7 +328,7 @@ Once an order has been placed, the card moves into TO RECEIVE.
 
 When the physical item arrives, it can be marked as received and removed from the active board.
 
-This clearly distinguishes:
+This distinguishes:
 
 `Still needs to be ordered`
 
@@ -333,7 +352,7 @@ The overlay:
 
 Completing today's occurrence does not delete the recurring schedule.
 
-The task will appear again on its next applicable date.
+The task appears again on its next applicable date.
 
 ---
 
@@ -343,7 +362,7 @@ Select:
 
 `Manage Schedule`
 
-The Schedule Manager provides a dedicated interface for creating, editing and deleting recurring operational duties.
+The Schedule Manager provides an interface for creating, editing and deleting recurring operational duties.
 
 Each scheduled task can include:
 
@@ -425,7 +444,9 @@ Data entered on one computer therefore does not automatically synchronise with a
 
 ---
 
-# Export Data
+# Export and Import
+
+## Export Data
 
 "Export Data" creates a portable JSON backup containing:
 
@@ -443,11 +464,7 @@ Example:
 
 `GPCH_Crystal_Club_Backup_2026-08-23_1411.json`
 
-The JSON file can be retained as a backup or transferred to another computer.
-
----
-
-# Import Data
+## Import Data
 
 "Import Data" restores a previously exported GPCH Crystal Club backup.
 
@@ -463,7 +480,7 @@ Imported cards are automatically displayed according to the current sorting rule
 
 ## Automatic Safety Backup
 
-Before imported data replaces the existing browser dataset, the application automatically exports the current data.
+Before an import replaces existing browser data, the application automatically exports the current dataset.
 
 Example:
 
@@ -490,13 +507,13 @@ This provides a recovery point if an incorrect or older backup is imported.
 4. Review the backup information.
 5. Confirm the import.
 
-Cards, creation timestamps and scheduled-task data will then be restored in the new browser.
+Cards, timestamps and scheduled-task data will then be restored in the new browser.
 
 ---
 
 # Technology
 
-The application deliberately uses a lightweight architecture:
+The application uses a deliberately lightweight architecture:
 
 • HTML  
 • CSS  
@@ -513,21 +530,28 @@ The entire operational application is contained within a single HTML page.
 
 # Version History
 
+## v6.1 · Dashboard Colour Integration
+
+• Colour-coded the five dashboard summary cards  
+• TO DO summary now matches the blue TO DO workflow  
+• TO ORDER summary now matches the amber TO ORDER workflow  
+• TO RECEIVE summary now matches the green TO RECEIVE workflow  
+• GUEST NOTES summary now matches the pink GUEST NOTES workflow  
+• HANDOVER summary now matches the violet HANDOVER workflow  
+• Matched summary backgrounds, borders and text colours  
+• Extended the established colour system across the complete dashboard  
+• Improved rapid visual recognition of operational categories
+
 ## v6.0 · Expanded View Sorting
 
 • Added Sort by controls to expanded column windows  
 • Retained Urgency: High → Low as the default  
 • Added Urgency: Low → High  
-• Added Newest First  
-• Added Oldest First  
-• Added Title A → Z  
-• Added Title Z → A  
+• Added Newest First and Oldest First  
+• Added Title A → Z and Z → A  
 • Added TO DO due-time sorting  
-• Added TO ORDER status sorting  
-• Added TO RECEIVE status sorting  
-• Added GUEST NOTES arrival-date sorting  
-• Added GUEST NOTES departure-date sorting  
-• Added GUEST NOTES room-number sorting  
+• Added TO ORDER and TO RECEIVE status sorting  
+• Added GUEST NOTES arrival, departure and room sorting  
 • Added HANDOVER follow-up-time sorting  
 • Sorting affects only the expanded view and does not modify card data
 
@@ -537,30 +561,26 @@ The entire operational application is contained within a single HTML page.
 • Added full-window expanded column workspaces  
 • Added responsive multi-card grid layouts  
 • Added dedicated expanded-column search  
-• Added "+ Add Here" functionality  
-• Retained card editing and deletion within expanded views  
-• Retained ordering and receiving actions  
-• Retained urgency-based card ordering  
+• Added "+ Add Here"  
+• Retained card actions inside expanded views  
+• Retained urgency-based ordering  
 • Added column-specific colour themes  
-• Added × Close control  
-• Added click-outside closing  
-• Added Esc keyboard closing  
+• Added × Close, click-outside and Esc closing  
 • Improved usability on smaller laptop screens
 
 ## v5.8 · Priority Sorting
 
-• Added automatic urgency-based card sorting  
+• Added automatic urgency-based sorting  
 • Cards are ordered from highest to lowest urgency  
 • Introduced a common ranking system across card types  
 • Cards with equal urgency are sorted newest first  
-• Sorting automatically refreshes after creation, editing and movement  
-• Sorting applies to imported data  
-• Sorting remains active during search and filtering
+• Sorting refreshes after creation, editing and movement  
+• Sorting applies to imported data, search and filtering
 
 ## v5.7 · Card Creation Timestamps
 
 • Added automatic creation date and time to every new card  
-• Applied timestamps across all five Kanban categories  
+• Applied timestamps across all five categories  
 • Preserved original timestamps during editing and movement  
 • Included timestamps in exported backups  
 • Added "Date unavailable" handling for legacy cards  
@@ -580,12 +600,10 @@ The entire operational application is contained within a single HTML page.
 
 ## v5.5 · Data Portability
 
-• Added Export Data  
-• Added Import Data  
+• Added Export Data and Import Data  
 • Added portable JSON backups  
 • Added version and timestamp metadata  
-• Added record counts  
-• Added backup validation  
+• Added record counts and backup validation  
 • Added import confirmation  
 • Added automatic pre-import safety backup  
 • Enabled migration between computers
@@ -604,8 +622,7 @@ The entire operational application is contained within a single HTML page.
 • Added TO ORDER → TO RECEIVE transfer  
 • Added receipt-status workflow  
 • Added Mark Received  
-• Introduced distinct column colours  
-• Improved visual hierarchy
+• Introduced distinct column colours
 
 ## v5.2 · Header Controls
 
@@ -618,17 +635,13 @@ The entire operational application is contained within a single HTML page.
 
 • Rebuilt page rendering for improved reliability  
 • Made Kanban columns immediately visible on page load  
-• Reduced dependency on dynamically generated structural elements  
 • Improved browser compatibility  
 • Strengthened localStorage handling
 
 ## v5.0 · Operational Redesign
 
 • Rebuilt the dashboard around Crystal Club operations  
-• Introduced TO DO  
-• Introduced TO ORDER  
-• Introduced GUEST NOTES  
-• Introduced HANDOVER  
+• Introduced TO DO, TO ORDER, GUEST NOTES and HANDOVER  
 • Added specialised card forms  
 • Added search and filtering  
 • Added drag-and-drop workflow  
@@ -645,8 +658,7 @@ The entire operational application is contained within a single HTML page.
 
 • Added recurring schedule management  
 • Added weekday scheduling  
-• Added first-days-of-month rules  
-• Added last-days-of-month rules  
+• Added first and last days of month rules  
 • Added specific monthly dates  
 • Added one-off dated tasks  
 • Removed Reset Demo to reduce accidental data loss  
