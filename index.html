@@ -266,7 +266,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 var BOARD_KEY="gpch_crystal_board_v51";
 var SCHED_KEY="gpch_crystal_schedule_v51";
 var DONE_KEY="gpch_crystal_schedule_done_v51";
-var APP_VERSION="5.5";
+var APP_VERSION="5.7";
 
 function makeId(){
   return "id_"+Date.now()+"_"+Math.random().toString(36).slice(2,9);
@@ -299,6 +299,24 @@ function longDate(){
     return new Intl.DateTimeFormat("en-SG",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(new Date()).toUpperCase();
   }catch(e){
     return new Date().toDateString().toUpperCase();
+  }
+}
+
+function formatCreatedAt(value){
+  if(!value) return "Date unavailable";
+  var d=new Date(value);
+  if(isNaN(d.getTime())) return "Date unavailable";
+  try{
+    return new Intl.DateTimeFormat("en-SG",{
+      day:"numeric",
+      month:"short",
+      year:"numeric",
+      hour:"2-digit",
+      minute:"2-digit",
+      hour12:false
+    }).format(d);
+  }catch(e){
+    return d.toLocaleString();
   }
 }
 
@@ -361,6 +379,7 @@ function cardHtml(x){
     body+=(x.followup?'<div>Follow-up: '+esc(x.followup)+'</div>':"");
     body+=(x.notes?'<div>'+esc(x.notes)+'</div>':"");
   }
+  body+='<div style="margin-top:7px;font-size:11px;color:#8b857c">Created: '+esc(formatCreatedAt(x.createdAt))+'</div>';
   return '<article class="card'+cls+'" draggable="true" data-id="'+esc(x.id)+'">'+
     '<div class="card-top">'+top+'</div><h3>'+esc(x.title)+'</h3><div class="meta">'+body+'</div>'+
     '<div class="card-actions">'+
@@ -500,7 +519,7 @@ function openEntry(type,obj){
 }
 
 document.getElementById("saveEntryBtn").addEventListener("click",function(){
-  var obj=editingItemId ? items.find(function(i){return i.id===editingItemId;}) : {id:makeId(),type:editingType};
+  var obj=editingItemId ? items.find(function(i){return i.id===editingItemId;}) : {id:makeId(),type:editingType,createdAt:new Date().toISOString()};
   if(!obj) return;
 
   fieldDefs[editingType].forEach(function(def){
