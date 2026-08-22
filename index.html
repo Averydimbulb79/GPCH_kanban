@@ -34,7 +34,10 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 .toolbar input{flex:1;min-width:220px}
 .board{display:grid;grid-template-columns:repeat(5,minmax(235px,1fr));gap:12px;overflow-x:auto}
 .column{border:1px solid var(--line);border-radius:16px;min-height:560px;padding:10px;box-shadow:0 8px 20px rgba(30,25,18,.05)}
-.column-head{display:flex;justify-content:space-between;align-items:center;padding:10px 11px;margin:-10px -10px 12px;border-radius:15px 15px 10px 10px;font-weight:800;letter-spacing:.02em}
+.column-head{display:flex;justify-content:space-between;align-items:center;padding:10px 11px;margin:-10px -10px 12px;border-radius:15px 15px 10px 10px;font-weight:800;letter-spacing:.02em;cursor:pointer;user-select:none}
+.column-head:hover{filter:brightness(.98)}
+.column-title{display:flex;align-items:center;gap:6px}
+.expand-cue{font-size:12px;opacity:.65}
 .column-todo{background:linear-gradient(180deg,#eef7ff 0%,#f8fbff 100%);border-color:#cfe5f8}
 .column-todo .column-head{background:#d8edff;color:#24577d}
 .column-order{background:linear-gradient(180deg,#fff7dc 0%,#fffdf4 100%);border-color:#ead79a}
@@ -92,6 +95,25 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
   background:rgba(34,32,24,.80);color:#fff;border-color:rgba(255,255,255,.2)
 }
 .schedule-toggle.visible{display:block}
+.expanded-column-modal{position:fixed;inset:0;display:none;z-index:190;background:rgba(0,0,0,.46);padding:18px}
+.expanded-column-modal.open{display:block}
+.expanded-column-shell{width:100%;height:100%;background:var(--panel);border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.28);display:flex;flex-direction:column;overflow:hidden}
+.expanded-column-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.expanded-column-header h2{margin:0;font-size:21px}
+.expanded-column-tools{display:flex;gap:8px;flex-wrap:wrap}
+.expanded-column-tools input,.expanded-column-tools select{border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:#fff}
+.expanded-column-tools input{min-width:220px}
+.expanded-column-tools select{min-width:190px}
+.expanded-column-content{flex:1;overflow:auto;padding:18px}
+.expanded-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;align-items:start}
+.expanded-grid .card{margin:0}
+.expanded-empty{color:var(--muted);padding:24px;text-align:center}
+.expanded-theme-todo .expanded-column-header{background:#d8edff;color:#24577d}
+.expanded-theme-order .expanded-column-header{background:#ffe7a8;color:#7a5410}
+.expanded-theme-receive .expanded-column-header{background:#d8f0d8;color:#2d6b3a}
+.expanded-theme-guest .expanded-column-header{background:#f8dce9;color:#7a3458}
+.expanded-theme-handover .expanded-column-header{background:#e2dcfa;color:#55448a}
+@media(max-width:650px){.expanded-column-modal{padding:8px}.expanded-column-header{align-items:flex-start;flex-direction:column}.expanded-column-tools{width:100%}.expanded-column-tools input,.expanded-column-tools select{min-width:0;flex:1 1 180px}.expanded-grid{grid-template-columns:1fr}}
 .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.42);z-index:200;padding:20px}
 .modal.open{display:grid}
 .modal-card{width:min(620px,100%);max-height:90vh;overflow:auto;background:var(--panel);border-radius:18px;padding:18px;box-shadow:0 25px 60px rgba(0,0,0,.25)}
@@ -171,23 +193,23 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 
 <main class="board">
   <section class="column column-todo">
-    <div class="column-head"><span>TO DO</span><span class="count" id="countTodo">0</span></div>
+    <div class="column-head" data-expand="todo"><span class="column-title">TO DO <span class="expand-cue">↗</span></span><span class="count" id="countTodo">0</span></div>
     <div class="dropzone" id="todoZone" data-type="todo"><div class="empty">No tasks yet.</div></div>
   </section>
   <section class="column column-order">
-    <div class="column-head"><span>TO ORDER</span><span class="count" id="countOrder">0</span></div>
+    <div class="column-head" data-expand="order"><span class="column-title">TO ORDER <span class="expand-cue">↗</span></span><span class="count" id="countOrder">0</span></div>
     <div class="dropzone" id="orderZone" data-type="order"><div class="empty">Nothing to order yet.</div></div>
   </section>
   <section class="column column-receive">
-    <div class="column-head"><span>TO RECEIVE</span><span class="count" id="countReceive">0</span></div>
+    <div class="column-head" data-expand="receive"><span class="column-title">TO RECEIVE <span class="expand-cue">↗</span></span><span class="count" id="countReceive">0</span></div>
     <div class="dropzone" id="receiveZone" data-type="receive"><div class="empty">Nothing pending receipt.</div></div>
   </section>
   <section class="column column-guest">
-    <div class="column-head"><span>GUEST NOTES</span><span class="count" id="countGuest">0</span></div>
+    <div class="column-head" data-expand="guest"><span class="column-title">GUEST NOTES <span class="expand-cue">↗</span></span><span class="count" id="countGuest">0</span></div>
     <div class="dropzone" id="guestZone" data-type="guest"><div class="empty">No guest notes yet.</div></div>
   </section>
   <section class="column column-handover">
-    <div class="column-head"><span>HANDOVER</span><span class="count" id="countHandover">0</span></div>
+    <div class="column-head" data-expand="handover"><span class="column-title">HANDOVER <span class="expand-cue">↗</span></span><span class="count" id="countHandover">0</span></div>
     <div class="dropzone" id="handoverZone" data-type="handover"><div class="empty">No handover notes yet.</div></div>
   </section>
 </main>
@@ -202,6 +224,25 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
   </div>
   <div id="todaySchedule"><div style="font-size:12px;color:#c8beae;padding:12px 0">No scheduled tasks today.</div></div>
 </aside>
+
+<div class="expanded-column-modal" id="expandedColumnModal" aria-hidden="true">
+  <div class="expanded-column-shell" id="expandedColumnShell">
+    <div class="expanded-column-header">
+      <h2 id="expandedColumnTitle">Expanded Column</h2>
+      <div class="expanded-column-tools">
+        <input id="expandedSearch" type="search" placeholder="Search this column">
+        <select id="expandedSort" aria-label="Sort cards">
+          <option value="urgency_desc">Urgency: High → Low</option>
+        </select>
+        <button id="expandedAddBtn">+ Add Here</button>
+        <button id="closeExpandedBtn">× Close</button>
+      </div>
+    </div>
+    <div class="expanded-column-content">
+      <div class="expanded-grid" id="expandedColumnGrid"></div>
+    </div>
+  </div>
+</div>
 
 <div class="modal" id="typeModal">
   <div class="modal-card">
@@ -266,7 +307,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 var BOARD_KEY="gpch_crystal_board_v51";
 var SCHED_KEY="gpch_crystal_schedule_v51";
 var DONE_KEY="gpch_crystal_schedule_done_v51";
-var APP_VERSION="5.8";
+var APP_VERSION="6.0";
 
 function makeId(){
   return "id_"+Date.now()+"_"+Math.random().toString(36).slice(2,9);
@@ -407,24 +448,147 @@ function urgencyRank(x){
   return ranks[value] || 0;
 }
 
+var expandedType=null;
+
+function sortedItemsForType(type,query){
+  query=String(query||"").toLowerCase().trim();
+  return items.filter(function(x){
+    if(x.type!==type) return false;
+    if(!query) return true;
+    try{return JSON.stringify(x).toLowerCase().indexOf(query)!==-1;}catch(e){return true;}
+  }).sort(function(a,b){
+    var urgencyDifference=urgencyRank(b)-urgencyRank(a);
+    if(urgencyDifference!==0) return urgencyDifference;
+    var aTime=a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    var bTime=b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return bTime-aTime;
+  });
+}
+
+
+function safeTime(value){
+  if(!value) return 0;
+  var n=new Date(value).getTime();
+  return isNaN(n) ? 0 : n;
+}
+
+function textCompare(a,b){
+  return String(a||"").localeCompare(String(b||""),undefined,{numeric:true,sensitivity:"base"});
+}
+
+function timeValue(value){
+  if(!value) return 999999;
+  var parts=String(value).split(":");
+  if(parts.length<2) return 999999;
+  return Number(parts[0])*60+Number(parts[1]);
+}
+
+function dateValue(value){
+  if(!value) return 9999999999999;
+  var n=new Date(value+"T00:00:00").getTime();
+  return isNaN(n) ? 9999999999999 : n;
+}
+
+function sortExpandedItems(list,mode){
+  return list.slice().sort(function(a,b){
+    if(mode==="urgency_desc"){
+      var d=urgencyRank(b)-urgencyRank(a);
+      if(d!==0) return d;
+      return safeTime(b.createdAt)-safeTime(a.createdAt);
+    }
+    if(mode==="urgency_asc"){
+      var d2=urgencyRank(a)-urgencyRank(b);
+      if(d2!==0) return d2;
+      return safeTime(b.createdAt)-safeTime(a.createdAt);
+    }
+    if(mode==="newest") return safeTime(b.createdAt)-safeTime(a.createdAt);
+    if(mode==="oldest") return safeTime(a.createdAt)-safeTime(b.createdAt);
+    if(mode==="title_az") return textCompare(a.title,b.title);
+    if(mode==="title_za") return textCompare(b.title,a.title);
+    if(mode==="due_asc") return timeValue(a.due)-timeValue(b.due);
+    if(mode==="due_desc") return timeValue(b.due)-timeValue(a.due);
+    if(mode==="arrival_asc") return dateValue(a.arrival)-dateValue(b.arrival);
+    if(mode==="departure_asc") return dateValue(a.departure)-dateValue(b.departure);
+    if(mode==="room_asc") return textCompare(a.room,b.room);
+    if(mode==="followup_asc") return timeValue(a.followup)-timeValue(b.followup);
+    if(mode==="status_az") return textCompare(a.orderStatus,b.orderStatus);
+    return 0;
+  });
+}
+
+function configureExpandedSort(type){
+  var select=document.getElementById("expandedSort");
+  var common=[
+    ["urgency_desc","Urgency: High → Low"],
+    ["urgency_asc","Urgency: Low → High"],
+    ["newest","Newest First"],
+    ["oldest","Oldest First"],
+    ["title_az","Title: A → Z"],
+    ["title_za","Title: Z → A"]
+  ];
+  var extra=[];
+  if(type==="todo"){
+    extra=[["due_asc","Due Time: Earliest First"],["due_desc","Due Time: Latest First"]];
+  }else if(type==="order" || type==="receive"){
+    extra=[["status_az","Status: A → Z"]];
+  }else if(type==="guest"){
+    extra=[
+      ["arrival_asc","Arrival Date: Earliest First"],
+      ["departure_asc","Departure Date: Earliest First"],
+      ["room_asc","Room Number: Low → High"]
+    ];
+  }else if(type==="handover"){
+    extra=[["followup_asc","Follow-up Time: Earliest First"]];
+  }
+
+  select.innerHTML=common.concat(extra).map(function(opt){
+    return '<option value="'+opt[0]+'">'+opt[1]+'</option>';
+  }).join("");
+  select.value="urgency_desc";
+}
+
+function renderExpandedColumn(){
+  if(!expandedType) return;
+  var grid=document.getElementById("expandedColumnGrid");
+  var visible=sortedItemsForType(expandedType,document.getElementById("expandedSearch").value);
+  visible=sortExpandedItems(visible,document.getElementById("expandedSort").value);
+  if(!visible.length){
+    grid.innerHTML='<div class="expanded-empty">No matching cards in this column.</div>';
+    return;
+  }
+  grid.innerHTML=visible.map(cardHtml).join("");
+  bindCards();
+  Array.prototype.forEach.call(grid.querySelectorAll(".card"),function(card){card.removeAttribute("draggable");});
+}
+
+function openExpandedColumn(type){
+  expandedType=type;
+  var labels={todo:"TO DO",order:"TO ORDER",receive:"TO RECEIVE",guest:"GUEST NOTES",handover:"HANDOVER"};
+  var modal=document.getElementById("expandedColumnModal");
+  var shell=document.getElementById("expandedColumnShell");
+  document.getElementById("expandedColumnTitle").textContent=labels[type]||"COLUMN";
+  document.getElementById("expandedSearch").value="";
+  configureExpandedSort(type);
+  shell.className="expanded-column-shell expanded-theme-"+type;
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden","false");
+  renderExpandedColumn();
+}
+
+function closeExpandedColumn(){
+  document.getElementById("expandedColumnModal").classList.remove("open");
+  document.getElementById("expandedColumnModal").setAttribute("aria-hidden","true");
+  expandedType=null;
+}
+
 function renderBoard(){
   var q=document.getElementById("searchBox").value.toLowerCase().trim();
   var filter=document.getElementById("columnFilter").value;
 
   ["todo","order","receive","guest","handover"].forEach(function(type){
     var zone=document.getElementById(zoneIds[type]);
-    var visible=items.filter(function(x){
-      if(x.type!==type) return false;
-      if(filter!=="all" && filter!==type) return false;
-      if(!q) return true;
-      try{return JSON.stringify(x).toLowerCase().indexOf(q)!==-1;}catch(e){return true;}
-    }).sort(function(a,b){
-      var urgencyDifference=urgencyRank(b)-urgencyRank(a);
-      if(urgencyDifference!==0) return urgencyDifference;
-
-      var aTime=a.createdAt ? new Date(a.createdAt).getTime() : 0;
-      var bTime=b.createdAt ? new Date(b.createdAt).getTime() : 0;
-      return bTime-aTime;
+    var visible=sortedItemsForType(type,q).filter(function(){
+      return filter==="all" || filter===type;
     });
 
     zone.innerHTML=visible.length ? visible.map(cardHtml).join("") : '<div class="empty">'+
@@ -436,6 +600,9 @@ function renderBoard(){
   });
 
   bindCards();
+  if(expandedType && document.getElementById("expandedColumnModal").classList.contains("open")){
+    renderExpandedColumn();
+  }
 }
 
 function bindCards(){
@@ -841,6 +1008,22 @@ function toggleScheduleOverlay(){
 }
 document.getElementById("hideOverlayBtn").addEventListener("click",toggleScheduleOverlay);
 document.getElementById("toggleScheduleBtn").addEventListener("click",toggleScheduleOverlay);
+
+Array.prototype.forEach.call(document.querySelectorAll(".column-head[data-expand]"),function(head){
+  head.addEventListener("click",function(){openExpandedColumn(head.getAttribute("data-expand"));});
+});
+document.getElementById("closeExpandedBtn").addEventListener("click",closeExpandedColumn);
+document.getElementById("expandedSearch").addEventListener("input",renderExpandedColumn);
+document.getElementById("expandedSort").addEventListener("change",renderExpandedColumn);
+document.getElementById("expandedAddBtn").addEventListener("click",function(){
+  if(expandedType) openEntry(expandedType,null);
+});
+document.getElementById("expandedColumnModal").addEventListener("click",function(e){
+  if(e.target===document.getElementById("expandedColumnModal")) closeExpandedColumn();
+});
+document.addEventListener("keydown",function(e){
+  if(e.key==="Escape" && document.getElementById("expandedColumnModal").classList.contains("open")) closeExpandedColumn();
+});
 
 document.getElementById("dateLabel").textContent=longDate();
 document.getElementById("overlayDate").textContent=longDate();
