@@ -72,6 +72,11 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 .pill{font-size:10px;font-weight:700;letter-spacing:.05em;border-radius:999px;padding:4px 7px;background:var(--soft)}
 .meta{font-size:12px;color:var(--muted);line-height:1.55}
 .card-actions{display:flex;justify-content:flex-end;gap:5px;margin-top:9px}
+.workflow-line{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.workflow-action{padding:5px 8px;border-radius:8px;font-size:11px;font-weight:800;white-space:nowrap}
+.order-workflow-action{background:#fff1c8;border-color:#e0c36e;color:#76520d}
+.receive-workflow-action{background:#e2f2e2;border-color:#afd0b2;color:#2f6838}
+
 .card-actions button{font-size:11px;padding:5px 7px;border-radius:7px}
 .guest-card{border-left:4px solid #8d795e}
 .handover-card{border-left:4px solid #687789}
@@ -343,7 +348,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 var BOARD_KEY="gpch_crystal_board_v51";
 var SCHED_KEY="gpch_crystal_schedule_v51";
 var DONE_KEY="gpch_crystal_schedule_done_v51";
-var APP_VERSION="6.3";
+var APP_VERSION="6.5";
 
 function makeId(){
   return "id_"+Date.now()+"_"+Math.random().toString(36).slice(2,9);
@@ -429,14 +434,14 @@ function cardHtml(x){
   }
   if(x.type==="order"){
     top='<span class="pill">'+esc(x.urgency||"ROUTINE")+'</span><span class="pill order-status">'+esc(x.orderStatus||"TO ORDER")+'</span>';
-    body+=(x.quantity?'<div>Quantity: '+esc(x.quantity)+'</div>':"");
+    body+=(x.quantity?'<div class="workflow-line"><span>Quantity: '+esc(x.quantity)+'</span>'+(x.archived?'':'<button class="workflow-action order-workflow-action" data-action="move-receive">Move to Receive →</button>')+'</div>':(!x.archived?'<div class="workflow-line"><span>Quantity: —</span><button class="workflow-action order-workflow-action" data-action="move-receive">Move to Receive →</button></div>':""));
     body+=(x.source?'<div>Supplier / Department: '+esc(x.source)+'</div>':"");
     body+=(x.notes?'<div>'+esc(x.notes)+'</div>':"");
   }
   if(x.type==="receive"){
     cls=" receive-card";
     top='<span class="pill order-status">'+esc(x.orderStatus||"AWAITING RECEIPT")+'</span>';
-    body+=(x.quantity?'<div>Quantity: '+esc(x.quantity)+'</div>':"");
+    body+=(x.quantity?'<div class="workflow-line"><span>Quantity: '+esc(x.quantity)+'</span>'+(x.archived?'':'<button class="workflow-action receive-workflow-action" data-action="received">✓ Mark Received</button>')+'</div>':(!x.archived?'<div class="workflow-line"><span>Quantity: —</span><button class="workflow-action receive-workflow-action" data-action="received">✓ Mark Received</button></div>':""));
     body+=(x.source?'<div>Supplier / Department: '+esc(x.source)+'</div>':"");
     body+=(x.notes?'<div>'+esc(x.notes)+'</div>':"");
   }
@@ -463,8 +468,8 @@ function cardHtml(x){
     '<div class="card-top">'+top+(x.archived?'<span class="pill archived-badge">ARCHIVED</span>':'')+'</div><h3>'+esc(x.title)+'</h3><div class="meta">'+body+
     (x.archivedAt?'<div style="margin-top:5px;font-size:11px;color:#8b857c">Archived: '+esc(formatCreatedAt(x.archivedAt))+'</div>':'')+
     '</div><div class="card-actions">'+
-    (!x.archived && x.type==="order"?'<button data-action="move-receive">Move to Receive</button>':"")+
-    (!x.archived && x.type==="receive"?'<button data-action="received">Mark Received</button>':"")+
+
+    '<button data-action="copy">Copy</button>'+
     (x.archived?'<button data-action="restore">Restore</button>':'<button data-action="edit">Edit</button><button data-action="complete">Complete</button>')+
     '</div></article>';
 }
@@ -674,6 +679,7 @@ function bindCards(){
           setStored(BOARD_KEY,items);
           renderBoard();
         }
+        if(action==="copy") openCopiedEntry(x.type,x);
         if(action==="edit") openEntry(x.type,x);
         if(action==="move-receive"){
           x.type="receive";
@@ -729,6 +735,43 @@ var fieldDefs={
 function typeLabel(type){
   return {todo:"TO DO",order:"TO ORDER",receive:"TO RECEIVE",guest:"GUEST NOTE",handover:"HANDOVER"}[type]||"ITEM";
 }
+function openCopiedEntry(type,obj){
+  var copy=clone(obj);
+  delete copy.id;
+  delete copy.createdAt;
+  delete copy.archived;
+  delete copy.archivedAt;
+
+  editingType=type;
+  editingItemId=null;
+  document.getElementById("entryHeading").textContent="Copy to New "+typeLabel(type);
+
+  var box=document.getElementById("entryFields");
+  box.innerHTML="";
+
+  fieldDefs[type].forEach(function(def){
+    var key=def[0],label=def[1],kind=def[2],opts=def[3]||[],value=copy[key]!=null?copy[key]:"";
+    var wrap=document.createElement("div");
+    wrap.className="field "+((kind==="textarea"||key==="title")?"full":"");
+    var inner='<label>'+esc(label)+'</label>';
+
+    if(kind==="select"){
+      inner+='<select id="field_'+key+'">'+opts.map(function(o){
+        return '<option'+(o===value?' selected':'')+'>'+esc(o)+'</option>';
+      }).join("")+'</select>';
+    }else if(kind==="textarea"){
+      inner+='<textarea id="field_'+key+'">'+esc(value)+'</textarea>';
+    }else{
+      inner+='<input id="field_'+key+'" type="'+esc(kind)+'" value="'+esc(value)+'">';
+    }
+
+    wrap.innerHTML=inner;
+    box.appendChild(wrap);
+  });
+
+  document.getElementById("entryModal").classList.add("open");
+}
+
 function openEntry(type,obj){
   editingType=type;
   editingItemId=obj ? obj.id : null;
