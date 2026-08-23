@@ -8,7 +8,7 @@ The dashboard consolidates daily tasks, ordering, receiving, guest notes, shift 
 
 https://averydimbulb79.github.io/GPCH_kanban/
 
-Current version: 6.3
+Current version: 6.5
 
 ---
 
@@ -18,13 +18,15 @@ Current version: 6.3
 • Matching colour-coded dashboard count boxes  
 • Clickable count boxes and column headers  
 • Full-window expanded column views  
-• Expanded-view search and sorting controls  
+• Expanded-view search and sorting  
 • Automatic urgency-based card sorting  
 • Card creation timestamps  
+• One-click card duplication  
 • Complete, archive and permanent-delete workflow  
 • Archived-card viewing and restoration  
 • Drag-and-drop workflow  
-• Ordering and receiving workflow  
+• Streamlined ordering and receiving workflow  
+• Contextual workflow actions  
 • Recurring scheduled tasks  
 • Weekly and monthly scheduling rules  
 • Floating Today's Scheduled Tasks overlay  
@@ -75,11 +77,9 @@ For example:
 
 `15 HANDOVER`
 
-Archived cards are excluded from these active counts.
+Archived cards are excluded from active counts.
 
-## Colour Coding
-
-Each count box uses the same colour as its corresponding workflow:
+Each count box uses the same colour as its corresponding workflow.
 
 | Count Box | Colour |
 | --- | --- |
@@ -91,15 +91,15 @@ Each count box uses the same colour as its corresponding workflow:
 
 ## Quick Access
 
-From Version 6.3, the count boxes are also navigation controls.
+The count boxes also function as navigation controls.
 
-Clicking a count box immediately opens the corresponding expanded column window.
+Clicking a count box immediately opens the corresponding expanded workspace.
 
 For example:
 
 `15 GUEST NOTES`
 
-opens the full GUEST NOTES workspace.
+opens the full GUEST NOTES window.
 
 Both navigation methods therefore perform the same action:
 
@@ -107,9 +107,7 @@ Both navigation methods therefore perform the same action:
 
 `Column Header → Expanded View`
 
-The count boxes include subtle hover feedback to indicate that they are interactive.
-
-Keyboard navigation is also supported using `Enter` or `Space`.
+Count boxes include hover feedback and keyboard access using `Enter` or `Space`.
 
 ---
 
@@ -121,8 +119,8 @@ Because displaying five columns simultaneously can restrict usable card space on
 
 Expanded views can be opened by clicking either:
 
-• The corresponding dashboard count box  
-• The corresponding Kanban column header
+• The dashboard count box  
+• The corresponding column header
 
 Clickable column headers are identified by:
 
@@ -159,24 +157,12 @@ Each expanded window provides:
 • + Add Here  
 • × Close
 
-The expanded window can also be closed by:
+The window can also be closed by:
 
 • Clicking outside the window  
 • Pressing `Esc`
 
-## Card Actions
-
-Cards remain operational inside expanded views.
-
-Depending on card type and status, actions can include:
-
-• Edit  
-• Complete  
-• Move to Receive  
-• Mark Received  
-• Restore
-
-Changes made in an expanded window immediately update the main Kanban because both views use the same underlying dataset.
+All card actions remain available from the expanded workspace.
 
 ---
 
@@ -184,7 +170,7 @@ Changes made in an expanded window immediately update the main Kanban because bo
 
 Expanded column windows contain dedicated sorting controls.
 
-The compact five-column board continues to use automatic urgency sorting, while expanded views allow staff to temporarily reorganise cards without modifying their underlying data.
+The compact five-column board continues to use automatic urgency sorting, while expanded views allow temporary alternative sorting without changing card data.
 
 ## Standard Sorting
 
@@ -251,8 +237,10 @@ Cards with equal urgency are sorted newest first.
 Sorting is automatically reapplied when cards are:
 
 • Created  
+• Copied  
 • Edited  
 • Moved  
+• Restored  
 • Imported  
 • Searched  
 • Filtered
@@ -267,9 +255,9 @@ Every newly created card automatically records its creation date and time.
 
 Example:
 
-`Created: 23 Aug 2026, 13:46`
+`Created: 23 Aug 2026, 16:20`
 
-Creation timestamps apply to all five card types:
+Creation timestamps apply to:
 
 • TO DO  
 • TO ORDER  
@@ -287,17 +275,150 @@ because their original creation time was not previously recorded.
 
 ---
 
-# Complete and Archive Workflow
+# Card Actions
 
-Version 6.2 introduced a completion workflow so completed operational records do not have to be immediately deleted.
+The dashboard separates two different types of card actions:
+
+`Workflow actions`
+
+and
+
+`Card-management actions`
+
+This distinction keeps cards compact while preserving direct one-click access to frequently used functions.
+
+## Universal Card Actions
+
+Active cards provide:
+
+`Copy` · `Edit` · `Complete`
+
+These controls remain grouped in the card footer.
+
+## Workflow Actions
+
+Actions that move an item through an operational process are positioned beside the information directly associated with that workflow.
+
+This reduces visual clutter without hiding frequently used actions behind additional menus.
+
+---
+
+# Copy Card
+
+Every card includes:
+
+`Copy`
+
+Selecting Copy opens a new-card form already populated with the selected card's information.
+
+The original card remains unchanged.
+
+The copied card is treated as a new record and receives:
+
+• A new unique ID  
+• A new creation timestamp  
+• Active status  
+• No inherited archive timestamp
+
+Staff can modify any prefilled information before saving.
+
+## Copying Archived Cards
+
+Archived cards can also be copied.
+
+The copied card becomes a new active record rather than another archived record.
+
+This is useful when a previously completed task, order, guest requirement or handover matter occurs again.
+
+Copy therefore provides a faster alternative to manually recreating similar cards.
+
+---
+
+# TO ORDER Workflow
+
+TO ORDER cards represent items that still require procurement.
+
+A typical card may display:
+
+`Printer cartridge`
+
+`Quantity: 1     Move to Receive →`
+
+Instead of placing Move to Receive in the card footer, Version 6.5 positions the workflow action directly beside Quantity.
+
+This keeps the procurement transition close to the information it affects.
+
+The footer remains:
+
+`Copy` · `Edit` · `Complete`
+
+## Moving an Order
+
+Selecting:
+
+`Move to Receive →`
+
+moves the card from:
+
+`TO ORDER`
+
+to:
+
+`TO RECEIVE`
+
+The card then enters the receiving workflow.
+
+---
+
+# TO RECEIVE Workflow
+
+TO RECEIVE cards represent items that have already been ordered and are awaiting physical receipt.
+
+The card displays the receiving action beside Quantity:
+
+`Quantity: 4 cartons     ✓ Mark Received`
+
+The footer remains:
+
+`Copy` · `Edit` · `Complete`
+
+Selecting:
+
+`✓ Mark Received`
+
+uses the completion workflow so the received item can be archived rather than automatically discarded.
+
+---
+
+# Workflow Design Principle
+
+Version 6.5 introduces a clearer distinction between workflow transitions and general card management.
+
+Workflow-specific actions appear inside the relevant card information:
+
+`TO ORDER → Move to Receive`
+
+`TO RECEIVE → Mark Received`
+
+Universal controls remain together:
+
+`Copy · Edit · Complete`
+
+This reduces footer congestion while avoiding extra clicks.
+
+The design prioritises direct actions rather than hiding commonly used controls inside secondary menus.
+
+---
+
+# Complete and Archive Workflow
 
 Active cards use:
 
 `Complete`
 
-instead of a direct Delete button.
+rather than a direct Delete button.
 
-Selecting Complete opens a confirmation window with three choices:
+Selecting Complete opens three choices:
 
 `Archive`
 
@@ -312,17 +433,15 @@ Selecting Archive:
 • Marks the card as completed  
 • Records the archive date and time  
 • Removes it from the normal active board  
-• Preserves the card's information  
+• Preserves the card information  
 • Preserves its original creation timestamp  
 • Keeps it associated with its original operational column
-
-This allows completed work to be retained as an operational record.
 
 ## Delete Permanently
 
 Selecting Delete Permanently removes the card from browser storage after an additional confirmation.
 
-This action cannot be undone unless the data exists in a previous exported backup.
+This action cannot be undone unless the record exists in an exported backup.
 
 ## Cancel
 
@@ -338,24 +457,23 @@ The main toolbar includes:
 
 Archived cards are hidden during normal daily operations.
 
-Selecting Show Archive reveals archived cards together with the active board.
+Selecting Show Archive reveals archived cards alongside active cards.
 
 The button then changes to:
 
 `Hide Archive`
 
-A visible archive-mode notification indicates that archived records are currently being displayed.
+A visible notification indicates when Archive View is active.
 
 ## Archived Card Appearance
 
-Archived cards are visually subdued so they can be distinguished from active work.
-
-Archived cards display:
+Archived cards are visually subdued and display:
 
 • ARCHIVED status  
 • Original creation timestamp  
 • Archive timestamp  
-• Restore control
+• Copy  
+• Restore
 
 Archived cards cannot be dragged between active workflow columns.
 
@@ -373,7 +491,7 @@ The card then re-enters normal urgency sorting.
 
 Archived cards are excluded from the five dashboard count boxes.
 
-The counts therefore represent current active workload rather than historical records.
+The dashboard therefore continues to represent current active workload rather than historical volume.
 
 ---
 
@@ -404,13 +522,11 @@ Cards can include:
 • Supplier or department  
 • Notes
 
-Once an order has been placed, it can be transferred to TO RECEIVE.
-
 ## TO RECEIVE
 
 For items already ordered but awaiting delivery or collection.
 
-This separates items that still require ordering from orders already awaiting physical receipt.
+This separates outstanding procurement from outstanding delivery.
 
 ## GUEST NOTES
 
@@ -440,36 +556,6 @@ Cards can include:
 
 ---
 
-# Ordering Workflow
-
-The procurement workflow follows:
-
-`TO ORDER → TO RECEIVE → RECEIVED`
-
-A TO ORDER card includes:
-
-`Move to Receive`
-
-Once an order has been placed, the card moves into TO RECEIVE.
-
-When the physical item arrives:
-
-`Mark Received`
-
-uses the completion workflow, allowing the record to be archived rather than simply discarded.
-
-This distinguishes:
-
-`Still needs to be ordered`
-
-from:
-
-`Already ordered and awaiting arrival`
-
-while preserving completed procurement records when required.
-
----
-
 # Today's Scheduled Tasks
 
 Recurring operational duties appear in a floating "Today's Scheduled Tasks" overlay at the top-right of the dashboard.
@@ -480,7 +566,7 @@ The overlay:
 • Floats above the Kanban without occupying a column  
 • Automatically displays tasks applicable to the current date  
 • Allows today's tasks to be marked complete  
-• Can be hidden or restored using "Toggle Schedule"
+• Can be hidden or restored using Toggle Schedule
 
 Completing today's occurrence does not delete the recurring schedule.
 
@@ -599,9 +685,7 @@ Data entered on one computer therefore does not automatically synchronise with a
 
 ## Export Data
 
-Export Data creates a portable JSON backup containing the Kanban dataset.
-
-This includes:
+Export Data creates a portable JSON backup containing:
 
 • Active cards  
 • Archived cards  
@@ -617,7 +701,7 @@ Backups are automatically timestamped.
 
 Example:
 
-`GPCH_Crystal_Club_Backup_2026-08-23_1346.json`
+`GPCH_Crystal_Club_Backup_2026-08-23_1620.json`
 
 ## Import Data
 
@@ -679,27 +763,45 @@ The entire operational application is contained within a single HTML page.
 
 # Version History
 
+## v6.5 · Streamlined Card Actions
+
+• Reorganised card controls to reduce visual clutter  
+• Separated workflow actions from universal card-management actions  
+• Moved Move to Receive from the TO ORDER footer to the Quantity row  
+• Added compact `Move to Receive →` control beside order quantity  
+• Moved Mark Received from the TO RECEIVE footer to the Quantity row  
+• Added compact `✓ Mark Received` control beside receiving quantity  
+• Retained direct one-click access to workflow transitions  
+• Standardised active card footer around `Copy · Edit · Complete`  
+• Reduced button congestion on narrow Kanban cards  
+• Improved usability on smaller laptop screens  
+• Avoided secondary menus so common actions remain immediately accessible
+
+## v6.4 · Card Duplication
+
+• Added Copy to every card  
+• Copy opens a new-card form prefilled with the source card's details  
+• Copied cards receive a new unique ID  
+• Copied cards receive a new creation timestamp  
+• Original cards remain unchanged  
+• Archive state is not inherited by copied cards  
+• Archived cards can be copied into new active cards  
+• Reduced repetitive data entry for similar operational records
+
 ## v6.3 · Dashboard Quick Access
 
 • Made all five dashboard count boxes clickable  
-• TO DO count opens the expanded TO DO workspace  
-• TO ORDER count opens the expanded TO ORDER workspace  
-• TO RECEIVE count opens the expanded TO RECEIVE workspace  
-• GUEST NOTES count opens the expanded GUEST NOTES workspace  
-• HANDOVER count opens the expanded HANDOVER workspace  
-• Added hover feedback to communicate interactivity  
+• Each count opens its corresponding expanded workspace  
+• Added hover feedback  
 • Added keyboard access using Enter and Space  
-• Count boxes and column headers now provide equivalent expanded-view navigation
+• Count boxes and column headers now provide equivalent navigation
 
 ## v6.2 · Complete and Archive Workflow
 
 • Replaced direct card deletion with Complete  
-• Added completion confirmation window  
-• Added Archive option  
-• Added Delete Permanently option  
-• Added Cancel option  
+• Added Archive, Delete Permanently and Cancel choices  
 • Added archive timestamps  
-• Added Show Archive / Hide Archive toggle  
+• Added Show Archive / Hide Archive  
 • Added archive-mode notification  
 • Added subdued archived-card styling  
 • Added ARCHIVED status indicator  
@@ -707,7 +809,7 @@ The entire operational application is contained within a single HTML page.
 • Archived cards remain associated with their original columns  
 • Archived cards are excluded from active dashboard counts  
 • Archived cards cannot be dragged between active columns  
-• Mark Received now uses the completion workflow
+• Mark Received integrated with the completion workflow
 
 ## v6.1 · Dashboard Colour Integration
 
@@ -717,8 +819,7 @@ The entire operational application is contained within a single HTML page.
 • TO RECEIVE matches the green workflow  
 • GUEST NOTES matches the pink workflow  
 • HANDOVER matches the violet workflow  
-• Matched summary backgrounds, borders and text colours  
-• Extended the established colour system across the dashboard
+• Matched summary backgrounds, borders and text colours
 
 ## v6.0 · Expanded View Sorting
 
@@ -759,8 +860,7 @@ The entire operational application is contained within a single HTML page.
 • Applied timestamps across all five categories  
 • Preserved original timestamps during editing and movement  
 • Included timestamps in exported backups  
-• Added Date unavailable handling for legacy cards  
-• Introduced a simple operational audit trail
+• Added Date unavailable handling for legacy cards
 
 ## v5.6 · Visual Cohesion
 
@@ -854,6 +954,8 @@ GitHub Pages distributes the application while operational data remains in brows
 • Local persistence  
 • Portable backups  
 • Archived operational history  
+• One-click card duplication  
+• Direct workflow controls  
 • Easy migration between computers  
 • Works as a static GitHub Pages application
 
@@ -869,4 +971,4 @@ A shared backend or cloud database would be required if the project is later exp
 
 Active development.
 
-The dashboard continues to evolve around practical GPCH Crystal Club operations, with emphasis on visibility, priority management, efficient use of limited screen space, operational history, intuitive workflows, shift communication, recurring task management, data portability and traceability.
+The dashboard continues to evolve around practical GPCH Crystal Club operations, with emphasis on visibility, priority management, minimal-click workflows, efficient use of limited screen space, operational history, shift communication, recurring task management, data portability and traceability.
