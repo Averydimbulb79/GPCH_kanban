@@ -8,18 +8,21 @@ The dashboard consolidates daily tasks, ordering, receiving, guest notes, shift 
 
 https://averydimbulb79.github.io/GPCH_kanban/
 
-Current version: 6.1
+Current version: 6.3
 
 ---
 
 ## Core Features
 
 • Five colour-coded operational workflows  
-• Matching colour-coded dashboard summary cards  
-• Automatic urgency-based card sorting  
+• Matching colour-coded dashboard count boxes  
+• Clickable count boxes and column headers  
 • Full-window expanded column views  
 • Expanded-view search and sorting controls  
+• Automatic urgency-based card sorting  
 • Card creation timestamps  
+• Complete, archive and permanent-delete workflow  
+• Archived-card viewing and restoration  
 • Drag-and-drop workflow  
 • Ordering and receiving workflow  
 • Recurring scheduled tasks  
@@ -47,16 +50,16 @@ The dashboard uses five operational columns with a consistent colour identity.
 
 The colour system is used consistently across:
 
-• Dashboard summary cards  
+• Dashboard count boxes  
 • Kanban column headers  
 • "+ Add" category buttons  
 • Expanded column windows
 
-This allows each operational category to be recognised quickly throughout the interface.
+This provides rapid visual recognition of each operational category.
 
 ---
 
-# Dashboard Summary
+# Dashboard Count Boxes
 
 The top of the dashboard provides an immediate count of active cards in each operational category.
 
@@ -72,9 +75,13 @@ For example:
 
 `15 HANDOVER`
 
-From Version 6.1, these summary cards use the same colour identity as their corresponding Kanban columns.
+Archived cards are excluded from these active counts.
 
-| Summary | Colour |
+## Colour Coding
+
+Each count box uses the same colour as its corresponding workflow:
+
+| Count Box | Colour |
 | --- | --- |
 | TO DO | Blue |
 | TO ORDER | Amber |
@@ -82,7 +89,27 @@ From Version 6.1, these summary cards use the same colour identity as their corr
 | GUEST NOTES | Pink |
 | HANDOVER | Violet |
 
-The matching backgrounds, borders and text colours create a consistent visual relationship between the dashboard summary and the working board.
+## Quick Access
+
+From Version 6.3, the count boxes are also navigation controls.
+
+Clicking a count box immediately opens the corresponding expanded column window.
+
+For example:
+
+`15 GUEST NOTES`
+
+opens the full GUEST NOTES workspace.
+
+Both navigation methods therefore perform the same action:
+
+`Count Box → Expanded View`
+
+`Column Header → Expanded View`
+
+The count boxes include subtle hover feedback to indicate that they are interactive.
+
+Keyboard navigation is also supported using `Enter` or `Space`.
 
 ---
 
@@ -90,9 +117,14 @@ The matching backgrounds, borders and text colours create a consistent visual re
 
 The main Kanban provides a five-column overview of Crystal Club operations.
 
-Because five simultaneous columns can restrict usable card space on smaller laptop screens, each column can also be opened as a dedicated full-window workspace.
+Because displaying five columns simultaneously can restrict usable card space on smaller laptop screens, each column can also be opened as a dedicated full-window workspace.
 
-Click any column header:
+Expanded views can be opened by clicking either:
+
+• The corresponding dashboard count box  
+• The corresponding Kanban column header
+
+Clickable column headers are identified by:
 
 `TO DO ↗`
 
@@ -104,21 +136,19 @@ Click any column header:
 
 `HANDOVER ↗`
 
-The selected column opens in a large expanded window.
-
 ## Expanded Layout
 
 Cards are displayed in a responsive grid rather than a single narrow vertical stack.
 
-The number of cards displayed across each row automatically adjusts according to available screen width.
+The number of cards across each row automatically adjusts according to available screen width.
 
-This provides two complementary working modes:
+This creates two complementary working modes:
 
 `5-column board = operational overview`
 
 `Expanded column = focused workspace`
 
-The expanded window retains the colour identity of its corresponding Kanban column.
+The expanded window retains the colour identity of its corresponding workflow.
 
 ## Expanded View Controls
 
@@ -129,30 +159,34 @@ Each expanded window provides:
 • + Add Here  
 • × Close
 
-The window can also be closed by clicking outside it or pressing `Esc`.
+The expanded window can also be closed by:
+
+• Clicking outside the window  
+• Pressing `Esc`
 
 ## Card Actions
 
-Cards remain fully operational inside the expanded view.
+Cards remain operational inside expanded views.
 
-Depending on card type, available actions include:
+Depending on card type and status, actions can include:
 
 • Edit  
-• Delete  
+• Complete  
 • Move to Receive  
-• Mark Received
+• Mark Received  
+• Restore
 
-Changes made in the expanded window immediately update the main Kanban because both views use the same underlying dataset.
+Changes made in an expanded window immediately update the main Kanban because both views use the same underlying dataset.
 
 ---
 
 # Expanded View Sorting
 
-Expanded column windows include dedicated sorting controls.
+Expanded column windows contain dedicated sorting controls.
 
-The compact five-column Kanban continues to use automatic urgency sorting, while expanded views allow temporary alternative sorting without modifying card data.
+The compact five-column board continues to use automatic urgency sorting, while expanded views allow staff to temporarily reorganise cards without modifying their underlying data.
 
-## Standard Sorting Options
+## Standard Sorting
 
 All expanded columns support:
 
@@ -233,9 +267,9 @@ Every newly created card automatically records its creation date and time.
 
 Example:
 
-`Created: 23 Aug 2026, 14:11`
+`Created: 23 Aug 2026, 13:46`
 
-Timestamps apply to:
+Creation timestamps apply to all five card types:
 
 • TO DO  
 • TO ORDER  
@@ -243,13 +277,103 @@ Timestamps apply to:
 • GUEST NOTES  
 • HANDOVER
 
-The original timestamp remains attached when a card is edited or moved.
+The original timestamp remains attached when a card is edited, moved or archived.
 
 Cards created before Version 5.7 may display:
 
 `Created: Date unavailable`
 
 because their original creation time was not previously recorded.
+
+---
+
+# Complete and Archive Workflow
+
+Version 6.2 introduced a completion workflow so completed operational records do not have to be immediately deleted.
+
+Active cards use:
+
+`Complete`
+
+instead of a direct Delete button.
+
+Selecting Complete opens a confirmation window with three choices:
+
+`Archive`
+
+`Delete Permanently`
+
+`Cancel`
+
+## Archive
+
+Selecting Archive:
+
+• Marks the card as completed  
+• Records the archive date and time  
+• Removes it from the normal active board  
+• Preserves the card's information  
+• Preserves its original creation timestamp  
+• Keeps it associated with its original operational column
+
+This allows completed work to be retained as an operational record.
+
+## Delete Permanently
+
+Selecting Delete Permanently removes the card from browser storage after an additional confirmation.
+
+This action cannot be undone unless the data exists in a previous exported backup.
+
+## Cancel
+
+Cancel closes the completion window without changing the card.
+
+---
+
+# Archive View
+
+The main toolbar includes:
+
+`Show Archive`
+
+Archived cards are hidden during normal daily operations.
+
+Selecting Show Archive reveals archived cards together with the active board.
+
+The button then changes to:
+
+`Hide Archive`
+
+A visible archive-mode notification indicates that archived records are currently being displayed.
+
+## Archived Card Appearance
+
+Archived cards are visually subdued so they can be distinguished from active work.
+
+Archived cards display:
+
+• ARCHIVED status  
+• Original creation timestamp  
+• Archive timestamp  
+• Restore control
+
+Archived cards cannot be dragged between active workflow columns.
+
+## Restore
+
+Selecting:
+
+`Restore`
+
+returns an archived card to active status in its original column.
+
+The card then re-enters normal urgency sorting.
+
+## Active Counts
+
+Archived cards are excluded from the five dashboard count boxes.
+
+The counts therefore represent current active workload rather than historical records.
 
 ---
 
@@ -280,11 +404,13 @@ Cards can include:
 • Supplier or department  
 • Notes
 
+Once an order has been placed, it can be transferred to TO RECEIVE.
+
 ## TO RECEIVE
 
 For items already ordered but awaiting delivery or collection.
 
-This separates procurement requests from outstanding deliveries.
+This separates items that still require ordering from orders already awaiting physical receipt.
 
 ## GUEST NOTES
 
@@ -326,7 +452,11 @@ A TO ORDER card includes:
 
 Once an order has been placed, the card moves into TO RECEIVE.
 
-When the physical item arrives, it can be marked as received and removed from the active board.
+When the physical item arrives:
+
+`Mark Received`
+
+uses the completion workflow, allowing the record to be archived rather than simply discarded.
 
 This distinguishes:
 
@@ -335,6 +465,8 @@ This distinguishes:
 from:
 
 `Already ordered and awaiting arrival`
+
+while preserving completed procurement records when required.
 
 ---
 
@@ -409,15 +541,25 @@ The board can be filtered by:
 • Guest Notes  
 • Handover
 
-Expanded column windows also contain their own dedicated search field.
+Expanded column windows contain their own dedicated search field.
 
 ---
 
 # Main Controls
 
-The primary dashboard controls are grouped together:
+The primary dashboard controls include:
 
-`+ Add` · `Manage Schedule` · `Toggle Schedule` · `Export Data` · `Import Data`
+`+ Add`
+
+`Manage Schedule`
+
+`Toggle Schedule`
+
+`Show Archive / Hide Archive`
+
+`Export Data`
+
+`Import Data`
 
 ---
 
@@ -425,7 +567,16 @@ The primary dashboard controls are grouped together:
 
 GPCH Crystal Club uses browser `localStorage`.
 
-Cards, timestamps, schedules and operational information remain available after:
+Stored information includes:
+
+• Active cards  
+• Archived cards  
+• Creation timestamps  
+• Archive timestamps  
+• Scheduled tasks  
+• Schedule completion information
+
+Data remains available after:
 
 • Refreshing the page  
 • Closing the browser  
@@ -448,10 +599,14 @@ Data entered on one computer therefore does not automatically synchronise with a
 
 ## Export Data
 
-"Export Data" creates a portable JSON backup containing:
+Export Data creates a portable JSON backup containing the Kanban dataset.
 
-• Kanban cards  
+This includes:
+
+• Active cards  
+• Archived cards  
 • Card creation timestamps  
+• Archive timestamps  
 • Scheduled tasks  
 • Scheduled-task completion state  
 • Application version  
@@ -462,11 +617,11 @@ Backups are automatically timestamped.
 
 Example:
 
-`GPCH_Crystal_Club_Backup_2026-08-23_1411.json`
+`GPCH_Crystal_Club_Backup_2026-08-23_1346.json`
 
 ## Import Data
 
-"Import Data" restores a previously exported GPCH Crystal Club backup.
+Import Data restores a previously exported GPCH Crystal Club backup.
 
 Before importing, the application:
 
@@ -476,15 +631,9 @@ Before importing, the application:
 4. Displays the backup version.
 5. Requests confirmation before replacing existing data.
 
-Imported cards are automatically displayed according to the current sorting rules.
-
 ## Automatic Safety Backup
 
-Before an import replaces existing browser data, the application automatically exports the current dataset.
-
-Example:
-
-`GPCH_Crystal_Club_PreImport_Backup_2026-08-23_1411.json`
+Before imported data replaces the existing browser dataset, the application automatically exports the current data.
 
 This provides a recovery point if an incorrect or older backup is imported.
 
@@ -495,19 +644,19 @@ This provides a recovery point if an incorrect or older backup is imported.
 ## Old Computer
 
 1. Open GPCH Crystal Club.
-2. Select "Export Data".
+2. Select Export Data.
 3. Save the generated JSON file.
 4. Transfer the file to the new computer.
 
 ## New Computer
 
 1. Open GPCH Crystal Club.
-2. Select "Import Data".
+2. Select Import Data.
 3. Choose the exported JSON file.
 4. Review the backup information.
 5. Confirm the import.
 
-Cards, timestamps and scheduled-task data will then be restored in the new browser.
+Active cards, archived records, timestamps and scheduled-task data will then be restored.
 
 ---
 
@@ -530,30 +679,58 @@ The entire operational application is contained within a single HTML page.
 
 # Version History
 
+## v6.3 · Dashboard Quick Access
+
+• Made all five dashboard count boxes clickable  
+• TO DO count opens the expanded TO DO workspace  
+• TO ORDER count opens the expanded TO ORDER workspace  
+• TO RECEIVE count opens the expanded TO RECEIVE workspace  
+• GUEST NOTES count opens the expanded GUEST NOTES workspace  
+• HANDOVER count opens the expanded HANDOVER workspace  
+• Added hover feedback to communicate interactivity  
+• Added keyboard access using Enter and Space  
+• Count boxes and column headers now provide equivalent expanded-view navigation
+
+## v6.2 · Complete and Archive Workflow
+
+• Replaced direct card deletion with Complete  
+• Added completion confirmation window  
+• Added Archive option  
+• Added Delete Permanently option  
+• Added Cancel option  
+• Added archive timestamps  
+• Added Show Archive / Hide Archive toggle  
+• Added archive-mode notification  
+• Added subdued archived-card styling  
+• Added ARCHIVED status indicator  
+• Added Restore functionality  
+• Archived cards remain associated with their original columns  
+• Archived cards are excluded from active dashboard counts  
+• Archived cards cannot be dragged between active columns  
+• Mark Received now uses the completion workflow
+
 ## v6.1 · Dashboard Colour Integration
 
-• Colour-coded the five dashboard summary cards  
-• TO DO summary now matches the blue TO DO workflow  
-• TO ORDER summary now matches the amber TO ORDER workflow  
-• TO RECEIVE summary now matches the green TO RECEIVE workflow  
-• GUEST NOTES summary now matches the pink GUEST NOTES workflow  
-• HANDOVER summary now matches the violet HANDOVER workflow  
+• Colour-coded the five dashboard count boxes  
+• TO DO matches the blue workflow  
+• TO ORDER matches the amber workflow  
+• TO RECEIVE matches the green workflow  
+• GUEST NOTES matches the pink workflow  
+• HANDOVER matches the violet workflow  
 • Matched summary backgrounds, borders and text colours  
-• Extended the established colour system across the complete dashboard  
-• Improved rapid visual recognition of operational categories
+• Extended the established colour system across the dashboard
 
 ## v6.0 · Expanded View Sorting
 
 • Added Sort by controls to expanded column windows  
-• Retained Urgency: High → Low as the default  
+• Retained Urgency: High → Low as default  
 • Added Urgency: Low → High  
 • Added Newest First and Oldest First  
 • Added Title A → Z and Z → A  
 • Added TO DO due-time sorting  
 • Added TO ORDER and TO RECEIVE status sorting  
 • Added GUEST NOTES arrival, departure and room sorting  
-• Added HANDOVER follow-up-time sorting  
-• Sorting affects only the expanded view and does not modify card data
+• Added HANDOVER follow-up-time sorting
 
 ## v5.9 · Expanded Column View
 
@@ -563,7 +740,6 @@ The entire operational application is contained within a single HTML page.
 • Added dedicated expanded-column search  
 • Added "+ Add Here"  
 • Retained card actions inside expanded views  
-• Retained urgency-based ordering  
 • Added column-specific colour themes  
 • Added × Close, click-outside and Esc closing  
 • Improved usability on smaller laptop screens
@@ -583,7 +759,7 @@ The entire operational application is contained within a single HTML page.
 • Applied timestamps across all five categories  
 • Preserved original timestamps during editing and movement  
 • Included timestamps in exported backups  
-• Added "Date unavailable" handling for legacy cards  
+• Added Date unavailable handling for legacy cards  
 • Introduced a simple operational audit trail
 
 ## v5.6 · Visual Cohesion
@@ -595,8 +771,7 @@ The entire operational application is contained within a single HTML page.
 • Green TO RECEIVE  
 • Pink GUEST NOTE  
 • Violet HANDOVER  
-• Added subtle hover feedback  
-• Improved interface consistency
+• Added subtle hover feedback
 
 ## v5.5 · Data Portability
 
@@ -612,8 +787,7 @@ The entire operational application is contained within a single HTML page.
 
 • Fixed scheduled-task deletion  
 • Improved deletion event handling  
-• Added deletion confirmation  
-• Deleted schedules now disappear correctly from both schedule interfaces
+• Added deletion confirmation
 
 ## v5.3 · Receiving Workflow
 
@@ -628,7 +802,6 @@ The entire operational application is contained within a single HTML page.
 
 • Consolidated primary controls into one header row  
 • Added Toggle Schedule to the main controls  
-• Removed the separate floating schedule restoration button  
 • Prevented schedule controls from obstructing "+ Add"
 
 ## v5.1 · Rendering Reliability
@@ -680,6 +853,7 @@ GitHub Pages distributes the application while operational data remains in brows
 • No server maintenance  
 • Local persistence  
 • Portable backups  
+• Archived operational history  
 • Easy migration between computers  
 • Works as a static GitHub Pages application
 
@@ -695,4 +869,4 @@ A shared backend or cloud database would be required if the project is later exp
 
 Active development.
 
-The dashboard continues to evolve around practical GPCH Crystal Club operations, with emphasis on visibility, priority management, efficient use of limited screen space, intuitive workflows, shift communication, recurring task management, data portability and operational traceability.
+The dashboard continues to evolve around practical GPCH Crystal Club operations, with emphasis on visibility, priority management, efficient use of limited screen space, operational history, intuitive workflows, shift communication, recurring task management, data portability and traceability.
