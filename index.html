@@ -29,6 +29,9 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
 .stat strong{display:block;font-size:22px}
 .stat span{font-size:11px;color:var(--muted);letter-spacing:.08em}
+.stat[data-expand]{cursor:pointer;user-select:none;transition:transform .15s ease,box-shadow .15s ease}
+.stat[data-expand]:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(30,25,18,.10)}
+.stat[data-expand]:focus-visible{outline:3px solid rgba(40,90,140,.28);outline-offset:2px}
 .stats .stat:nth-child(1){background:#d8edff;border-color:#b8d9f4;color:#24577d}
 .stats .stat:nth-child(1) span{color:#24577d}
 .stats .stat:nth-child(2){background:#ffe7a8;border-color:#e6cb7d;color:#7a5410}
@@ -73,6 +76,14 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 .guest-card{border-left:4px solid #8d795e}
 .handover-card{border-left:4px solid #687789}
 .receive-card{border-left:4px solid #6c9f72}
+.archived-card{opacity:.68;background:rgba(245,245,245,.92);border-style:dashed}
+.archived-badge{background:#e3e3e3;color:#666}
+.archive-mode-banner{display:none;margin-bottom:12px;padding:10px 12px;border:1px solid #cfc8bc;border-radius:10px;background:#eee9df;color:#5f5a52;font-size:12px}
+.archive-mode-banner.visible{display:block}
+.complete-choice{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.complete-choice button{padding:16px 12px;font-weight:800}
+.archive-btn{background:#e8f0e9;border-color:#bfd1c2;color:#315f3b}
+.delete-btn{background:#f7e1e1;border-color:#dfb7b7;color:#8b3030}
 .order-status{font-weight:700}
 .schedule-overlay{
   position:fixed;
@@ -175,6 +186,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
     <button class="primary" id="addBtn">+ Add</button>
     <button id="manageScheduleBtn">Manage Schedule</button>
     <button id="toggleScheduleBtn">Toggle Schedule</button>
+    <button id="toggleArchiveBtn">Show Archive</button>
     <button id="exportDataBtn">Export Data</button>
     <button id="importDataBtn">Import Data</button>
     <input id="importFileInput" type="file" accept=".json,application/json" style="display:none">
@@ -182,11 +194,11 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 </header>
 
 <section class="stats">
-  <div class="stat"><strong id="statTodo">0</strong><span>TO DO</span></div>
-  <div class="stat"><strong id="statOrder">0</strong><span>TO ORDER</span></div>
-  <div class="stat"><strong id="statReceive">0</strong><span>TO RECEIVE</span></div>
-  <div class="stat"><strong id="statGuest">0</strong><span>GUEST NOTES</span></div>
-  <div class="stat"><strong id="statHandover">0</strong><span>HANDOVER</span></div>
+  <div class="stat" data-expand="todo" role="button" tabindex="0" aria-label="Open To Do"><strong id="statTodo">0</strong><span>TO DO</span></div>
+  <div class="stat" data-expand="order" role="button" tabindex="0" aria-label="Open To Order"><strong id="statOrder">0</strong><span>TO ORDER</span></div>
+  <div class="stat" data-expand="receive" role="button" tabindex="0" aria-label="Open To Receive"><strong id="statReceive">0</strong><span>TO RECEIVE</span></div>
+  <div class="stat" data-expand="guest" role="button" tabindex="0" aria-label="Open Guest Notes"><strong id="statGuest">0</strong><span>GUEST NOTES</span></div>
+  <div class="stat" data-expand="handover" role="button" tabindex="0" aria-label="Open Handover"><strong id="statHandover">0</strong><span>HANDOVER</span></div>
 </section>
 
 <div class="toolbar">
@@ -201,6 +213,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
   </select>
 </div>
 
+<div class="archive-mode-banner" id="archiveModeBanner">ARCHIVE VIEW: archived cards are shown together with active cards.</div>
 <main class="board">
   <section class="column column-todo">
     <div class="column-head" data-expand="todo"><span class="column-title">TO DO <span class="expand-cue">↗</span></span><span class="count" id="countTodo">0</span></div>
@@ -251,6 +264,19 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
     <div class="expanded-column-content">
       <div class="expanded-grid" id="expandedColumnGrid"></div>
     </div>
+  </div>
+</div>
+
+<div class="modal" id="completeModal">
+  <div class="modal-card">
+    <h2>Complete Card</h2>
+    <div id="completeCardName" style="color:var(--muted);font-size:13px"></div>
+    <p style="margin:14px 0 0;font-size:14px;line-height:1.5">What would you like to do with this completed card?</p>
+    <div class="complete-choice">
+      <button type="button" class="archive-btn" id="archiveCompletedBtn">Archive</button>
+      <button type="button" class="delete-btn" id="deleteCompletedBtn">Delete Permanently</button>
+    </div>
+    <div class="modal-actions"><button type="button" id="cancelCompleteBtn">Cancel</button></div>
   </div>
 </div>
 
@@ -317,7 +343,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 var BOARD_KEY="gpch_crystal_board_v51";
 var SCHED_KEY="gpch_crystal_schedule_v51";
 var DONE_KEY="gpch_crystal_schedule_done_v51";
-var APP_VERSION="6.1";
+var APP_VERSION="6.3";
 
 function makeId(){
   return "id_"+Date.now()+"_"+Math.random().toString(36).slice(2,9);
@@ -386,6 +412,8 @@ var schedule=getStored(SCHED_KEY,defaultSchedule);
 var done=getStored(DONE_KEY,{});
 var editingItemId=null;
 var editingType=null;
+var showArchived=false;
+var completingCardId=null;
 
 var zoneIds={todo:"todoZone",order:"orderZone",receive:"receiveZone",guest:"guestZone",handover:"handoverZone"};
 var countIds={todo:"countTodo",order:"countOrder",receive:"countReceive",guest:"countGuest",handover:"countHandover"};
@@ -431,12 +459,14 @@ function cardHtml(x){
     body+=(x.notes?'<div>'+esc(x.notes)+'</div>':"");
   }
   body+='<div style="margin-top:7px;font-size:11px;color:#8b857c">Created: '+esc(formatCreatedAt(x.createdAt))+'</div>';
-  return '<article class="card'+cls+'" draggable="true" data-id="'+esc(x.id)+'">'+
-    '<div class="card-top">'+top+'</div><h3>'+esc(x.title)+'</h3><div class="meta">'+body+'</div>'+
-    '<div class="card-actions">'+
-    (x.type==="order"?'<button data-action="move-receive">Move to Receive</button>':"")+
-    (x.type==="receive"?'<button data-action="received">Mark Received</button>':"")+
-    '<button data-action="edit">Edit</button><button data-action="delete">Delete</button></div></article>';
+  return '<article class="card'+cls+(x.archived?' archived-card':'')+'" draggable="'+(x.archived?'false':'true')+'" data-id="'+esc(x.id)+'">'+
+    '<div class="card-top">'+top+(x.archived?'<span class="pill archived-badge">ARCHIVED</span>':'')+'</div><h3>'+esc(x.title)+'</h3><div class="meta">'+body+
+    (x.archivedAt?'<div style="margin-top:5px;font-size:11px;color:#8b857c">Archived: '+esc(formatCreatedAt(x.archivedAt))+'</div>':'')+
+    '</div><div class="card-actions">'+
+    (!x.archived && x.type==="order"?'<button data-action="move-receive">Move to Receive</button>':"")+
+    (!x.archived && x.type==="receive"?'<button data-action="received">Mark Received</button>':"")+
+    (x.archived?'<button data-action="restore">Restore</button>':'<button data-action="edit">Edit</button><button data-action="complete">Complete</button>')+
+    '</div></article>';
 }
 
 function urgencyRank(x){
@@ -464,6 +494,7 @@ function sortedItemsForType(type,query){
   query=String(query||"").toLowerCase().trim();
   return items.filter(function(x){
     if(x.type!==type) return false;
+    if(x.archived && !showArchived) return false;
     if(!query) return true;
     try{return JSON.stringify(x).toLowerCase().indexOf(query)!==-1;}catch(e){return true;}
   }).sort(function(a,b){
@@ -606,7 +637,7 @@ function renderBoard(){
       '</div>';
 
     document.getElementById(countIds[type]).textContent=visible.length;
-    document.getElementById(statIds[type]).textContent=items.filter(function(x){return x.type===type;}).length;
+    document.getElementById(statIds[type]).textContent=items.filter(function(x){return x.type===type && !x.archived;}).length;
   });
 
   bindCards();
@@ -618,6 +649,8 @@ function renderBoard(){
 function bindCards(){
   Array.prototype.forEach.call(document.querySelectorAll(".card"),function(card){
     card.addEventListener("dragstart",function(e){
+      var item=items.find(function(i){return i.id===card.getAttribute("data-id");});
+      if(item && item.archived){e.preventDefault();return;}
       card.classList.add("dragging");
       e.dataTransfer.setData("text/plain",card.getAttribute("data-id"));
     });
@@ -630,12 +663,16 @@ function bindCards(){
         if(!x) return;
         var action=btn.getAttribute("data-action");
 
-        if(action==="delete"){
-          if(confirm("Delete this card?")){
-            items=items.filter(function(i){return i.id!==id;});
-            setStored(BOARD_KEY,items);
-            renderBoard();
-          }
+        if(action==="complete"){
+          completingCardId=id;
+          document.getElementById("completeCardName").textContent=x.title;
+          document.getElementById("completeModal").classList.add("open");
+        }
+        if(action==="restore"){
+          x.archived=false;
+          x.archivedAt=null;
+          setStored(BOARD_KEY,items);
+          renderBoard();
         }
         if(action==="edit") openEntry(x.type,x);
         if(action==="move-receive"){
@@ -645,11 +682,9 @@ function bindCards(){
           renderBoard();
         }
         if(action==="received"){
-          if(confirm("Mark this item as received and remove it from the board?")){
-            items=items.filter(function(i){return i.id!==id;});
-            setStored(BOARD_KEY,items);
-            renderBoard();
-          }
+          completingCardId=id;
+          document.getElementById("completeCardName").textContent=x.title+" (received)";
+          document.getElementById("completeModal").classList.add("open");
         }
       });
     });
@@ -664,7 +699,7 @@ function bindCards(){
     e.preventDefault();zone.classList.remove("over");
     var id=e.dataTransfer.getData("text/plain");
     var x=items.find(function(i){return i.id===id;});
-    if(x){x.type=type;setStored(BOARD_KEY,items);renderBoard();}
+    if(x && !x.archived){x.type=type;setStored(BOARD_KEY,items);renderBoard();}
   });
 });
 
@@ -993,6 +1028,40 @@ function handleImportFile(file){
   reader.readAsText(file);
 }
 
+function closeCompleteModal(){
+  document.getElementById("completeModal").classList.remove("open");
+  completingCardId=null;
+}
+
+document.getElementById("archiveCompletedBtn").addEventListener("click",function(){
+  var x=items.find(function(i){return i.id===completingCardId;});
+  if(!x){closeCompleteModal();return;}
+  x.archived=true;
+  x.archivedAt=new Date().toISOString();
+  setStored(BOARD_KEY,items);
+  closeCompleteModal();
+  renderBoard();
+});
+
+document.getElementById("deleteCompletedBtn").addEventListener("click",function(){
+  var x=items.find(function(i){return i.id===completingCardId;});
+  if(!x){closeCompleteModal();return;}
+  if(!confirm("Delete this card permanently? This cannot be undone.")) return;
+  items=items.filter(function(i){return i.id!==completingCardId;});
+  setStored(BOARD_KEY,items);
+  closeCompleteModal();
+  renderBoard();
+});
+
+document.getElementById("cancelCompleteBtn").addEventListener("click",closeCompleteModal);
+
+document.getElementById("toggleArchiveBtn").addEventListener("click",function(){
+  showArchived=!showArchived;
+  document.getElementById("toggleArchiveBtn").textContent=showArchived?"Hide Archive":"Show Archive";
+  document.getElementById("archiveModeBanner").classList.toggle("visible",showArchived);
+  renderBoard();
+});
+
 document.getElementById("addBtn").addEventListener("click",function(){document.getElementById("typeModal").classList.add("open");});
 Array.prototype.forEach.call(document.querySelectorAll("[data-addtype]"),function(btn){
   btn.addEventListener("click",function(){openEntry(btn.getAttribute("data-addtype"),null);});
@@ -1021,6 +1090,12 @@ document.getElementById("toggleScheduleBtn").addEventListener("click",toggleSche
 
 Array.prototype.forEach.call(document.querySelectorAll(".column-head[data-expand]"),function(head){
   head.addEventListener("click",function(){openExpandedColumn(head.getAttribute("data-expand"));});
+});
+Array.prototype.forEach.call(document.querySelectorAll(".stat[data-expand]"),function(stat){
+  stat.addEventListener("click",function(){openExpandedColumn(stat.getAttribute("data-expand"));});
+  stat.addEventListener("keydown",function(e){
+    if(e.key==="Enter" || e.key===" "){e.preventDefault();openExpandedColumn(stat.getAttribute("data-expand"));}
+  });
 });
 document.getElementById("closeExpandedBtn").addEventListener("click",closeExpandedColumn);
 document.getElementById("expandedSearch").addEventListener("input",renderExpandedColumn);
