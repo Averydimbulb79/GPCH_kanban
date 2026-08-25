@@ -263,6 +263,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
           <option value="urgency_desc">Urgency: High → Low</option>
         </select>
         <button id="expandedAddBtn">+ Add Here</button>
+        <button id="expandedArchiveBtn">Show Archived</button>
         <button id="closeExpandedBtn">× Close</button>
       </div>
     </div>
@@ -348,7 +349,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 var BOARD_KEY="gpch_crystal_board_v51";
 var SCHED_KEY="gpch_crystal_schedule_v51";
 var DONE_KEY="gpch_crystal_schedule_done_v51";
-var APP_VERSION="6.5";
+var APP_VERSION="6.6";
 
 function makeId(){
   return "id_"+Date.now()+"_"+Math.random().toString(36).slice(2,9);
@@ -419,6 +420,7 @@ var editingItemId=null;
 var editingType=null;
 var showArchived=false;
 var completingCardId=null;
+var expandedShowArchived=false;
 
 var zoneIds={todo:"todoZone",order:"orderZone",receive:"receiveZone",guest:"guestZone",handover:"handoverZone"};
 var countIds={todo:"countTodo",order:"countOrder",receive:"countReceive",guest:"countGuest",handover:"countHandover"};
@@ -596,7 +598,11 @@ function configureExpandedSort(type){
 function renderExpandedColumn(){
   if(!expandedType) return;
   var grid=document.getElementById("expandedColumnGrid");
-  var visible=sortedItemsForType(expandedType,document.getElementById("expandedSearch").value);
+  var visible;
+  var previousShowArchived=showArchived;
+  showArchived=expandedShowArchived;
+  visible=sortedItemsForType(expandedType,document.getElementById("expandedSearch").value);
+  showArchived=previousShowArchived;
   visible=sortExpandedItems(visible,document.getElementById("expandedSort").value);
   if(!visible.length){
     grid.innerHTML='<div class="expanded-empty">No matching cards in this column.</div>';
@@ -609,6 +615,8 @@ function renderExpandedColumn(){
 
 function openExpandedColumn(type){
   expandedType=type;
+  expandedShowArchived=showArchived;
+  document.getElementById("expandedArchiveBtn").textContent=expandedShowArchived?"Hide Archived":"Show Archived";
   var labels={todo:"TO DO",order:"TO ORDER",receive:"TO RECEIVE",guest:"GUEST NOTES",handover:"HANDOVER"};
   var modal=document.getElementById("expandedColumnModal");
   var shell=document.getElementById("expandedColumnShell");
@@ -1145,6 +1153,11 @@ document.getElementById("expandedSearch").addEventListener("input",renderExpande
 document.getElementById("expandedSort").addEventListener("change",renderExpandedColumn);
 document.getElementById("expandedAddBtn").addEventListener("click",function(){
   if(expandedType) openEntry(expandedType,null);
+});
+document.getElementById("expandedArchiveBtn").addEventListener("click",function(){
+  expandedShowArchived=!expandedShowArchived;
+  this.textContent=expandedShowArchived?"Hide Archived":"Show Archived";
+  renderExpandedColumn();
 });
 document.getElementById("expandedColumnModal").addEventListener("click",function(e){
   if(e.target===document.getElementById("expandedColumnModal")) closeExpandedColumn();
