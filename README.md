@@ -2,13 +2,13 @@
 
 A single-page operational Kanban dashboard designed for GPCH Crystal Club.
 
-The dashboard consolidates daily tasks, ordering, receiving, guest notes, shift handovers and recurring operational schedules into one lightweight browser-based workspace.
+The dashboard consolidates daily tasks, ordering, receiving, guest notes, shift handovers, archived records and recurring operational schedules into one lightweight browser-based workspace.
 
 ## Live Dashboard
 
 https://averydimbulb79.github.io/GPCH_kanban/
 
-Current version: 6.5
+Current version: 6.6
 
 ---
 
@@ -18,6 +18,7 @@ Current version: 6.5
 • Matching colour-coded dashboard count boxes  
 • Clickable count boxes and column headers  
 • Full-window expanded column views  
+• Archive visibility inside expanded views  
 • Expanded-view search and sorting  
 • Automatic urgency-based card sorting  
 • Card creation timestamps  
@@ -65,7 +66,7 @@ This provides rapid visual recognition of each operational category.
 
 The top of the dashboard provides an immediate count of active cards in each operational category.
 
-For example:
+Example:
 
 `15 TO DO`
 
@@ -77,7 +78,7 @@ For example:
 
 `15 HANDOVER`
 
-Archived cards are excluded from active counts.
+Archived cards are excluded from these active counts.
 
 Each count box uses the same colour as its corresponding workflow.
 
@@ -95,13 +96,7 @@ The count boxes also function as navigation controls.
 
 Clicking a count box immediately opens the corresponding expanded workspace.
 
-For example:
-
-`15 GUEST NOTES`
-
-opens the full GUEST NOTES window.
-
-Both navigation methods therefore perform the same action:
+Both navigation methods perform the same action:
 
 `Count Box → Expanded View`
 
@@ -152,17 +147,57 @@ The expanded window retains the colour identity of its corresponding workflow.
 
 Each expanded window provides:
 
-• Search this column  
-• Sort by  
-• + Add Here  
-• × Close
+`Search this column`
 
-The window can also be closed by:
+`Sort by`
 
-• Clicking outside the window  
-• Pressing `Esc`
+`+ Add Here`
 
-All card actions remain available from the expanded workspace.
+`Show Archived / Hide Archived`
+
+`× Close`
+
+The window can also be closed by clicking outside it or pressing `Esc`.
+
+All applicable card actions remain available from the expanded workspace.
+
+---
+
+# Expanded Archive View
+
+Version 6.6 extends archive access directly into every expanded column window.
+
+Staff no longer need to close an expanded section and return to the main board simply to inspect archived records.
+
+Select:
+
+`Show Archived`
+
+to display archived cards belonging to the currently expanded section.
+
+The button changes to:
+
+`Hide Archived`
+
+while archived records are visible.
+
+For example, inside HANDOVER:
+
+`Show Archived`
+
+reveals archived HANDOVER records without displaying archived TO DO, TO ORDER, TO RECEIVE or GUEST NOTES cards.
+
+This provides section-specific historical access while maintaining the focused expanded-column workflow.
+
+## Archive State Inheritance
+
+When an expanded window is opened, it inherits the archive visibility state of the main board.
+
+If the main board is currently displaying archived cards, the expanded window opens with archived cards visible.
+
+If the main board is displaying only active cards, the expanded window initially displays only active cards.
+
+Archive visibility can then be independently changed within the expanded window.
 
 ---
 
@@ -255,7 +290,7 @@ Every newly created card automatically records its creation date and time.
 
 Example:
 
-`Created: 23 Aug 2026, 16:20`
+`Created: 25 Aug 2026, 13:51`
 
 Creation timestamps apply to:
 
@@ -277,7 +312,7 @@ because their original creation time was not previously recorded.
 
 # Card Actions
 
-The dashboard separates two different types of card actions:
+The dashboard separates two types of card actions:
 
 `Workflow actions`
 
@@ -297,7 +332,7 @@ These controls remain grouped in the card footer.
 
 ## Workflow Actions
 
-Actions that move an item through an operational process are positioned beside the information directly associated with that workflow.
+Actions that move an item through an operational process are positioned beside the information associated with that workflow.
 
 This reduces visual clutter without hiding frequently used actions behind additional menus.
 
@@ -330,8 +365,6 @@ The copied card becomes a new active record rather than another archived record.
 
 This is useful when a previously completed task, order, guest requirement or handover matter occurs again.
 
-Copy therefore provides a faster alternative to manually recreating similar cards.
-
 ---
 
 # TO ORDER Workflow
@@ -344,15 +377,11 @@ A typical card may display:
 
 `Quantity: 1     Move to Receive →`
 
-Instead of placing Move to Receive in the card footer, Version 6.5 positions the workflow action directly beside Quantity.
-
-This keeps the procurement transition close to the information it affects.
+The workflow transition is positioned directly beside Quantity rather than in the card footer.
 
 The footer remains:
 
 `Copy` · `Edit` · `Complete`
-
-## Moving an Order
 
 Selecting:
 
@@ -360,11 +389,7 @@ Selecting:
 
 moves the card from:
 
-`TO ORDER`
-
-to:
-
-`TO RECEIVE`
+`TO ORDER → TO RECEIVE`
 
 The card then enters the receiving workflow.
 
@@ -374,7 +399,7 @@ The card then enters the receiving workflow.
 
 TO RECEIVE cards represent items that have already been ordered and are awaiting physical receipt.
 
-The card displays the receiving action beside Quantity:
+A card may display:
 
 `Quantity: 4 cartons     ✓ Mark Received`
 
@@ -392,7 +417,7 @@ uses the completion workflow so the received item can be archived rather than au
 
 # Workflow Design Principle
 
-Version 6.5 introduces a clearer distinction between workflow transitions and general card management.
+Workflow transitions and general card management are deliberately separated.
 
 Workflow-specific actions appear inside the relevant card information:
 
@@ -404,9 +429,9 @@ Universal controls remain together:
 
 `Copy · Edit · Complete`
 
-This reduces footer congestion while avoiding extra clicks.
+This reduces footer congestion while avoiding additional menus and unnecessary clicks.
 
-The design prioritises direct actions rather than hiding commonly used controls inside secondary menus.
+The design prioritises direct actions and minimal interaction steps.
 
 ---
 
@@ -449,25 +474,39 @@ Cancel closes the completion window without changing the card.
 
 ---
 
-# Archive View
+# Archive Access
+
+Archive records can be accessed at two levels.
+
+## Main Board
 
 The main toolbar includes:
 
 `Show Archive`
 
-Archived cards are hidden during normal daily operations.
+Selecting it reveals archived cards across the board.
 
-Selecting Show Archive reveals archived cards alongside active cards.
-
-The button then changes to:
+The control then changes to:
 
 `Hide Archive`
 
-A visible notification indicates when Archive View is active.
+## Expanded Column
 
-## Archived Card Appearance
+Every expanded section also includes:
 
-Archived cards are visually subdued and display:
+`Show Archived`
+
+This displays archived records for that section directly inside its expanded workspace.
+
+This means archived records can be inspected without leaving the operational context currently being viewed.
+
+---
+
+# Archived Card Appearance
+
+Archived cards are visually subdued so they remain distinguishable from active work.
+
+Archived cards display:
 
 • ARCHIVED status  
 • Original creation timestamp  
@@ -491,7 +530,7 @@ The card then re-enters normal urgency sorting.
 
 Archived cards are excluded from the five dashboard count boxes.
 
-The dashboard therefore continues to represent current active workload rather than historical volume.
+The dashboard counts therefore represent current active workload rather than historical records.
 
 ---
 
@@ -629,6 +668,8 @@ The board can be filtered by:
 
 Expanded column windows contain their own dedicated search field.
 
+Search, sorting and archive visibility can therefore be used together within a focused section.
+
 ---
 
 # Main Controls
@@ -646,6 +687,18 @@ The primary dashboard controls include:
 `Export Data`
 
 `Import Data`
+
+Expanded windows provide:
+
+`Search`
+
+`Sort`
+
+`+ Add Here`
+
+`Show Archived / Hide Archived`
+
+`× Close`
 
 ---
 
@@ -701,7 +754,7 @@ Backups are automatically timestamped.
 
 Example:
 
-`GPCH_Crystal_Club_Backup_2026-08-23_1620.json`
+`GPCH_Crystal_Club_Backup_2026-08-25_1351.json`
 
 ## Import Data
 
@@ -763,18 +816,28 @@ The entire operational application is contained within a single HTML page.
 
 # Version History
 
+## v6.6 · Expanded Archive Access
+
+• Added `Show Archived` directly to every expanded column window  
+• Added `Hide Archived` state when archived records are visible  
+• Archived records can now be reviewed without returning to the main board  
+• Archive display is limited to the currently expanded operational section  
+• Expanded windows inherit the main board's archive visibility when opened  
+• Archive visibility can subsequently be controlled independently within the expanded window  
+• Retained search and sorting while archived cards are displayed  
+• Reduced navigation steps when reviewing historical operational records
+
 ## v6.5 · Streamlined Card Actions
 
 • Reorganised card controls to reduce visual clutter  
 • Separated workflow actions from universal card-management actions  
 • Moved Move to Receive from the TO ORDER footer to the Quantity row  
-• Added compact `Move to Receive →` control beside order quantity  
+• Added compact `Move to Receive →` beside order quantity  
 • Moved Mark Received from the TO RECEIVE footer to the Quantity row  
-• Added compact `✓ Mark Received` control beside receiving quantity  
-• Retained direct one-click access to workflow transitions  
+• Added compact `✓ Mark Received` beside receiving quantity  
+• Retained direct one-click workflow transitions  
 • Standardised active card footer around `Copy · Edit · Complete`  
-• Reduced button congestion on narrow Kanban cards  
-• Improved usability on smaller laptop screens  
+• Reduced button congestion on narrow cards  
 • Avoided secondary menus so common actions remain immediately accessible
 
 ## v6.4 · Card Duplication
@@ -954,6 +1017,7 @@ GitHub Pages distributes the application while operational data remains in brows
 • Local persistence  
 • Portable backups  
 • Archived operational history  
+• Section-specific archive access  
 • One-click card duplication  
 • Direct workflow controls  
 • Easy migration between computers  
