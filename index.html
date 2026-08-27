@@ -139,6 +139,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 .expanded-theme-receive .expanded-column-header{background:#d8f0d8;color:#2d6b3a}
 .expanded-theme-guest .expanded-column-header{background:#f8dce9;color:#7a3458}
 .expanded-theme-handover .expanded-column-header{background:#e2dcfa;color:#55448a}
+.expanded-theme-leave .expanded-column-header{background:#e7e1f4;color:#5f4b82}
 @media(max-width:650px){.expanded-column-modal{padding:8px}.expanded-column-header{align-items:flex-start;flex-direction:column}.expanded-column-tools{width:100%}.expanded-column-tools input,.expanded-column-tools select{min-width:0;flex:1 1 180px}.expanded-grid{grid-template-columns:1fr}}
 .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.42);z-index:200;padding:20px}
 .modal.open{display:grid}
@@ -175,6 +176,21 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 .schedule-row small{display:block;color:var(--muted);margin-top:2px}
 .schedule-row button{font-size:11px;padding:5px 7px}
 .hidden-field{display:none!important}
+.settings-grid{display:grid;grid-template-columns:1fr;gap:10px}
+.settings-grid button{padding:14px 16px;text-align:left;font-weight:700}
+.settings-note{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:12px}
+.leave-form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+.leave-list-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.leave-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:12px}
+.leave-card{background:#fff;border:1px solid #d6cdea;border-left:4px solid #8170ae;border-radius:13px;padding:12px;box-shadow:0 5px 14px rgba(30,25,18,.05)}
+.leave-card.archived-card{opacity:.62}
+.leave-card h3{margin:6px 0 8px;font-size:15px}
+.leave-card .meta{font-size:12px;line-height:1.55}
+.leave-status{background:#e9e2f7;color:#58457e}
+.leave-type{background:#f2edf9;color:#665477}
+.leave-card-actions{display:flex;justify-content:flex-end;gap:5px;flex-wrap:wrap;margin-top:10px}
+.leave-card-actions button{font-size:11px;padding:5px 7px}
+.leave-empty{color:var(--muted);font-size:13px;padding:18px 2px}
 @media(max-width:900px){.stats{grid-template-columns:1fr 1fr}.board{grid-template-columns:repeat(5,260px)}}
 @media(max-width:650px){.app{padding:14px}header{flex-direction:column;align-items:flex-start}.schedule-overlay{left:12px;right:12px;width:auto;max-height:45vh}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.type-picker{grid-template-columns:1fr 1fr}.schedule-row{grid-template-columns:1fr}}
 </style>
@@ -189,12 +205,10 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
   </div>
   <div class="actions">
     <button class="primary" id="addBtn">+ Add</button>
-    <button id="manageScheduleBtn">Manage Schedule</button>
+    <button id="leaveRequestBtn">Leave Request</button>
     <button id="toggleScheduleBtn">Toggle Schedule</button>
     <button id="toggleArchiveBtn">Show Archive</button>
-    <button id="exportDataBtn">Export Data</button>
-    <button id="importDataBtn">Import Data</button>
-    <input id="importFileInput" type="file" accept=".json,application/json" style="display:none">
+    <button id="settingsBtn">Settings</button>
   </div>
 </header>
 
@@ -253,6 +267,32 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
   <div id="todaySchedule"><div style="font-size:12px;color:#c8beae;padding:12px 0">No scheduled tasks today.</div></div>
 </aside>
 
+<div class="expanded-column-modal" id="leaveWorkspaceModal" aria-hidden="true">
+  <div class="expanded-column-shell expanded-theme-leave" id="leaveWorkspaceShell">
+    <div class="expanded-column-header">
+      <h2>LEAVE REQUESTS</h2>
+      <div class="expanded-column-tools">
+        <input id="leaveSearch" type="search" placeholder="Search leave requests">
+        <select id="leaveSort" aria-label="Sort leave requests">
+          <option value="start_asc">Start Date: Earliest First</option>
+          <option value="start_desc">Start Date: Latest First</option>
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="staff_az">Staff Name: A → Z</option>
+          <option value="staff_za">Staff Name: Z → A</option>
+          <option value="status_az">Status: A → Z</option>
+        </select>
+        <button id="leaveAddHereBtn">+ Add Here</button>
+        <button id="leaveArchiveToggleBtn">Show Archived</button>
+        <button id="leaveCloseBtn">× Close</button>
+      </div>
+    </div>
+    <div class="expanded-column-content">
+      <div class="expanded-grid" id="leaveWorkspaceGrid"></div>
+    </div>
+  </div>
+</div>
+
 <div class="expanded-column-modal" id="expandedColumnModal" aria-hidden="true">
   <div class="expanded-column-shell" id="expandedColumnShell">
     <div class="expanded-column-header">
@@ -270,6 +310,20 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
     <div class="expanded-column-content">
       <div class="expanded-grid" id="expandedColumnGrid"></div>
     </div>
+  </div>
+</div>
+
+<div class="modal" id="settingsModal">
+  <div class="modal-card">
+    <h2>Settings</h2>
+    <div class="settings-note">Manage recurring schedules and portable data backups from here.</div>
+    <div class="settings-grid">
+      <button type="button" id="manageScheduleBtn">Manage Schedule</button>
+      <button type="button" id="exportDataBtn">Export Data</button>
+      <button type="button" id="importDataBtn">Import Data</button>
+      <input id="importFileInput" type="file" accept=".json,application/json" style="display:none">
+    </div>
+    <div class="modal-actions"><button type="button" data-close="settingsModal">Close</button></div>
   </div>
 </div>
 
@@ -349,7 +403,8 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 var BOARD_KEY="gpch_crystal_board_v51";
 var SCHED_KEY="gpch_crystal_schedule_v51";
 var DONE_KEY="gpch_crystal_schedule_done_v51";
-var APP_VERSION="6.6";
+var LEAVE_KEY="gpch_crystal_leave_requests_v67";
+var APP_VERSION="6.8";
 
 function makeId(){
   return "id_"+Date.now()+"_"+Math.random().toString(36).slice(2,9);
@@ -416,6 +471,8 @@ var defaultSchedule=[
 var items=getStored(BOARD_KEY,defaultItems);
 var schedule=getStored(SCHED_KEY,defaultSchedule);
 var done=getStored(DONE_KEY,{});
+var leaveRequests=getStored(LEAVE_KEY,[]);
+var showLeaveArchived=false;
 var editingItemId=null;
 var editingType=null;
 var showArchived=false;
@@ -737,11 +794,19 @@ var fieldDefs={
   handover:[
     ["title","Handover Note","text"],["room","Room / Area","text"],["from","From","text"],["nextShift","For Next Shift","text"],
     ["priority","Priority","select",["ROUTINE","ATTENTION","URGENT"]],["followup","Follow-up Time","time"],["notes","Details","textarea"]
+  ],
+  leave:[
+    ["staff","Staff Name","text"],
+    ["leaveType","Leave Type","select",["Annual Leave","Off in Lieu","Medical Leave","Childcare Leave","Unpaid Leave","Other"]],
+    ["startDate","Start Date","date"],
+    ["endDate","End Date","date"],
+    ["status","Status","select",["Pending","Approved","Declined"]],
+    ["notes","Notes","textarea"]
   ]
 };
 
 function typeLabel(type){
-  return {todo:"TO DO",order:"TO ORDER",receive:"TO RECEIVE",guest:"GUEST NOTE",handover:"HANDOVER"}[type]||"ITEM";
+  return {todo:"TO DO",order:"TO ORDER",receive:"TO RECEIVE",guest:"GUEST NOTE",handover:"HANDOVER",leave:"LEAVE REQUEST"}[type]||"ITEM";
 }
 function openCopiedEntry(type,obj){
   var copy=clone(obj);
@@ -780,6 +845,34 @@ function openCopiedEntry(type,obj){
   document.getElementById("entryModal").classList.add("open");
 }
 
+function openLeaveEntry(obj){
+  editingType="leave";
+  editingItemId=obj ? obj.id : null;
+  document.getElementById("entryHeading").textContent=(obj?"Edit ":"Add ")+"LEAVE REQUEST";
+  var box=document.getElementById("entryFields");
+  box.innerHTML="";
+
+  fieldDefs.leave.forEach(function(def){
+    var key=def[0],label=def[1],kind=def[2],opts=def[3]||[],value=obj&&obj[key]!=null?obj[key]:"";
+    var wrap=document.createElement("div");
+    wrap.className="field "+((kind==="textarea"||key==="staff")?"full":"");
+    var inner='<label>'+esc(label)+'</label>';
+    if(kind==="select"){
+      inner+='<select id="field_'+key+'">'+opts.map(function(o){
+        return '<option'+(o===value?' selected':'')+'>'+esc(o)+'</option>';
+      }).join("")+'</select>';
+    }else if(kind==="textarea"){
+      inner+='<textarea id="field_'+key+'">'+esc(value)+'</textarea>';
+    }else{
+      inner+='<input id="field_'+key+'" type="'+esc(kind)+'" value="'+esc(value)+'">';
+    }
+    wrap.innerHTML=inner;
+    box.appendChild(wrap);
+  });
+
+  document.getElementById("entryModal").classList.add("open");
+}
+
 function openEntry(type,obj){
   editingType=type;
   editingItemId=obj ? obj.id : null;
@@ -808,6 +901,29 @@ function openEntry(type,obj){
 }
 
 document.getElementById("saveEntryBtn").addEventListener("click",function(){
+  if(editingType==="leave"){
+    var leaveObj=editingItemId ? leaveRequests.find(function(i){return i.id===editingItemId;}) : {
+      id:makeId(),createdAt:new Date().toISOString(),archived:false,archivedAt:null
+    };
+    if(!leaveObj) return;
+
+    fieldDefs.leave.forEach(function(def){
+      var key=def[0];
+      leaveObj[key]=document.getElementById("field_"+key).value.trim();
+    });
+
+    if(!leaveObj.staff){alert("Please enter the staff name.");return;}
+    if(!leaveObj.startDate || !leaveObj.endDate){alert("Please enter the leave start and end dates.");return;}
+    if(leaveObj.endDate<leaveObj.startDate){alert("End date cannot be earlier than start date.");return;}
+
+    if(!editingItemId) leaveRequests.push(leaveObj);
+    setStored(LEAVE_KEY,leaveRequests);
+    document.getElementById("entryModal").classList.remove("open");
+    editingItemId=null;editingType=null;
+    renderLeaveWorkspace();
+    return;
+  }
+
   var obj=editingItemId ? items.find(function(i){return i.id===editingItemId;}) : {id:makeId(),type:editingType,createdAt:new Date().toISOString()};
   if(!obj) return;
 
@@ -964,6 +1080,117 @@ document.getElementById("saveSchedBtn").addEventListener("click",function(){
   renderTodaySchedule();
 });
 
+
+function leaveCardHtml(x){
+  return '<article class="leave-card'+(x.archived?' archived-card':'')+'" data-leave-id="'+esc(x.id)+'">'+
+    '<div class="card-top"><span class="pill leave-type">'+esc(x.leaveType||"Leave")+'</span>'+
+    '<span class="pill leave-status">'+esc(x.status||"Pending")+'</span></div>'+
+    '<h3>'+esc(x.staff||"Unnamed")+'</h3>'+
+    '<div class="meta">'+
+    '<div>Leave: '+esc(formatLeaveDate(x.startDate))+' → '+esc(formatLeaveDate(x.endDate))+'</div>'+
+    (x.notes?'<div>'+esc(x.notes)+'</div>':'')+
+    '<div>Created: '+esc(formatCreatedAt(x.createdAt))+'</div>'+
+    (x.archivedAt?'<div>Archived: '+esc(formatCreatedAt(x.archivedAt))+'</div>':'')+
+    '</div>'+
+    '<div class="leave-card-actions">'+
+    '<button type="button" data-leave-action="copy">Copy</button>'+
+    (x.archived?'<button type="button" data-leave-action="restore">Restore</button>':
+      '<button type="button" data-leave-action="edit">Edit</button><button type="button" data-leave-action="complete">Complete</button>')+
+    '</div></article>';
+}
+
+function formatLeaveDate(value){
+  if(!value) return "Not set";
+  var parts=String(value).split("-");
+  if(parts.length!==3) return value;
+  try{
+    return new Intl.DateTimeFormat("en-SG",{day:"numeric",month:"short",year:"numeric"}).format(
+      new Date(Number(parts[0]),Number(parts[1])-1,Number(parts[2]))
+    );
+  }catch(e){ return value; }
+}
+
+function renderLeaveWorkspace(){
+  var q=document.getElementById("leaveSearch").value.toLowerCase().trim();
+  var mode=document.getElementById("leaveSort").value;
+
+  var list=leaveRequests.filter(function(x){
+    if(x.archived && !showLeaveArchived) return false;
+    if(!q) return true;
+    try{return JSON.stringify(x).toLowerCase().indexOf(q)!==-1;}catch(e){return true;}
+  });
+
+  list.sort(function(a,b){
+    if(mode==="start_asc") return String(a.startDate||"9999-12-31").localeCompare(String(b.startDate||"9999-12-31"));
+    if(mode==="start_desc") return String(b.startDate||"").localeCompare(String(a.startDate||""));
+    if(mode==="newest") return safeTime(b.createdAt)-safeTime(a.createdAt);
+    if(mode==="oldest") return safeTime(a.createdAt)-safeTime(b.createdAt);
+    if(mode==="staff_az") return textCompare(a.staff,b.staff);
+    if(mode==="staff_za") return textCompare(b.staff,a.staff);
+    if(mode==="status_az") return textCompare(a.status,b.status);
+    return 0;
+  });
+
+  document.getElementById("leaveArchiveToggleBtn").textContent=showLeaveArchived?"Hide Archived":"Show Archived";
+  var grid=document.getElementById("leaveWorkspaceGrid");
+  if(!list.length){
+    grid.innerHTML='<div class="expanded-empty">No matching leave request cards.</div>';
+    return;
+  }
+
+  grid.innerHTML=list.map(leaveCardHtml).join("");
+
+  Array.prototype.forEach.call(grid.querySelectorAll("[data-leave-action]"),function(btn){
+    btn.addEventListener("click",function(){
+      var card=btn.closest("[data-leave-id]");
+      var id=card.getAttribute("data-leave-id");
+      var x=leaveRequests.find(function(r){return r.id===id;});
+      if(!x) return;
+      var action=btn.getAttribute("data-leave-action");
+
+      if(action==="edit") openLeaveEntry(x);
+
+      if(action==="copy"){
+        var copy=clone(x);
+        delete copy.id;
+        delete copy.createdAt;
+        delete copy.archived;
+        delete copy.archivedAt;
+        openLeaveEntry(copy);
+        editingItemId=null;
+      }
+
+      if(action==="complete"){
+        if(!confirm("Archive this completed leave request?")) return;
+        x.archived=true;
+        x.archivedAt=new Date().toISOString();
+        setStored(LEAVE_KEY,leaveRequests);
+        renderLeaveWorkspace();
+      }
+
+      if(action==="restore"){
+        x.archived=false;
+        x.archivedAt=null;
+        setStored(LEAVE_KEY,leaveRequests);
+        renderLeaveWorkspace();
+      }
+    });
+  });
+}
+
+function openLeaveWorkspace(){
+  document.getElementById("leaveSearch").value="";
+  document.getElementById("leaveSort").value="start_asc";
+  document.getElementById("leaveWorkspaceModal").classList.add("open");
+  document.getElementById("leaveWorkspaceModal").setAttribute("aria-hidden","false");
+  renderLeaveWorkspace();
+}
+
+function closeLeaveWorkspace(){
+  document.getElementById("leaveWorkspaceModal").classList.remove("open");
+  document.getElementById("leaveWorkspaceModal").setAttribute("aria-hidden","true");
+}
+
 function openScheduleManager(){
   renderScheduleList();
   document.getElementById("scheduleModal").classList.add("open");
@@ -990,12 +1217,14 @@ function buildBackupObject(){
     exportedAt:new Date().toISOString(),
     recordCounts:{
       board:Array.isArray(items)?items.length:0,
-      scheduledTasks:Array.isArray(schedule)?schedule.length:0
+      scheduledTasks:Array.isArray(schedule)?schedule.length:0,
+      leaveRequests:Array.isArray(leaveRequests)?leaveRequests.length:0
     },
     data:{
       board:items,
       scheduledTasks:schedule,
-      completedSchedule:done
+      completedSchedule:done,
+      leaveRequests:leaveRequests
     }
   };
 }
@@ -1036,6 +1265,7 @@ function importDataFromObject(obj){
     "Import this GPCH Crystal Club backup?\n\n"+
     "Board cards: "+obj.data.board.length+"\n"+
     "Scheduled tasks: "+obj.data.scheduledTasks.length+"\n"+
+    "Leave requests: "+(Array.isArray(obj.data.leaveRequests)?obj.data.leaveRequests.length:0)+"\n"+
     "Backup version: "+(obj.version||"Unknown")+"\n\n"+
     "Your current browser data will be backed up automatically first.";
 
@@ -1049,10 +1279,12 @@ function importDataFromObject(obj){
   items=clone(obj.data.board);
   schedule=clone(obj.data.scheduledTasks);
   done=clone(obj.data.completedSchedule);
+  leaveRequests=clone(Array.isArray(obj.data.leaveRequests)?obj.data.leaveRequests:[]);
 
   setStored(BOARD_KEY,items);
   setStored(SCHED_KEY,schedule);
   setStored(DONE_KEY,done);
+  setStored(LEAVE_KEY,leaveRequests);
 
   renderBoard();
   renderTodaySchedule();
@@ -1120,7 +1352,26 @@ Array.prototype.forEach.call(document.querySelectorAll("[data-addtype]"),functio
 Array.prototype.forEach.call(document.querySelectorAll("[data-close]"),function(btn){
   btn.addEventListener("click",function(){document.getElementById(btn.getAttribute("data-close")).classList.remove("open");});
 });
-document.getElementById("manageScheduleBtn").addEventListener("click",openScheduleManager);
+document.getElementById("settingsBtn").addEventListener("click",function(){
+  document.getElementById("settingsModal").classList.add("open");
+});
+document.getElementById("leaveRequestBtn").addEventListener("click",openLeaveWorkspace);
+document.getElementById("leaveAddHereBtn").addEventListener("click",function(){openLeaveEntry(null);});
+document.getElementById("leaveArchiveToggleBtn").addEventListener("click",function(){
+  showLeaveArchived=!showLeaveArchived;
+  renderLeaveWorkspace();
+});
+document.getElementById("leaveSearch").addEventListener("input",renderLeaveWorkspace);
+document.getElementById("leaveSort").addEventListener("change",renderLeaveWorkspace);
+document.getElementById("leaveCloseBtn").addEventListener("click",closeLeaveWorkspace);
+document.getElementById("leaveWorkspaceModal").addEventListener("click",function(e){
+  if(e.target===document.getElementById("leaveWorkspaceModal")) closeLeaveWorkspace();
+});
+
+document.getElementById("manageScheduleBtn").addEventListener("click",function(){
+  document.getElementById("settingsModal").classList.remove("open");
+  openScheduleManager();
+});
 document.getElementById("overlayManageBtn").addEventListener("click",openScheduleManager);
 document.getElementById("schedType").addEventListener("change",updateScheduleFields);
 document.getElementById("clearSchedBtn").addEventListener("click",clearScheduleForm);
@@ -1163,6 +1414,10 @@ document.getElementById("expandedColumnModal").addEventListener("click",function
   if(e.target===document.getElementById("expandedColumnModal")) closeExpandedColumn();
 });
 document.addEventListener("keydown",function(e){
+  if(e.key==="Escape" && document.getElementById("leaveWorkspaceModal").classList.contains("open")){
+    closeLeaveWorkspace();
+    return;
+  }
   if(e.key==="Escape" && document.getElementById("expandedColumnModal").classList.contains("open")) closeExpandedColumn();
 });
 
