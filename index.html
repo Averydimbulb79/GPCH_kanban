@@ -140,6 +140,19 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 .expanded-theme-guest .expanded-column-header{background:#f8dce9;color:#7a3458}
 .expanded-theme-handover .expanded-column-header{background:#e2dcfa;color:#55448a}
 .expanded-theme-leave .expanded-column-header{background:#e7e1f4;color:#5f4b82}
+.expanded-theme-inventory .expanded-column-header{background:#dfece6;color:#355f50}
+.inventory-card{background:#fff;border:1px solid #cddfd7;border-left:4px solid #5f8d7b;border-radius:13px;padding:12px;box-shadow:0 5px 14px rgba(30,25,18,.05)}
+.inventory-card.archived-card{opacity:.62}
+.inventory-card h3{margin:6px 0 8px;font-size:15px}
+.inventory-type{background:#e4f0eb;color:#3d6a59}
+.inventory-location{background:#edf2ef;color:#5a675f}
+.inventory-actions{display:flex;justify-content:flex-end;gap:5px;flex-wrap:wrap;margin-top:10px}
+.inventory-actions button{font-size:11px;padding:5px 7px}
+.stock-adjust{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:8px}
+.stock-adjust-buttons{display:flex;gap:5px}
+.stock-adjust-buttons button{font-size:11px;padding:5px 8px;font-weight:800}
+.stock-minus{background:#f6e6e6;border-color:#dfc2c2;color:#8b3d3d}
+.stock-plus{background:#e5f1e7;border-color:#bfd6c2;color:#35653d}
 @media(max-width:650px){.expanded-column-modal{padding:8px}.expanded-column-header{align-items:flex-start;flex-direction:column}.expanded-column-tools{width:100%}.expanded-column-tools input,.expanded-column-tools select{min-width:0;flex:1 1 180px}.expanded-grid{grid-template-columns:1fr}}
 .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.42);z-index:200;padding:20px}
 .modal.open{display:grid}
@@ -206,6 +219,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
   <div class="actions">
     <button class="primary" id="addBtn">+ Add</button>
     <button id="leaveRequestBtn">Leave Request</button>
+    <button id="inventoryBtn">Inventory</button>
     <button id="toggleScheduleBtn">Toggle Schedule</button>
     <button id="toggleArchiveBtn">Show Archive</button>
     <button id="settingsBtn">Settings</button>
@@ -266,6 +280,33 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
   </div>
   <div id="todaySchedule"><div style="font-size:12px;color:#c8beae;padding:12px 0">No scheduled tasks today.</div></div>
 </aside>
+
+<div class="expanded-column-modal" id="inventoryWorkspaceModal" aria-hidden="true">
+  <div class="expanded-column-shell expanded-theme-inventory">
+    <div class="expanded-column-header">
+      <h2>INVENTORY</h2>
+      <div class="expanded-column-tools">
+        <input id="inventorySearch" type="search" placeholder="Search inventory">
+        <select id="inventorySort" aria-label="Sort inventory">
+          <option value="item_az">Item: A → Z</option>
+          <option value="item_za">Item: Z → A</option>
+          <option value="type_az">Item Type: A → Z</option>
+          <option value="location_az">Location: A → Z</option>
+          <option value="qty_asc">Quantity: Low → High</option>
+          <option value="qty_desc">Quantity: High → Low</option>
+          <option value="updated_desc">Recently Updated</option>
+          <option value="updated_asc">Oldest Updated</option>
+        </select>
+        <button id="inventoryAddHereBtn">+ Add Here</button>
+        <button id="inventoryArchiveToggleBtn">Show Archived</button>
+        <button id="inventoryCloseBtn">× Close</button>
+      </div>
+    </div>
+    <div class="expanded-column-content">
+      <div class="expanded-grid" id="inventoryWorkspaceGrid"></div>
+    </div>
+  </div>
+</div>
 
 <div class="expanded-column-modal" id="leaveWorkspaceModal" aria-hidden="true">
   <div class="expanded-column-shell expanded-theme-leave" id="leaveWorkspaceShell">
@@ -404,7 +445,8 @@ var BOARD_KEY="gpch_crystal_board_v51";
 var SCHED_KEY="gpch_crystal_schedule_v51";
 var DONE_KEY="gpch_crystal_schedule_done_v51";
 var LEAVE_KEY="gpch_crystal_leave_requests_v67";
-var APP_VERSION="6.8";
+var INVENTORY_KEY="gpch_crystal_inventory_v69";
+var APP_VERSION="6.9";
 
 function makeId(){
   return "id_"+Date.now()+"_"+Math.random().toString(36).slice(2,9);
@@ -472,7 +514,9 @@ var items=getStored(BOARD_KEY,defaultItems);
 var schedule=getStored(SCHED_KEY,defaultSchedule);
 var done=getStored(DONE_KEY,{});
 var leaveRequests=getStored(LEAVE_KEY,[]);
+var inventoryItems=getStored(INVENTORY_KEY,[]);
 var showLeaveArchived=false;
+var showInventoryArchived=false;
 var editingItemId=null;
 var editingType=null;
 var showArchived=false;
@@ -802,11 +846,19 @@ var fieldDefs={
     ["endDate","End Date","date"],
     ["status","Status","select",["Pending","Approved","Declined"]],
     ["notes","Notes","textarea"]
+  ],
+  inventory:[
+    ["itemName","Item Name","text"],
+    ["itemType","Item Type / Category","text"],
+    ["location","Kept Location","text"],
+    ["quantity","Quantity","number"],
+    ["unit","Unit","select",["pcs","boxes","bottles","packets","cartons","sets","units","other"]],
+    ["notes","Notes","textarea"]
   ]
 };
 
 function typeLabel(type){
-  return {todo:"TO DO",order:"TO ORDER",receive:"TO RECEIVE",guest:"GUEST NOTE",handover:"HANDOVER",leave:"LEAVE REQUEST"}[type]||"ITEM";
+  return {todo:"TO DO",order:"TO ORDER",receive:"TO RECEIVE",guest:"GUEST NOTE",handover:"HANDOVER",leave:"LEAVE REQUEST",inventory:"INVENTORY ITEM"}[type]||"ITEM";
 }
 function openCopiedEntry(type,obj){
   var copy=clone(obj);
@@ -842,6 +894,30 @@ function openCopiedEntry(type,obj){
     box.appendChild(wrap);
   });
 
+  document.getElementById("entryModal").classList.add("open");
+}
+
+function openInventoryEntry(obj){
+  editingType="inventory";
+  editingItemId=obj ? obj.id : null;
+  document.getElementById("entryHeading").textContent=(obj?"Edit ":"Add ")+"INVENTORY ITEM";
+  var box=document.getElementById("entryFields");
+  box.innerHTML="";
+  fieldDefs.inventory.forEach(function(def){
+    var key=def[0],label=def[1],kind=def[2],opts=def[3]||[],value=obj&&obj[key]!=null?obj[key]:"";
+    var wrap=document.createElement("div");
+    wrap.className="field "+((kind==="textarea"||key==="itemName")?"full":"");
+    var inner='<label>'+esc(label)+'</label>';
+    if(kind==="select"){
+      inner+='<select id="field_'+key+'">'+opts.map(function(o){return '<option'+(o===value?' selected':'')+'>'+esc(o)+'</option>';}).join("")+'</select>';
+    }else if(kind==="textarea"){
+      inner+='<textarea id="field_'+key+'">'+esc(value)+'</textarea>';
+    }else{
+      inner+='<input id="field_'+key+'" type="'+esc(kind)+'" value="'+esc(value)+'">';
+    }
+    wrap.innerHTML=inner;
+    box.appendChild(wrap);
+  });
   document.getElementById("entryModal").classList.add("open");
 }
 
@@ -901,6 +977,28 @@ function openEntry(type,obj){
 }
 
 document.getElementById("saveEntryBtn").addEventListener("click",function(){
+  if(editingType==="inventory"){
+    var invObj=editingItemId ? inventoryItems.find(function(i){return i.id===editingItemId;}) : {
+      id:makeId(),createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),archived:false,archivedAt:null
+    };
+    if(!invObj) return;
+    fieldDefs.inventory.forEach(function(def){
+      var key=def[0];
+      invObj[key]=document.getElementById("field_"+key).value.trim();
+    });
+    if(!invObj.itemName){alert("Please enter the item name.");return;}
+    var qty=Number(invObj.quantity);
+    if(!Number.isFinite(qty) || qty<0){alert("Quantity must be 0 or more.");return;}
+    invObj.quantity=qty;
+    invObj.updatedAt=new Date().toISOString();
+    if(!editingItemId) inventoryItems.push(invObj);
+    setStored(INVENTORY_KEY,inventoryItems);
+    document.getElementById("entryModal").classList.remove("open");
+    editingItemId=null;editingType=null;
+    renderInventoryWorkspace();
+    return;
+  }
+
   if(editingType==="leave"){
     var leaveObj=editingItemId ? leaveRequests.find(function(i){return i.id===editingItemId;}) : {
       id:makeId(),createdAt:new Date().toISOString(),archived:false,archivedAt:null
@@ -1081,6 +1179,94 @@ document.getElementById("saveSchedBtn").addEventListener("click",function(){
 });
 
 
+function inventoryCardHtml(x){
+  return '<article class="inventory-card'+(x.archived?' archived-card':'')+'" data-inventory-id="'+esc(x.id)+'">'+
+    '<div class="card-top"><span class="pill inventory-type">'+esc(x.itemType||"Uncategorised")+'</span>'+
+    '<span class="pill inventory-location">'+esc(x.location||"No location")+'</span></div>'+
+    '<h3>'+esc(x.itemName||"Unnamed item")+'</h3>'+
+    '<div class="meta"><div class="stock-adjust"><span>Quantity: <strong>'+esc(x.quantity)+' '+esc(x.unit||"units")+'</strong></span>'+
+    (x.archived?'':'<span class="stock-adjust-buttons"><button type="button" class="stock-minus" data-inventory-action="use">− Use</button><button type="button" class="stock-plus" data-inventory-action="restock">+ Restock</button></span>')+
+    '</div>'+(x.notes?'<div>'+esc(x.notes)+'</div>':'')+
+    '<div>Updated: '+esc(formatCreatedAt(x.updatedAt||x.createdAt))+'</div>'+
+    '<div>Created: '+esc(formatCreatedAt(x.createdAt))+'</div>'+
+    (x.archivedAt?'<div>Archived: '+esc(formatCreatedAt(x.archivedAt))+'</div>':'')+
+    '</div><div class="inventory-actions"><button type="button" data-inventory-action="copy">Copy</button>'+
+    (x.archived?'<button type="button" data-inventory-action="restore">Restore</button>':
+      '<button type="button" data-inventory-action="edit">Edit</button><button type="button" data-inventory-action="complete">Complete</button>')+
+    '</div></article>';
+}
+
+function renderInventoryWorkspace(){
+  var q=document.getElementById("inventorySearch").value.toLowerCase().trim();
+  var mode=document.getElementById("inventorySort").value;
+  var list=inventoryItems.filter(function(x){
+    if(x.archived && !showInventoryArchived) return false;
+    if(!q) return true;
+    try{return JSON.stringify(x).toLowerCase().indexOf(q)!==-1;}catch(e){return true;}
+  });
+  list.sort(function(a,b){
+    if(mode==="item_az") return textCompare(a.itemName,b.itemName);
+    if(mode==="item_za") return textCompare(b.itemName,a.itemName);
+    if(mode==="type_az") return textCompare(a.itemType,b.itemType);
+    if(mode==="location_az") return textCompare(a.location,b.location);
+    if(mode==="qty_asc") return Number(a.quantity||0)-Number(b.quantity||0);
+    if(mode==="qty_desc") return Number(b.quantity||0)-Number(a.quantity||0);
+    if(mode==="updated_desc") return safeTime(b.updatedAt||b.createdAt)-safeTime(a.updatedAt||a.createdAt);
+    if(mode==="updated_asc") return safeTime(a.updatedAt||a.createdAt)-safeTime(b.updatedAt||b.createdAt);
+    return 0;
+  });
+  document.getElementById("inventoryArchiveToggleBtn").textContent=showInventoryArchived?"Hide Archived":"Show Archived";
+  var grid=document.getElementById("inventoryWorkspaceGrid");
+  if(!list.length){grid.innerHTML='<div class="expanded-empty">No matching inventory cards.</div>';return;}
+  grid.innerHTML=list.map(inventoryCardHtml).join("");
+  Array.prototype.forEach.call(grid.querySelectorAll("[data-inventory-action]"),function(btn){
+    btn.addEventListener("click",function(){
+      var card=btn.closest("[data-inventory-id]");
+      var id=card.getAttribute("data-inventory-id");
+      var x=inventoryItems.find(function(r){return r.id===id;});
+      if(!x) return;
+      var action=btn.getAttribute("data-inventory-action");
+      if(action==="edit") openInventoryEntry(x);
+      if(action==="copy"){
+        var copy=clone(x);
+        delete copy.id; delete copy.createdAt; delete copy.updatedAt; delete copy.archived; delete copy.archivedAt;
+        openInventoryEntry(copy); editingItemId=null;
+      }
+      if(action==="use" || action==="restock"){
+        var raw=prompt(action==="use"?"Quantity used:":"Quantity restocked:","1");
+        if(raw===null) return;
+        var amount=Number(raw);
+        if(!Number.isFinite(amount) || amount<=0){alert("Enter a quantity greater than 0.");return;}
+        if(action==="use" && amount>Number(x.quantity||0)){alert("Cannot use more than the current quantity.");return;}
+        x.quantity=action==="use"?Number(x.quantity||0)-amount:Number(x.quantity||0)+amount;
+        x.updatedAt=new Date().toISOString();
+        setStored(INVENTORY_KEY,inventoryItems); renderInventoryWorkspace();
+      }
+      if(action==="complete"){
+        if(!confirm("Archive this inventory item?")) return;
+        x.archived=true; x.archivedAt=new Date().toISOString(); x.updatedAt=new Date().toISOString();
+        setStored(INVENTORY_KEY,inventoryItems); renderInventoryWorkspace();
+      }
+      if(action==="restore"){
+        x.archived=false; x.archivedAt=null; x.updatedAt=new Date().toISOString();
+        setStored(INVENTORY_KEY,inventoryItems); renderInventoryWorkspace();
+      }
+    });
+  });
+}
+
+function openInventoryWorkspace(){
+  document.getElementById("inventorySearch").value="";
+  document.getElementById("inventorySort").value="item_az";
+  document.getElementById("inventoryWorkspaceModal").classList.add("open");
+  document.getElementById("inventoryWorkspaceModal").setAttribute("aria-hidden","false");
+  renderInventoryWorkspace();
+}
+function closeInventoryWorkspace(){
+  document.getElementById("inventoryWorkspaceModal").classList.remove("open");
+  document.getElementById("inventoryWorkspaceModal").setAttribute("aria-hidden","true");
+}
+
 function leaveCardHtml(x){
   return '<article class="leave-card'+(x.archived?' archived-card':'')+'" data-leave-id="'+esc(x.id)+'">'+
     '<div class="card-top"><span class="pill leave-type">'+esc(x.leaveType||"Leave")+'</span>'+
@@ -1218,13 +1404,15 @@ function buildBackupObject(){
     recordCounts:{
       board:Array.isArray(items)?items.length:0,
       scheduledTasks:Array.isArray(schedule)?schedule.length:0,
-      leaveRequests:Array.isArray(leaveRequests)?leaveRequests.length:0
+      leaveRequests:Array.isArray(leaveRequests)?leaveRequests.length:0,
+      inventoryItems:Array.isArray(inventoryItems)?inventoryItems.length:0
     },
     data:{
       board:items,
       scheduledTasks:schedule,
       completedSchedule:done,
-      leaveRequests:leaveRequests
+      leaveRequests:leaveRequests,
+      inventoryItems:inventoryItems
     }
   };
 }
@@ -1266,6 +1454,7 @@ function importDataFromObject(obj){
     "Board cards: "+obj.data.board.length+"\n"+
     "Scheduled tasks: "+obj.data.scheduledTasks.length+"\n"+
     "Leave requests: "+(Array.isArray(obj.data.leaveRequests)?obj.data.leaveRequests.length:0)+"\n"+
+    "Inventory items: "+(Array.isArray(obj.data.inventoryItems)?obj.data.inventoryItems.length:0)+"\n"+
     "Backup version: "+(obj.version||"Unknown")+"\n\n"+
     "Your current browser data will be backed up automatically first.";
 
@@ -1280,11 +1469,13 @@ function importDataFromObject(obj){
   schedule=clone(obj.data.scheduledTasks);
   done=clone(obj.data.completedSchedule);
   leaveRequests=clone(Array.isArray(obj.data.leaveRequests)?obj.data.leaveRequests:[]);
+  inventoryItems=clone(Array.isArray(obj.data.inventoryItems)?obj.data.inventoryItems:[]);
 
   setStored(BOARD_KEY,items);
   setStored(SCHED_KEY,schedule);
   setStored(DONE_KEY,done);
   setStored(LEAVE_KEY,leaveRequests);
+  setStored(INVENTORY_KEY,inventoryItems);
 
   renderBoard();
   renderTodaySchedule();
@@ -1356,6 +1547,14 @@ document.getElementById("settingsBtn").addEventListener("click",function(){
   document.getElementById("settingsModal").classList.add("open");
 });
 document.getElementById("leaveRequestBtn").addEventListener("click",openLeaveWorkspace);
+document.getElementById("inventoryBtn").addEventListener("click",openInventoryWorkspace);
+document.getElementById("inventoryAddHereBtn").addEventListener("click",function(){openInventoryEntry(null);});
+document.getElementById("inventoryArchiveToggleBtn").addEventListener("click",function(){showInventoryArchived=!showInventoryArchived;renderInventoryWorkspace();});
+document.getElementById("inventorySearch").addEventListener("input",renderInventoryWorkspace);
+document.getElementById("inventorySort").addEventListener("change",renderInventoryWorkspace);
+document.getElementById("inventoryCloseBtn").addEventListener("click",closeInventoryWorkspace);
+document.getElementById("inventoryWorkspaceModal").addEventListener("click",function(e){if(e.target===document.getElementById("inventoryWorkspaceModal")) closeInventoryWorkspace();});
+
 document.getElementById("leaveAddHereBtn").addEventListener("click",function(){openLeaveEntry(null);});
 document.getElementById("leaveArchiveToggleBtn").addEventListener("click",function(){
   showLeaveArchived=!showLeaveArchived;
@@ -1414,9 +1613,11 @@ document.getElementById("expandedColumnModal").addEventListener("click",function
   if(e.target===document.getElementById("expandedColumnModal")) closeExpandedColumn();
 });
 document.addEventListener("keydown",function(e){
+  if(e.key==="Escape" && document.getElementById("inventoryWorkspaceModal").classList.contains("open")){
+    closeInventoryWorkspace(); return;
+  }
   if(e.key==="Escape" && document.getElementById("leaveWorkspaceModal").classList.contains("open")){
-    closeLeaveWorkspace();
-    return;
+    closeLeaveWorkspace(); return;
   }
   if(e.key==="Escape" && document.getElementById("expandedColumnModal").classList.contains("open")) closeExpandedColumn();
 });
