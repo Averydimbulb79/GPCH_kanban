@@ -2,13 +2,13 @@
 
 Single-page operational Kanban dashboard designed for GPCH Crystal Club.
 
-GPCH Kanban consolidates daily tasks, ordering, receiving, guest notes, shift handovers, leave requests, archived records and recurring operational schedules into one lightweight browser-based workspace.
+GPCH Kanban consolidates daily tasks, ordering, receiving, guest notes, shift handovers, leave requests, inventory, archived records and recurring operational schedules into one lightweight browser-based workspace.
 
 ## Live Dashboard
 
 https://averydimbulb79.github.io/GPCH_kanban/
 
-Current version: 6.8
+Current version: 6.9
 
 ---
 
@@ -28,9 +28,13 @@ The main board contains five colour-coded operational workflows:
 | GUEST NOTES | Guest preferences, requests and service information |
 | HANDOVER | Matters requiring continuity between shifts |
 
-LEAVE REQUESTS operates as an additional dedicated workspace but does not occupy permanent space on the main Kanban.
+Two additional operational workspaces are available without occupying permanent Kanban columns:
 
-This keeps the daily board focused while allowing leave administration to follow the same familiar card-based interaction model.
+`LEAVE REQUESTS`
+
+`INVENTORY`
+
+This keeps the five-column board focused while allowing supporting operational functions to use the same familiar full-window card interface.
 
 ---
 
@@ -38,19 +42,22 @@ This keeps the daily board focused while allowing leave administration to follow
 
 • Five colour-coded main Kanban workflows  
 • Dedicated Leave Requests workspace  
+• Dedicated Inventory workspace  
 • Matching colour-coded dashboard count boxes  
 • Clickable count boxes and column headers  
 • Full-window workspace views  
-• Consistent add-card workflow across workspaces  
+• Consistent card creation and editing workflow  
 • Workspace-specific search and sorting  
 • Archive visibility within expanded workspaces  
 • Automatic urgency-based card sorting  
 • Card creation timestamps  
+• Last-updated timestamps for inventory  
 • One-click card duplication  
 • Complete and archive workflow  
 • Archived-card restoration  
 • Drag-and-drop Kanban workflow  
 • Streamlined ordering and receiving process  
+• Quick inventory quantity adjustments  
 • Contextual one-click workflow actions  
 • Recurring scheduled tasks  
 • Weekly and monthly scheduling rules  
@@ -58,6 +65,7 @@ This keeps the daily board focused while allowing leave administration to follow
 • Board-wide search and filtering  
 • Centralised Settings menu  
 • JSON data export and import  
+• Leave Request and Inventory backup support  
 • Automatic pre-import safety backups  
 • Persistent browser storage  
 • Single-page static architecture
@@ -84,17 +92,7 @@ Archived cards are excluded from active counts.
 
 Each count box matches the colour of its corresponding column.
 
-The count boxes are also navigation controls.
-
-Clicking either:
-
-`Dashboard Count Box`
-
-or:
-
-`Column Header`
-
-opens the corresponding full-window workspace.
+Clicking either a dashboard count box or column header opens the corresponding full-window workspace.
 
 Keyboard access using `Enter` and `Space` is also supported on the count boxes.
 
@@ -102,11 +100,13 @@ Keyboard access using `Enter` and `Space` is also supported on the count boxes.
 
 # Main Controls
 
-The primary controls have been streamlined around frequently used daily functions:
+The primary controls are organised around frequently used operational functions:
 
 `+ Add`
 
 `Leave Request`
+
+`Inventory`
 
 `Toggle Schedule`
 
@@ -114,19 +114,19 @@ The primary controls have been streamlined around frequently used daily function
 
 `Settings`
 
-Administrative and data-management functions are deliberately separated from everyday operational controls.
+Leave Requests and Inventory are intentionally accessed from dedicated buttons rather than being added as permanent Kanban columns.
+
+This preserves horizontal screen space while keeping both functions immediately accessible.
 
 ---
 
 # Settings
 
-Version 6.7 introduced a central Settings menu to reduce header clutter.
-
-Selecting:
+Administrative and data-management functions are grouped under:
 
 `Settings`
 
-opens access to:
+Settings provides access to:
 
 `Manage Schedule`
 
@@ -134,17 +134,13 @@ opens access to:
 
 `Import Data`
 
-This separates configuration and data-management functions from everyday operational actions.
+This reduces header clutter and separates configuration functions from everyday operational actions.
 
 ---
 
 # Full-Window Workspaces
 
-The five Kanban columns can each be opened as dedicated full-window workspaces.
-
-This is particularly useful on smaller laptop screens where displaying five columns simultaneously limits available card width.
-
-The workspaces are:
+The five Kanban columns can each be opened as dedicated full-window workspaces:
 
 `TO DO`
 
@@ -156,21 +152,25 @@ The workspaces are:
 
 `HANDOVER`
 
-Version 6.8 extends the same interaction model to:
+Additional full-window workspaces are provided for:
 
 `LEAVE REQUESTS`
 
-The design therefore provides two complementary operating modes:
+`INVENTORY`
+
+The overall interface therefore provides two complementary operating modes:
 
 `Main Kanban = operational overview`
 
 `Full-window workspace = focused work`
 
+This is particularly useful on smaller laptop screens where displaying five Kanban columns simultaneously limits card width.
+
 ---
 
 # Consistent Workspace Interface
 
-The expanded operational workspaces use a common interface.
+Expanded workspaces follow a common interaction pattern.
 
 Typical controls include:
 
@@ -184,35 +184,275 @@ Typical controls include:
 
 `× Close`
 
-This consistency is intentional.
-
-Users should not have to learn a different interaction pattern for each type of operational information.
-
-The general workflow is:
+The general interaction model is:
 
 `Open workspace → Review cards → Add or act on card → Save → Continue`
+
+This consistency reduces the number of different interaction patterns staff need to learn.
+
+---
+
+# Inventory
+
+Version 6.9 introduces Inventory as a dedicated full-window operational workspace.
+
+Inventory does not occupy another permanent column on the main Kanban.
+
+Instead:
+
+`Inventory → Full-window Inventory workspace`
+
+This provides stock visibility without making the existing five-column dashboard narrower or more crowded.
+
+---
+
+# Inventory Workspace
+
+Selecting:
+
+`Inventory`
+
+opens the dedicated:
+
+`INVENTORY`
+
+workspace.
+
+The toolbar provides:
+
+`Search inventory`
+
+`Sort`
+
+`+ Add Here`
+
+`Show Archived / Hide Archived`
+
+`× Close`
+
+Inventory cards are displayed in a responsive grid using the same visual and interaction principles as other expanded workspaces.
+
+---
+
+# Adding Inventory Items
+
+Select:
+
+`+ Add Here`
+
+inside Inventory.
+
+The inventory card form contains:
+
+• Item Name  
+• Item Type / Category  
+• Kept Location  
+• Quantity  
+• Unit  
+• Notes
+
+Available units include:
+
+• pcs  
+• boxes  
+• bottles  
+• packets  
+• cartons  
+• sets  
+• units  
+• other
+
+Inventory deliberately does not require minimum stock levels, par levels or automatically calculated stock statuses.
+
+The workspace is intended to remain a straightforward operational stock record rather than a complex inventory-management system.
+
+---
+
+# Inventory Cards
+
+A typical inventory card contains:
+
+`ITEM TYPE`
+
+`LOCATION`
+
+`Item Name`
+
+`Quantity: 6 boxes`
+
+`− Use     + Restock`
+
+`Updated: 28 Aug 2026, 15:01`
+
+`Created: 28 Aug 2026, 14:30`
+
+Standard card controls remain:
+
+`Copy`
+
+`Edit`
+
+`Complete`
+
+Archived inventory cards provide:
+
+`Copy`
+
+`Restore`
+
+---
+
+# Inventory Quantity Controls
+
+Inventory cards provide two direct stock-adjustment controls:
+
+`− Use`
+
+`+ Restock`
+
+These allow quantity changes without opening the full Edit form.
+
+## Use
+
+Selecting:
+
+`− Use`
+
+asks how many units were used.
+
+The entered quantity is deducted from the current stock quantity.
+
+The system prevents a deduction greater than the recorded quantity.
+
+## Restock
+
+Selecting:
+
+`+ Restock`
+
+asks how many units were added.
+
+The entered quantity is added to the existing stock quantity.
+
+Both actions automatically update the inventory item's Last Updated timestamp.
+
+This provides a faster operational workflow than repeatedly opening and editing inventory cards.
+
+---
+
+# Inventory Timestamps
+
+Inventory records maintain two timestamps.
+
+## Created
+
+Records when the inventory card was originally created.
+
+## Updated
+
+Records the most recent inventory change.
+
+The Updated timestamp changes when:
+
+• Quantity is reduced using `− Use`  
+• Quantity is increased using `+ Restock`  
+• The inventory card is edited  
+• The inventory card is archived  
+• The inventory card is restored
+
+This provides a simple indication of how recently an inventory record was maintained.
+
+---
+
+# Inventory Search
+
+Inventory includes dedicated search.
+
+Search can locate information contained within inventory records, including:
+
+• Item name  
+• Item type  
+• Category  
+• Storage location  
+• Unit  
+• Notes
+
+This allows staff to locate an item without manually scanning the entire inventory.
+
+---
+
+# Inventory Sorting
+
+The Inventory workspace supports:
+
+• Item: A → Z  
+• Item: Z → A  
+• Item Type: A → Z  
+• Location: A → Z  
+• Quantity: Low → High  
+• Quantity: High → Low  
+• Recently Updated  
+• Oldest Updated
+
+The default inventory view sorts items alphabetically.
+
+---
+
+# Inventory Archive
+
+Inventory records that are no longer required can be completed and archived.
+
+Select:
+
+`Complete`
+
+to archive an inventory item.
+
+Archived inventory cards are removed from the normal active Inventory workspace.
+
+Select:
+
+`Show Archived`
+
+to display them.
+
+The control changes to:
+
+`Hide Archived`
+
+while archived records are visible.
+
+Archived inventory cards can be returned to active status using:
+
+`Restore`
+
+---
+
+# Inventory Duplication
+
+Inventory cards support:
+
+`Copy`
+
+Copy opens a new Inventory Item form prefilled with information from the selected inventory record.
+
+The copied card receives:
+
+• A new unique ID  
+• A new creation timestamp  
+• A new updated timestamp  
+• Active status  
+• No inherited archive timestamp
+
+Information can be changed before the copied record is saved.
+
+This is useful when creating similar inventory items stored in different locations or recorded in different units.
 
 ---
 
 # Leave Requests
 
-Version 6.8 redesigns Leave Requests as a full operational workspace.
-
-Leave Requests no longer opens as a conventional administrative popup containing both the form and records.
-
-Instead:
-
-`Leave Request → Full-window Leave Requests workspace`
-
-This matches the behaviour of the existing Kanban column workspaces.
-
-Importantly, Leave Requests does not become a sixth permanent column on the main dashboard.
-
-This avoids further reducing horizontal screen space.
-
----
-
-# Leave Requests Workspace
+Leave Requests operates as another dedicated full-window workspace.
 
 Selecting:
 
@@ -222,7 +462,7 @@ opens:
 
 `LEAVE REQUESTS`
 
-as a full-window card workspace.
+without adding a sixth permanent column to the main Kanban.
 
 The toolbar provides:
 
@@ -236,8 +476,6 @@ The toolbar provides:
 
 `× Close`
 
-Leave request cards are displayed using the same responsive grid principle as cards in the other expanded workspaces.
-
 ---
 
 # Adding Leave Requests
@@ -246,9 +484,7 @@ Select:
 
 `+ Add Here`
 
-inside the Leave Requests workspace.
-
-A card-entry form opens using the same interaction pattern as other Kanban card forms.
+inside Leave Requests.
 
 A leave request can contain:
 
@@ -274,15 +510,13 @@ Available statuses include:
 • Approved  
 • Declined
 
-Every newly created leave request receives its own creation timestamp.
+Every leave request receives its own creation timestamp.
 
 ---
 
 # Leave Request Cards
 
-Leave requests are stored as cards rather than rows in a separate administrative table.
-
-Cards can display:
+Leave request cards can display:
 
 • Staff name  
 • Leave type  
@@ -291,7 +525,7 @@ Cards can display:
 • Approval status  
 • Notes  
 • Creation timestamp  
-• Archive information where applicable
+• Archive information
 
 Card actions include:
 
@@ -301,7 +535,7 @@ Card actions include:
 
 `Complete`
 
-Archived leave cards provide:
+Archived cards provide:
 
 `Copy`
 
@@ -311,7 +545,7 @@ Archived leave cards provide:
 
 # Leave Request Sorting
 
-The Leave Requests workspace supports dedicated sorting options:
+Leave Requests supports:
 
 • Start Date: Earliest First  
 • Start Date: Latest First  
@@ -325,70 +559,9 @@ The default view prioritises upcoming leave chronologically.
 
 ---
 
-# Leave Request Search
-
-The Leave Requests workspace includes its own search field.
-
-Search can locate matching information contained within leave request records, allowing staff to quickly locate requests by information such as:
-
-• Staff name  
-• Leave type  
-• Status  
-• Dates  
-• Notes
-
----
-
-# Leave Request Archive
-
-Completed leave requests do not need to remain visible during normal operations.
-
-Select:
-
-`Complete`
-
-to archive a leave request.
-
-Archived requests are hidden from the normal Leave Requests workspace.
-
-Select:
-
-`Show Archived`
-
-to display them.
-
-The control then changes to:
-
-`Hide Archived`
-
-Archived leave requests can be restored to active status when necessary.
-
----
-
-# Leave Request Duplication
-
-Leave request cards support:
-
-`Copy`
-
-Copying creates a new request based on an existing card.
-
-The copied request receives:
-
-• A new unique ID  
-• A new creation timestamp  
-• Active status  
-• No inherited archive timestamp
-
-The prefilled information can be changed before saving.
-
-This is useful when similar leave arrangements need to be entered without repeatedly retyping common information.
-
----
-
 # Board Structure
 
-The main board uses five permanent columns.
+The main Kanban retains five permanent columns.
 
 ## TO DO
 
@@ -417,7 +590,7 @@ Cards can include:
 
 ## TO RECEIVE
 
-For items already ordered but awaiting physical delivery or collection.
+For items already ordered but awaiting delivery or collection.
 
 This distinguishes:
 
@@ -467,7 +640,7 @@ Active Kanban cards use three common management controls:
 
 Workflow-specific actions are positioned separately where appropriate.
 
-This prevents narrow cards from becoming overloaded with buttons while keeping common actions one click away.
+This prevents narrow cards from becoming overloaded with buttons while keeping frequently used actions one click away.
 
 ---
 
@@ -477,11 +650,9 @@ Selecting:
 
 `Copy`
 
-opens a new-card form prefilled with the selected card's information.
+opens a new-card form prefilled with information from the selected card.
 
-The copied card is a new record.
-
-It receives:
+The copied card receives:
 
 • A new unique ID  
 • A new creation timestamp  
@@ -496,7 +667,7 @@ Archived cards can also be copied into new active records.
 
 # TO ORDER Workflow
 
-TO ORDER cards place the primary workflow action directly beside Quantity.
+TO ORDER cards position the primary workflow action directly beside Quantity.
 
 Example:
 
@@ -510,7 +681,7 @@ moves the card from:
 
 `TO ORDER → TO RECEIVE`
 
-The footer remains focused on universal card controls:
+The footer remains:
 
 `Copy · Edit · Complete`
 
@@ -518,7 +689,7 @@ The footer remains focused on universal card controls:
 
 # TO RECEIVE Workflow
 
-TO RECEIVE cards use the same contextual design.
+TO RECEIVE cards follow the same contextual design.
 
 Example:
 
@@ -538,7 +709,7 @@ The footer remains:
 
 # Workflow Design Principle
 
-Workflow transitions are kept close to the information they affect.
+Workflow transitions are positioned close to the information they affect.
 
 General card-management actions remain grouped separately.
 
@@ -554,7 +725,7 @@ while:
 
 remain universal card-management actions.
 
-This keeps actions immediately accessible without introducing additional menus or unnecessary clicks.
+This keeps frequently used actions immediately accessible without adding secondary menus.
 
 ---
 
@@ -589,7 +760,7 @@ Archive:
 
 Delete Permanently removes the card from browser storage after confirmation.
 
-Recovery is only possible if the data exists in a previous backup.
+Recovery is only possible if the information exists in a previous exported backup.
 
 ## Restore
 
@@ -601,7 +772,7 @@ Archived cards can be returned to active status using:
 
 # Archive Access
 
-Archive visibility is available at both board and workspace level.
+Archive visibility is available at multiple levels.
 
 ## Main Board
 
@@ -611,23 +782,23 @@ Use:
 
 to control archived cards across the main Kanban.
 
-## Expanded Workspaces
+## Expanded Kanban Workspaces
 
-Each expanded Kanban workspace includes:
+Each expanded workspace provides:
 
 `Show Archived / Hide Archived`
 
 This allows historical records to be reviewed without leaving the current workspace.
 
-For example, archived HANDOVER cards can be reviewed directly inside HANDOVER without displaying archived records from unrelated sections.
-
 ## Leave Requests
 
-Leave Requests provides its own:
+Leave Requests provides its own archive visibility control.
 
-`Show Archived / Hide Archived`
+## Inventory
 
-control.
+Inventory provides its own archive visibility control.
+
+This keeps historical records separated according to operational context.
 
 ---
 
@@ -692,15 +863,13 @@ Additional workspace-specific sorting is available.
 
 • Follow-up Time: Earliest First
 
+Leave Requests and Inventory use their own purpose-specific sorting controls.
+
 ---
 
 # Card Creation Timestamps
 
-Every newly created card automatically records its creation date and time.
-
-Example:
-
-`Created: 28 Aug 2026, 06:47`
+New cards automatically record their creation date and time.
 
 Creation timestamps apply to:
 
@@ -709,9 +878,10 @@ Creation timestamps apply to:
 • TO RECEIVE  
 • GUEST NOTES  
 • HANDOVER  
-• LEAVE REQUESTS
+• LEAVE REQUESTS  
+• INVENTORY
 
-The original timestamp remains attached when a card is edited, moved or archived.
+The original creation timestamp remains attached when a record is edited or archived.
 
 Legacy cards created before timestamp support may display:
 
@@ -747,8 +917,6 @@ Schedule management is accessed through:
 
 `Settings → Manage Schedule`
 
-The Schedule Manager supports recurring operational duties.
-
 Each scheduled task can include:
 
 • Task name  
@@ -774,7 +942,7 @@ This supports weekly routines, month-start procedures, month-end procedures and 
 
 The main dashboard includes universal search and column filtering.
 
-Search can locate information such as:
+Search can locate:
 
 • Tasks  
 • Items  
@@ -796,7 +964,7 @@ The main board can be filtered by:
 
 Expanded workspaces provide their own focused search fields.
 
-Leave Requests also provides dedicated search.
+Leave Requests and Inventory each provide dedicated search functions.
 
 ---
 
@@ -812,6 +980,10 @@ Stored information includes:
 • Archive timestamps  
 • Leave request cards  
 • Archived leave requests  
+• Inventory cards  
+• Inventory quantities  
+• Inventory updated timestamps  
+• Archived inventory records  
 • Scheduled tasks  
 • Schedule completion information
 
@@ -836,12 +1008,16 @@ Data-management controls are located under:
 
 Export Data creates a portable JSON backup containing operational data including:
 
-• Active cards  
-• Archived cards  
+• Active Kanban cards  
+• Archived Kanban cards  
 • Creation timestamps  
 • Archive timestamps  
 • Leave requests  
 • Archived leave requests  
+• Inventory records  
+• Inventory quantities  
+• Inventory timestamps  
+• Archived inventory records  
 • Scheduled tasks  
 • Scheduled-task completion state  
 • Application version  
@@ -854,11 +1030,7 @@ Import Data restores a previously exported GPCH Crystal Club backup.
 
 The application validates the backup before replacing current data.
 
-## Leave Request Portability
-
-Leave Request data is included in Version 6.7 and later backups.
-
-Older valid GPCH backups that do not contain Leave Request data remain supported.
+Older valid GPCH backups that do not contain Leave Request or Inventory data remain supported.
 
 ---
 
@@ -889,7 +1061,7 @@ On the new computer:
 5. Review the backup information.
 6. Confirm the import.
 
-The operational dataset is then restored.
+The operational dataset, including Leave Requests and Inventory, is then restored.
 
 ---
 
@@ -912,36 +1084,67 @@ The application remains contained within a single HTML page.
 
 # Version History
 
+## v6.9 · Inventory Workspace
+
+• Added dedicated Inventory button to the main dashboard  
+• Added full-window INVENTORY workspace  
+• Kept Inventory outside the five-column Kanban to preserve screen space  
+• Added responsive inventory card grid  
+• Added Inventory search  
+• Added Inventory sorting  
+• Added `+ Add Here`  
+• Added `Show Archived / Hide Archived`  
+• Added `× Close`  
+• Added Item Name field  
+• Added Item Type / Category field  
+• Added Kept Location field  
+• Added Quantity field  
+• Added Unit field  
+• Added Notes field  
+• Added inventory creation timestamps  
+• Added automatic Last Updated timestamps  
+• Added `− Use` quick quantity adjustment  
+• Added `+ Restock` quick quantity adjustment  
+• Prevented stock usage greater than the recorded quantity  
+• Added Copy support  
+• Added Edit support  
+• Added Complete and Archive support  
+• Added Restore support for archived inventory items  
+• Added Item A → Z and Z → A sorting  
+• Added Item Type sorting  
+• Added Location sorting  
+• Added Quantity Low → High and High → Low sorting  
+• Added Recently Updated and Oldest Updated sorting  
+• Added Inventory data to JSON export and import  
+• Added Inventory record counts to backup metadata  
+• Maintained compatibility with backups created before Inventory support
+
 ## v6.8 · Unified Leave Request Workspace
 
 • Redesigned Leave Requests to use the same full-window interaction pattern as expanded Kanban columns  
-• Removed the previous combined leave-entry and card-list popup workflow  
-• Added dedicated LEAVE REQUESTS full-window workspace  
+• Added dedicated LEAVE REQUESTS workspace  
 • Added responsive leave-request card grid  
-• Added Search Leave Requests control  
+• Added Leave Request search  
 • Added dedicated leave-request sorting  
 • Added `+ Add Here`  
 • Added `Show Archived / Hide Archived`  
 • Added `× Close`  
-• Standardised leave request creation around the same card-entry modal pattern used elsewhere  
-• Added Staff Name, Leave Type, Start Date, End Date, Status and Notes fields  
-• Added leave-request creation timestamps  
-• Retained Copy, Edit, Complete and Restore actions  
-• Retained archived leave-request support  
-• Leave Requests remains outside the five-column main Kanban to preserve horizontal screen space  
-• Improved UX consistency by making workspace navigation and card creation behaviour predictable across the application
+• Standardised leave request creation around the common card-entry pattern  
+• Added Staff Name, Leave Type, Start Date, End Date, Status and Notes  
+• Added creation timestamps  
+• Retained Copy, Edit, Complete and Restore  
+• Kept Leave Requests outside the five-column main Kanban
 
 ## v6.7 · Settings and Leave Requests
 
-• Added dedicated Leave Request functionality  
 • Added persistent Leave Request storage  
 • Added Leave Request data to export/import backups  
-• Added backward compatibility for backups created before Leave Requests  
+• Added backward compatibility for older backups  
 • Added Settings button  
 • Moved Manage Schedule under Settings  
 • Moved Export Data under Settings  
 • Moved Import Data under Settings  
-• Reduced main-header control clutter  
+• Reduced main-header clutter  
 • Separated administrative controls from daily operational controls
 
 ## v6.6 · Expanded Archive Access
@@ -950,8 +1153,6 @@ The application remains contained within a single HTML page.
 • Added Hide Archived state  
 • Archived records can be reviewed without returning to the main board  
 • Archive display remains limited to the current workspace  
-• Expanded workspaces inherit main-board archive visibility when opened  
-• Archive visibility can subsequently be controlled within the expanded workspace  
 • Retained search and sorting while archived records are displayed
 
 ## v6.5 · Streamlined Card Actions
@@ -961,17 +1162,14 @@ The application remains contained within a single HTML page.
 • Moved Mark Received beside TO RECEIVE Quantity  
 • Retained direct one-click workflow transitions  
 • Standardised active card footer around Copy, Edit and Complete  
-• Reduced button congestion on narrow cards  
-• Avoided secondary action menus
+• Reduced button congestion on narrow cards
 
 ## v6.4 · Card Duplication
 
 • Added Copy to cards  
 • Copy opens a new-card form prefilled with source-card information  
-• Copied cards receive new unique IDs  
-• Copied cards receive new creation timestamps  
+• Copied cards receive new unique IDs and timestamps  
 • Original cards remain unchanged  
-• Archive state is not inherited  
 • Archived cards can be copied into new active cards
 
 ## v6.3 · Dashboard Quick Access
@@ -979,27 +1177,22 @@ The application remains contained within a single HTML page.
 • Made all five dashboard count boxes clickable  
 • Each count opens its corresponding expanded workspace  
 • Added hover feedback  
-• Added keyboard access using Enter and Space  
-• Count boxes and column headers provide equivalent navigation
+• Added keyboard access using Enter and Space
 
 ## v6.2 · Complete and Archive Workflow
 
 • Replaced direct card deletion with Complete  
-• Added Archive, Delete Permanently and Cancel choices  
+• Added Archive, Delete Permanently and Cancel  
 • Added archive timestamps  
 • Added Show Archive / Hide Archive  
-• Added archive-mode notification  
 • Added archived-card styling  
-• Added ARCHIVED status  
 • Added Restore functionality  
-• Archived cards remain associated with their original columns  
-• Archived cards are excluded from active dashboard counts  
-• Archived cards cannot be dragged between active columns
+• Excluded archived cards from active dashboard counts
 
 ## v6.1 · Dashboard Colour Integration
 
 • Colour-coded the five dashboard count boxes  
-• Matched count boxes to their corresponding workflows  
+• Matched count boxes to corresponding workflows  
 • Extended the colour system across the dashboard
 
 ## v6.0 · Expanded View Sorting
@@ -1019,23 +1212,19 @@ The application remains contained within a single HTML page.
 • Added + Add Here  
 • Retained card actions inside expanded views  
 • Added workspace colour themes  
-• Added multiple closing methods  
 • Improved usability on smaller laptop screens
 
 ## v5.8 · Priority Sorting
 
 • Added automatic urgency-based sorting  
 • Cards ordered from highest to lowest urgency  
-• Introduced common urgency ranking across card types  
-• Cards with equal urgency sorted newest first
+• Introduced common urgency ranking across card types
 
 ## v5.7 · Card Creation Timestamps
 
 • Added automatic creation date and time  
-• Applied timestamps across the five main card categories  
 • Preserved timestamps during editing and movement  
-• Included timestamps in exported backups  
-• Added Date unavailable handling for legacy cards
+• Included timestamps in exported backups
 
 ## v5.6 · Visual Cohesion
 
@@ -1048,8 +1237,7 @@ The application remains contained within a single HTML page.
 • Added Export Data  
 • Added Import Data  
 • Added portable JSON backups  
-• Added backup metadata  
-• Added backup validation  
+• Added backup metadata and validation  
 • Added import confirmation  
 • Added automatic pre-import safety backup  
 • Enabled migration between computers
@@ -1065,7 +1253,6 @@ The application remains contained within a single HTML page.
 • Added TO RECEIVE  
 • Expanded Kanban to five operational columns  
 • Added TO ORDER → TO RECEIVE transfer  
-• Added receipt-status workflow  
 • Added Mark Received  
 • Introduced distinct column colours
 
@@ -1087,8 +1274,7 @@ The application remains contained within a single HTML page.
 • Introduced TO DO, TO ORDER, GUEST NOTES and HANDOVER  
 • Added specialised card forms  
 • Added search and filtering  
-• Added drag-and-drop workflow  
-• Separated Today's Scheduled Tasks from Kanban columns
+• Added drag-and-drop workflow
 
 ## v4.0 · Floating Schedule
 
@@ -1125,6 +1311,8 @@ GitHub Pages distributes the application while operational data remains in brows
 • Portable backups  
 • Archived operational history  
 • Dedicated Leave Requests workspace  
+• Dedicated Inventory workspace  
+• Fast inventory quantity adjustments  
 • Consistent workspace interaction  
 • One-click card duplication  
 • Direct workflow controls  
@@ -1143,4 +1331,4 @@ A shared backend or cloud database would be required for simultaneous multi-work
 
 Active development.
 
-The dashboard continues to evolve around practical GPCH Crystal Club operations, with emphasis on consistent interaction patterns, minimal-click workflows, efficient use of limited screen space, operational visibility, historical records, shift communication, staff leave tracking, recurring task management, data portability and traceability.
+The dashboard continues to evolve around practical GPCH Crystal Club operations, with emphasis on consistent interaction patterns, minimal-click workflows, efficient use of limited screen space, operational visibility, inventory tracking, historical records, shift communication, staff leave tracking, recurring task management, data portability and traceability.
