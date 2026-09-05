@@ -140,6 +140,24 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 .expanded-theme-guest .expanded-column-header{background:#f8dce9;color:#7a3458}
 .expanded-theme-handover .expanded-column-header{background:#e2dcfa;color:#55448a}
 .expanded-theme-leave .expanded-column-header{background:#e7e1f4;color:#5f4b82}
+.leave-workflow-board{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.leave-workflow-column{min-width:0;border:1px solid #e2dcef;border-radius:14px;background:#faf9fc;overflow:hidden}
+.leave-workflow-heading{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #e2dcef}
+.leave-workflow-heading h3{margin:0;font-size:14px;letter-spacing:.08em}
+.leave-workflow-heading span{min-width:26px;text-align:center;padding:3px 8px;border-radius:999px;background:#eee8f8;color:#654f89;font-size:12px;font-weight:800}
+.leave-pending-column .leave-workflow-heading{background:#f4f0fa;color:#654f89}
+.leave-approved-column .leave-workflow-heading{background:#edf5ef;color:#426b4c}
+.leave-approved-column .leave-workflow-heading span{background:#dcebdd;color:#426b4c}
+.leave-workflow-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:12px}
+.leave-status.declined{background:#f7e3e3;color:#934848}
+.leave-status.approved{background:#dcebdd;color:#426b4c}
+.leave-status.pending{background:#ece5f7;color:#654f89}
+.leave-decision-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}
+.leave-decision-actions button{font-size:11px;padding:5px 8px}
+.leave-approve-btn{background:#e5f1e7;border-color:#bfd6c2;color:#35653d}
+.leave-decline-btn{background:#f6e6e6;border-color:#dfc2c2;color:#8b3d3d}
+@media(max-width:1100px){.leave-workflow-grid{grid-template-columns:1fr}}
+@media(max-width:760px){.leave-workflow-board{grid-template-columns:1fr}}
 .expanded-theme-inventory .expanded-column-header{background:#dfece6;color:#355f50}
 .inventory-card{background:#fff;border:1px solid #cddfd7;border-left:4px solid #5f8d7b;border-radius:13px;padding:12px;box-shadow:0 5px 14px rgba(30,25,18,.05)}
 .inventory-card.archived-card{opacity:.62}
@@ -329,7 +347,22 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
       </div>
     </div>
     <div class="expanded-column-content">
-      <div class="expanded-grid" id="leaveWorkspaceGrid"></div>
+      <div class="leave-workflow-board">
+        <section class="leave-workflow-column leave-pending-column">
+          <div class="leave-workflow-heading">
+            <h3>PENDING</h3>
+            <span id="leavePendingCount">0</span>
+          </div>
+          <div class="leave-workflow-grid" id="leavePendingGrid"></div>
+        </section>
+        <section class="leave-workflow-column leave-approved-column">
+          <div class="leave-workflow-heading">
+            <h3>APPROVED</h3>
+            <span id="leaveApprovedCount">0</span>
+          </div>
+          <div class="leave-workflow-grid" id="leaveApprovedGrid"></div>
+        </section>
+      </div>
     </div>
   </div>
 </div>
@@ -446,7 +479,7 @@ var SCHED_KEY="gpch_crystal_schedule_v51";
 var DONE_KEY="gpch_crystal_schedule_done_v51";
 var LEAVE_KEY="gpch_crystal_leave_requests_v67";
 var INVENTORY_KEY="gpch_crystal_inventory_v69";
-var APP_VERSION="6.9";
+var APP_VERSION="7.0";
 
 function makeId(){
   return "id_"+Date.now()+"_"+Math.random().toString(36).slice(2,9);
@@ -1268,9 +1301,24 @@ function closeInventoryWorkspace(){
 }
 
 function leaveCardHtml(x){
+  var status=String(x.status||"Pending");
+  var statusClass=status.toLowerCase().replace(/\s+/g,"-");
+  var decisionButtons="";
+  if(!x.archived && status!=="Approved"){
+    decisionButtons='<div class="leave-decision-actions">'+
+      '<button type="button" class="leave-approve-btn" data-leave-action="approve">✓ Approve</button>'+
+      '<button type="button" class="leave-decline-btn" data-leave-action="decline">Decline</button>'+
+      '</div>';
+  }
+  if(!x.archived && status==="Approved"){
+    decisionButtons='<div class="leave-decision-actions">'+
+      '<button type="button" class="leave-decline-btn" data-leave-action="decline">Move to Declined</button>'+
+      '</div>';
+  }
+
   return '<article class="leave-card'+(x.archived?' archived-card':'')+'" data-leave-id="'+esc(x.id)+'">'+
     '<div class="card-top"><span class="pill leave-type">'+esc(x.leaveType||"Leave")+'</span>'+
-    '<span class="pill leave-status">'+esc(x.status||"Pending")+'</span></div>'+
+    '<span class="pill leave-status '+esc(statusClass)+'">'+esc(status)+'</span></div>'+
     '<h3>'+esc(x.staff||"Unnamed")+'</h3>'+
     '<div class="meta">'+
     '<div>Leave: '+esc(formatLeaveDate(x.startDate))+' → '+esc(formatLeaveDate(x.endDate))+'</div>'+
@@ -1278,6 +1326,7 @@ function leaveCardHtml(x){
     '<div>Created: '+esc(formatCreatedAt(x.createdAt))+'</div>'+
     (x.archivedAt?'<div>Archived: '+esc(formatCreatedAt(x.archivedAt))+'</div>':'')+
     '</div>'+
+    decisionButtons+
     '<div class="leave-card-actions">'+
     '<button type="button" data-leave-action="copy">Copy</button>'+
     (x.archived?'<button type="button" data-leave-action="restore">Restore</button>':
@@ -1317,51 +1366,72 @@ function renderLeaveWorkspace(){
     return 0;
   });
 
+  var pending=list.filter(function(x){return String(x.status||"Pending")!=="Approved";});
+  var approved=list.filter(function(x){return String(x.status||"Pending")==="Approved";});
+
   document.getElementById("leaveArchiveToggleBtn").textContent=showLeaveArchived?"Hide Archived":"Show Archived";
-  var grid=document.getElementById("leaveWorkspaceGrid");
-  if(!list.length){
-    grid.innerHTML='<div class="expanded-empty">No matching leave request cards.</div>';
-    return;
+  document.getElementById("leavePendingCount").textContent=pending.length;
+  document.getElementById("leaveApprovedCount").textContent=approved.length;
+
+  var pendingGrid=document.getElementById("leavePendingGrid");
+  var approvedGrid=document.getElementById("leaveApprovedGrid");
+
+  pendingGrid.innerHTML=pending.length?pending.map(leaveCardHtml).join(""):'<div class="expanded-empty">No pending or declined requests.</div>';
+  approvedGrid.innerHTML=approved.length?approved.map(leaveCardHtml).join(""):'<div class="expanded-empty">No approved requests.</div>';
+
+  function bindLeaveActions(grid){
+    Array.prototype.forEach.call(grid.querySelectorAll("[data-leave-action]"),function(btn){
+      btn.addEventListener("click",function(){
+        var card=btn.closest("[data-leave-id]");
+        var id=card.getAttribute("data-leave-id");
+        var x=leaveRequests.find(function(r){return r.id===id;});
+        if(!x) return;
+        var action=btn.getAttribute("data-leave-action");
+
+        if(action==="edit") openLeaveEntry(x);
+
+        if(action==="copy"){
+          var copy=clone(x);
+          delete copy.id;
+          delete copy.createdAt;
+          delete copy.archived;
+          delete copy.archivedAt;
+          openLeaveEntry(copy);
+          editingItemId=null;
+        }
+
+        if(action==="approve"){
+          x.status="Approved";
+          setStored(LEAVE_KEY,leaveRequests);
+          renderLeaveWorkspace();
+        }
+
+        if(action==="decline"){
+          x.status="Declined";
+          setStored(LEAVE_KEY,leaveRequests);
+          renderLeaveWorkspace();
+        }
+
+        if(action==="complete"){
+          if(!confirm("Archive this completed leave request?")) return;
+          x.archived=true;
+          x.archivedAt=new Date().toISOString();
+          setStored(LEAVE_KEY,leaveRequests);
+          renderLeaveWorkspace();
+        }
+
+        if(action==="restore"){
+          x.archived=false;
+          x.archivedAt=null;
+          setStored(LEAVE_KEY,leaveRequests);
+          renderLeaveWorkspace();
+        }
+      });
+    });
   }
 
-  grid.innerHTML=list.map(leaveCardHtml).join("");
-
-  Array.prototype.forEach.call(grid.querySelectorAll("[data-leave-action]"),function(btn){
-    btn.addEventListener("click",function(){
-      var card=btn.closest("[data-leave-id]");
-      var id=card.getAttribute("data-leave-id");
-      var x=leaveRequests.find(function(r){return r.id===id;});
-      if(!x) return;
-      var action=btn.getAttribute("data-leave-action");
-
-      if(action==="edit") openLeaveEntry(x);
-
-      if(action==="copy"){
-        var copy=clone(x);
-        delete copy.id;
-        delete copy.createdAt;
-        delete copy.archived;
-        delete copy.archivedAt;
-        openLeaveEntry(copy);
-        editingItemId=null;
-      }
-
-      if(action==="complete"){
-        if(!confirm("Archive this completed leave request?")) return;
-        x.archived=true;
-        x.archivedAt=new Date().toISOString();
-        setStored(LEAVE_KEY,leaveRequests);
-        renderLeaveWorkspace();
-      }
-
-      if(action==="restore"){
-        x.archived=false;
-        x.archivedAt=null;
-        setStored(LEAVE_KEY,leaveRequests);
-        renderLeaveWorkspace();
-      }
-    });
-  });
+  bindLeaveActions(pendingGrid);
+  bindLeaveActions(approvedGrid);
 }
 
 function openLeaveWorkspace(){
