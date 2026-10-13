@@ -224,6 +224,33 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 .leave-empty{color:var(--muted);font-size:13px;padding:18px 2px}
 @media(max-width:900px){.stats{grid-template-columns:1fr 1fr}.board{grid-template-columns:repeat(5,260px)}}
 @media(max-width:650px){.app{padding:14px}header{flex-direction:column;align-items:flex-start}.schedule-overlay{left:12px;right:12px;width:auto;max-height:45vh}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.type-picker{grid-template-columns:1fr 1fr}.schedule-row{grid-template-columns:1fr}}
+
+/* v7.1 operations workspace */
+:root{--bg:#edf2f5;--panel:#fff;--ink:#17313b;--muted:#607680;--line:#dce5e9;--soft:#edf3f5;--shadow:0 4px 18px rgba(22,49,59,.04)}
+body{font-family:Inter,"Segoe UI",Arial,sans-serif;background:radial-gradient(ellipse at top left,#e3efef,transparent 55%),var(--bg)}
+.app{padding:28px 32px;max-width:1920px;margin:auto}
+header{align-items:center;margin-bottom:24px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+h1{font-size:24px;letter-spacing:.025em}#dateLabel{font-size:12px}
+.brand-kicker{font-size:10px;letter-spacing:.18em;color:#537c7b;margin-bottom:8px;font-weight:700}
+button{transition:background .15s,box-shadow .15s;border-radius:9px;font-size:12px;font-weight:600}
+button:hover{box-shadow:0 3px 10px #17313b15;background:#edf3f5}button.primary{background:#176b68;border-color:#176b68}button.primary:hover{background:#125955}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #3d9c97;outline-offset:2px}
+.stats{gap:12px;margin-bottom:20px}.stat{position:relative;border-radius:12px;padding:16px 20px;background:#fff!important;border-color:var(--line)!important;border-top:3px solid currentColor!important}.stat strong{font-size:27px;margin-bottom:4px}.stat span{font-size:10px}
+.toolbar{padding:12px;background:#ffffffb0;border:1px solid var(--line);border-radius:12px;align-items:center;gap:10px}.toolbar input,.toolbar select{font-size:12px;background:#fff}.toolbar input{min-width:180px}
+.board{grid-template-columns:repeat(5,minmax(220px,1fr));gap:14px;align-items:start;padding-bottom:12px}.board.filtered{grid-template-columns:minmax(280px,680px)}
+.column{min-height:460px;border-radius:12px;background:#ffffff80;box-shadow:none;padding:10px}.column-head{font-size:11px;letter-spacing:.07em;padding:14px 10px;border-radius:11px 11px 0 0}.dropzone{min-height:360px}
+.card{box-shadow:0 2px 8px #17313b08;border-color:#dce5e9;border-radius:10px;padding:14px;transition:box-shadow .15s}.card:hover{box-shadow:0 6px 18px #17313b14}.card h3{font-size:14px;line-height:1.4}.meta{overflow-wrap:anywhere}.card-actions{border-top:1px solid #edf2f4;padding-top:9px}.pill{letter-spacing:.02em}
+.card[data-priority="5"]{border-left:4px solid #ce5252}.card[data-priority="4"],.card[data-priority="3"]{border-left:4px solid #cd963c}
+.empty{padding:28px 12px;text-align:center;color:var(--muted);line-height:1.6}.column-add{width:100%;margin-top:8px;border-style:dashed;background:transparent;color:var(--muted)}
+.schedule-overlay{position:relative;top:auto;right:auto;width:auto;max-height:360px;margin:20px 32px 28px;background:#183d45;border-radius:12px;box-shadow:var(--shadow);z-index:auto}.schedule-overlay.hidden{display:none}.schedule-item{grid-template-columns:60px 1fr auto}.schedule-overlay h2{font-size:13px;letter-spacing:.06em}
+.modal-card,.expanded-column-shell{border:1px solid var(--line);border-radius:14px}.modal{backdrop-filter:blur(4px)}
+body.compact .card{padding:9px;margin-bottom:7px}body.compact .card h3{margin-bottom:4px;font-size:13px}body.compact .meta{font-size:11px}body.compact .stat{padding:10px 16px}body.compact .stat strong{font-size:22px}
+#workspaceStatus{font-size:12px;color:var(--muted);margin:0 0 12px}#saveStatus{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);padding:10px 18px;background:#8b3030;color:white;border-radius:9px;z-index:300;max-width:90vw}#saveStatus:empty{display:none}
+@media(min-width:1600px){.schedule-overlay{max-width:1856px;margin-left:auto;margin-right:auto}}
+@media(max-width:900px){.app{padding:20px}.actions{gap:6px}.board{grid-template-columns:repeat(5,260px)}.stats{grid-template-columns:repeat(5,1fr)}.stat{padding:12px}.schedule-overlay{margin:16px 20px}}
+@media(max-width:650px){.app{padding:14px}header{align-items:stretch;gap:14px}h1{font-size:21px}.stats{grid-template-columns:repeat(2,1fr)}.stats .stat:last-child{grid-column:1/-1}.toolbar select{flex:1;min-width:130px}.toolbar input{flex-basis:100%}.board{grid-template-columns:repeat(5,85vw)}.board.filtered{grid-template-columns:1fr}.schedule-overlay{left:auto;right:auto;margin:14px;max-height:360px}.actions button{flex:1 1 auto}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
 </style>
 </head>
 <body>
@@ -231,7 +258,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 <div class="app">
 <header>
   <div>
-    <h1>GPCH CRYSTAL CLUB</h1>
+    <div class="brand-kicker">GRAND PARK CITY HALL · OPERATIONS</div><h1>Crystal Club</h1>
     <div id="dateLabel">CRYSTAL CLUB OPERATIONS</div>
   </div>
   <div class="actions">
@@ -240,7 +267,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
     <button id="inventoryBtn">Inventory</button>
     <button id="toggleScheduleBtn">Toggle Schedule</button>
     <button id="toggleArchiveBtn">Show Archive</button>
-    <button id="settingsBtn">Settings</button>
+    <button id="compactBtn" aria-pressed="false">Compact View</button><button id="fullscreenBtn">Full Screen</button><button id="settingsBtn">Settings</button>
   </div>
 </header>
 
@@ -253,8 +280,8 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
 </section>
 
 <div class="toolbar">
-  <input id="searchBox" type="search" placeholder="Search task, item, room, guest or note">
-  <select id="columnFilter">
+  <input id="searchBox" type="search" aria-label="Search board" placeholder="Search task, item, room, guest or note">
+  <select id="columnFilter" aria-label="Filter column">
     <option value="all">All Columns</option>
     <option value="todo">To Do</option>
     <option value="order">To Order</option>
@@ -262,8 +289,11 @@ button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
     <option value="guest">Guest Notes</option>
     <option value="handover">Handover</option>
   </select>
+  <select id="priorityFilter" aria-label="Filter priority"><option value="all">All Priorities</option><option value="attention">Needs Attention</option><option value="urgent">Urgent Only</option></select>
+  <select id="boardSort" aria-label="Sort board"><option value="urgency_desc">Priority First</option><option value="newest">Newest First</option><option value="oldest">Oldest First</option><option value="title_az">Title A to Z</option></select>
+  <button id="clearFiltersBtn">Reset Filters</button>
 </div>
-
+<p id="workspaceStatus" role="status"></p><div id="saveStatus" role="alert"></div>
 <div class="archive-mode-banner" id="archiveModeBanner">ARCHIVE VIEW: archived cards are shown together with active cards.</div>
 <main class="board">
   <section class="column column-todo">
@@ -479,7 +509,7 @@ var SCHED_KEY="gpch_crystal_schedule_v51";
 var DONE_KEY="gpch_crystal_schedule_done_v51";
 var LEAVE_KEY="gpch_crystal_leave_requests_v67";
 var INVENTORY_KEY="gpch_crystal_inventory_v69";
-var APP_VERSION="7.0";
+var APP_VERSION="7.1";
 
 function makeId(){
   return "id_"+Date.now()+"_"+Math.random().toString(36).slice(2,9);
@@ -496,7 +526,7 @@ function getStored(key,fallback){
   }
 }
 function setStored(key,value){
-  try{localStorage.setItem(key,JSON.stringify(value));}catch(e){}
+  try{localStorage.setItem(key,JSON.stringify(value));document.getElementById("saveStatus").textContent="";}catch(e){document.getElementById("saveStatus").textContent="Changes could not be saved. Export a backup before closing this page.";}
 }
 function esc(value){
   return String(value==null?"":value).replace(/[&<>"']/g,function(c){
@@ -600,7 +630,7 @@ function cardHtml(x){
     body+=(x.notes?'<div>'+esc(x.notes)+'</div>':"");
   }
   body+='<div style="margin-top:7px;font-size:11px;color:#8b857c">Created: '+esc(formatCreatedAt(x.createdAt))+'</div>';
-  return '<article class="card'+cls+(x.archived?' archived-card':'')+'" draggable="'+(x.archived?'false':'true')+'" data-id="'+esc(x.id)+'">'+
+  return '<article class="card'+cls+(x.archived?' archived-card':'')+'" draggable="'+(x.archived?'false':'true')+'" data-priority="'+urgencyRank(x)+'" data-id="'+esc(x.id)+'">'+
     '<div class="card-top">'+top+(x.archived?'<span class="pill archived-badge">ARCHIVED</span>':'')+'</div><h3>'+esc(x.title)+'</h3><div class="meta">'+body+
     (x.archivedAt?'<div style="margin-top:5px;font-size:11px;color:#8b857c">Archived: '+esc(formatCreatedAt(x.archivedAt))+'</div>':'')+
     '</div><div class="card-actions">'+
@@ -775,18 +805,23 @@ function renderBoard(){
 
   ["todo","order","receive","guest","handover"].forEach(function(type){
     var zone=document.getElementById(zoneIds[type]);
-    var visible=sortedItemsForType(type,q).filter(function(){
-      return filter==="all" || filter===type;
-    });
+    zone.parentElement.hidden=filter!=="all" && filter!==type;
+    var priority=document.getElementById("priorityFilter").value;
+    var visible=sortExpandedItems(sortedItemsForType(type,q).filter(function(x){
+      return (filter==="all" || filter===type) && (priority==="all" || urgencyRank(x)>=(priority==="urgent"?5:3));
+    }),document.getElementById("boardSort").value);
 
     zone.innerHTML=visible.length ? visible.map(cardHtml).join("") : '<div class="empty">'+
-      (type==="todo"?"No tasks yet.":type==="order"?"Nothing to order yet.":type==="receive"?"Nothing pending receipt.":type==="guest"?"No guest notes yet.":"No handover notes yet.")+
+      ((q || document.getElementById("priorityFilter").value!=="all")?"No matching cards. Try resetting filters.":type==="todo"?"No tasks yet.":type==="order"?"Nothing to order yet.":type==="receive"?"Nothing pending receipt.":type==="guest"?"No guest notes yet.":"No handover notes yet.")+
       '</div>';
 
     document.getElementById(countIds[type]).textContent=visible.length;
     document.getElementById(statIds[type]).textContent=items.filter(function(x){return x.type===type && !x.archived;}).length;
   });
 
+  document.querySelector(".board").classList.toggle("filtered",filter!=="all");
+  var shown=document.querySelectorAll(".board .card").length;
+  document.getElementById("workspaceStatus").textContent=shown+" cards in view · "+items.filter(function(x){return !x.archived && urgencyRank(x)>=3;}).length+" need attention";
   bindCards();
   if(expandedType && document.getElementById("expandedColumnModal").classList.contains("open")){
     renderExpandedColumn();
@@ -1655,6 +1690,7 @@ document.getElementById("importFileInput").addEventListener("change",function(e)
 });
 function toggleScheduleOverlay(){
   document.getElementById("scheduleOverlay").classList.toggle("hidden");
+  viewPrefs.scheduleHidden=document.getElementById("scheduleOverlay").classList.contains("hidden");setStored("gpch_crystal_view_v71",viewPrefs);
 }
 document.getElementById("hideOverlayBtn").addEventListener("click",toggleScheduleOverlay);
 document.getElementById("toggleScheduleBtn").addEventListener("click",toggleScheduleOverlay);
@@ -1692,6 +1728,19 @@ document.addEventListener("keydown",function(e){
   if(e.key==="Escape" && document.getElementById("expandedColumnModal").classList.contains("open")) closeExpandedColumn();
 });
 
+
+var viewPrefs=getStored("gpch_crystal_view_v71",{});
+document.body.classList.toggle("compact",!!viewPrefs.compact);
+document.getElementById("compactBtn").setAttribute("aria-pressed",String(!!viewPrefs.compact));
+document.getElementById("scheduleOverlay").classList.toggle("hidden",!!viewPrefs.scheduleHidden);
+document.getElementById("compactBtn").onclick=function(){viewPrefs.compact=!document.body.classList.contains("compact");document.body.classList.toggle("compact",viewPrefs.compact);this.setAttribute("aria-pressed",String(viewPrefs.compact));setStored("gpch_crystal_view_v71",viewPrefs);};
+document.getElementById("fullscreenBtn").onclick=async function(){try{if(document.fullscreenElement) await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch(e){document.getElementById("workspaceStatus").textContent="Full screen is unavailable in this browser window.";}};
+document.addEventListener("fullscreenchange",function(){document.getElementById("fullscreenBtn").textContent=document.fullscreenElement?"Exit Full Screen":"Full Screen";});
+["priorityFilter","boardSort"].forEach(function(id){document.getElementById(id).addEventListener("change",renderBoard);});
+document.getElementById("clearFiltersBtn").onclick=function(){document.getElementById("searchBox").value="";document.getElementById("columnFilter").value="all";document.getElementById("priorityFilter").value="all";document.getElementById("boardSort").value="urgency_desc";renderBoard();};
+Object.keys(zoneIds).forEach(function(type){var zone=document.getElementById(zoneIds[type]);var btn=document.createElement("button");btn.className="column-add";btn.textContent="+ Add "+typeLabel(type).toLowerCase();btn.onclick=function(){openEntry(type,null);};zone.after(btn);var head=zone.previousElementSibling;head.setAttribute("role","button");head.tabIndex=0;head.addEventListener("keydown",function(e){if(e.key==="Enter" || e.key===" "){e.preventDefault();openExpandedColumn(type);}});});
+document.addEventListener("keydown",function(e){if(e.key==="/" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) && !document.querySelector(".modal.open,.expanded-column-modal.open")){e.preventDefault();document.getElementById("searchBox").focus();}});
+
 document.getElementById("dateLabel").textContent=longDate();
 document.getElementById("overlayDate").textContent=longDate();
 updateScheduleFields();
@@ -1703,3 +1752,4 @@ setInterval(renderTodaySchedule,30000);
 </script>
 </body>
 </html>
+
