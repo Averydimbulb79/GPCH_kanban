@@ -1,3 +1,30 @@
+# v7.1 · Operations Dashboard Refresh
+
+The dashboard now uses a quieter teal and slate interface, clearer card hierarchy and a schedule panel below the board. Existing browser storage keys and operational records remain compatible.
+
+| Update | Behaviour |
+| --- | --- |
+| Full Screen | Enter or exit browser full screen to maximise workspace; browser restrictions are reported in the status line. |
+| Compact View | Reduce card and summary spacing; preference survives refresh. |
+| Column filtering | Hide other columns and widen the selected workflow. |
+| Priority filtering | Needs Attention shows rank 3 and above; Urgent Only shows URGENT cards. |
+| Board sorting | Priority, newest, oldest or alphabetical order within each column. |
+| Quick add | Add directly to a column without opening the category picker. |
+| Reset Filters | Clear search and restore all columns, priorities and default sorting. |
+| Schedule | Docked below the board; visibility preference survives refresh. |
+| Keyboard | Press / to focus board search; Enter or Space opens a focused column heading. |
+| Storage feedback | A visible alert appears if local saving fails; export before closing. |
+
+Card counts show filtered results; summary tiles retain total active counts. The status line reports visible cards and active cards requiring attention. Receive statuses retain the existing priority ranking. Search and sort affect display only.
+
+This release retains the five board workflows, expanded workspaces, leave approval, inventory, recurring schedules and backup format. It remains local to each browser, without shared multi-user synchronisation. Interface preferences are stored separately from operational backups.
+
+## Validation
+
+JavaScript syntax, unique DOM IDs, literal DOM references, four sort modes, priority ranking, HTML escaping and legacy storage keys passed automated checks. Full browser smoke testing was blocked because the available runtime has no browser binary and the browser download failed. Visual rendering, full screen and interaction checks still require a browser review. No external UI dependencies are introduced.
+
+---
+
 # GPCH Kanban
 
 Single-page operational Kanban dashboard designed for GPCH Crystal Club.
@@ -1156,3 +1183,4 @@ A shared backend or cloud database would be required for simultaneous multi-work
 Active development.
 
 The dashboard continues to evolve around practical GPCH Crystal Club operations, with emphasis on consistent interaction patterns, minimal-click workflows, efficient use of limited screen space, operational visibility, leave approval management, editable declined requests, inventory tracking, historical records, shift communication, recurring task management, data portability and traceability.
+
