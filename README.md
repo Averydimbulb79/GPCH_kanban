@@ -1,3 +1,15 @@
+# v7.0.2 · Sleek surfaces and subtle motion
+
+16 October 2026. Applies the approved mockup direction to the existing board: softer surfaces, Segoe UI typography, gentle button/card hover feedback, 170 ms popup entrances, 160 ms schedule entrances and softly blurred backdrops. Motion is disabled when the device requests reduced motion.
+
+The five-column layout, floating schedule, controls, workflows, storage keys and data formats are retained. Application JavaScript changes only the version value. No data migration occurs.
+
+Validation: JavaScript syntax passed; markup and scripts match v7.0.1 after removing CSS and normalising the version. Existing grid dimensions, positions and responsive rules are retained. Full browser visual and interaction testing remains outstanding because no browser executable is installed. Popup close remains immediate, retaining existing interaction behaviour.
+
+Restore point: [backup/2026-10-16-0144-before-sleek-ui](https://github.com/Averydimbulb79/GPCH_kanban/tree/backup/2026-10-16-0144-before-sleek-ui), from main at `8309fa3468967f4b5557f2e365264447e4bed9b3`. Remote SHA verified before editing. Restore with a restoration commit; browser records require their own JSON export.
+
+---
+
 # v7.0.1 · Visual polish only
 
 15 October 2026. This update keeps the v7.0 layout and operational functions and refines its visual finish.
@@ -50,7 +62,7 @@ GPCH Kanban consolidates daily tasks, ordering, receiving, guest notes, shift ha
 
 https://averydimbulb79.github.io/GPCH_kanban/
 
-Current version: 7.0
+Current version: 7.0.2
 
 ---
 

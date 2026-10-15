@@ -266,6 +266,32 @@ input::placeholder,textarea::placeholder{color:#758194;opacity:1}
 .field label{color:#536277}
 .settings-note{color:#626f81}
 
+
+/* v7.0.2: approved sleek finish; existing layout and workflows retained. */
+body{font-family:"Segoe UI",Arial,Helvetica,sans-serif;background:#f2f4f7}
+h1{font-weight:600;text-shadow:none}
+button{transition:transform 100ms ease,box-shadow 140ms ease,border-color 140ms ease,background 140ms ease}
+button:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(20,41,63,.085)}
+button:active{transform:scale(.97)}
+button.primary{background:#304b65;border-color:#304b65}
+.stat{box-shadow:0 3px 10px rgba(20,41,63,.025)}
+.stat strong{font-weight:600}
+.column{box-shadow:0 3px 12px rgba(20,41,63,.025)}
+.card,.inventory-card,.leave-card{box-shadow:0 3px 9px rgba(20,41,63,.035);transition:box-shadow 140ms ease,transform 140ms ease}
+.card:hover,.inventory-card:hover,.leave-card:hover{box-shadow:0 6px 15px rgba(20,41,63,.075);transform:translateY(-2px)}
+.card.dragging{transform:none}
+.card h3,.inventory-card h3,.leave-card h3{font-weight:600}
+.modal,.expanded-column-modal{background:rgba(24,44,64,.36);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.modal-card,.expanded-column-shell{border:1px solid var(--line);box-shadow:0 24px 80px rgba(20,41,63,.22)}
+.modal.open .modal-card,.expanded-column-modal.open .expanded-column-shell{animation:gp-modal-in 170ms cubic-bezier(.2,.8,.2,1)}
+.schedule-overlay{background:rgba(41,60,80,.94);box-shadow:0 14px 40px rgba(20,41,63,.19);transition:opacity 160ms ease,transform 160ms ease}
+.schedule-overlay:not(.hidden){animation:gp-panel-in 160ms ease-out}
+@keyframes gp-modal-in{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes gp-panel-in{from{opacity:0;transform:translateX(6px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  button:hover,button:active,.card:hover,.inventory-card:hover,.leave-card:hover,.stat[data-expand]:hover,.type-picker button:hover{transform:none}
+}
 </style>
 </head>
 <body>
@@ -521,7 +547,7 @@ var SCHED_KEY="gpch_crystal_schedule_v51";
 var DONE_KEY="gpch_crystal_schedule_done_v51";
 var LEAVE_KEY="gpch_crystal_leave_requests_v67";
 var INVENTORY_KEY="gpch_crystal_inventory_v69";
-var APP_VERSION="7.0.1";
+var APP_VERSION="7.0.2";
 
 function makeId(){
   return "id_"+Date.now()+"_"+Math.random().toString(36).slice(2,9);
