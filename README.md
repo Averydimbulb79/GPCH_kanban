@@ -3,8 +3,8 @@
 The dashboard now uses a quieter teal and slate interface, clearer card hierarchy and a schedule panel below the board. Existing browser storage keys and operational records remain compatible.
 
 | Update | Behaviour |
-| Hotel branding | Supplied Grand Park City Hall logo appears beside the Crystal Club heading, with accessible alternative text and responsive sizing. Image is embedded so no external asset request is needed. |
 | --- | --- |
+| Hotel branding | Supplied Grand Park City Hall logo appears beside the Crystal Club heading, with accessible alternative text and responsive sizing. Image is embedded so no external asset request is needed. |
 | Full Screen | Enter or exit browser full screen to maximise workspace; browser restrictions are reported in the status line. |
 | Compact View | Reduce card and summary spacing; preference survives refresh. |
 | Column filtering | Hide other columns and widen the selected workflow. |
@@ -19,6 +19,17 @@ The dashboard now uses a quieter teal and slate interface, clearer card hierarch
 Card counts show filtered results; summary tiles retain total active counts. The status line reports visible cards and active cards requiring attention. Receive statuses retain the existing priority ranking. Search and sort affect display only.
 
 This release retains the five board workflows, expanded workspaces, leave approval, inventory, recurring schedules and backup format. It remains local to each browser, without shared multi-user synchronisation. Interface preferences are stored separately from operational backups.
+
+## Release and recovery policy
+
+Released to the main branch for GitHub Pages deployment on 15 October 2026. Future updates are authorised for direct live deployment after backup and appropriate checks. Every incremental update must revise this README with its version, changes, validation, limitations and restore point.
+
+| Restore point | Original branch | Commit | Purpose |
+| --- | --- | --- | --- |
+| backup/2026-10-15-1635-pre-live-7-1 | main | 3668202ee4b054268a4ad27130ffe523447dbaab | Live application immediately before publishing v7.1 |
+| backup/2026-10-15-1635-preview-7-1 | improve/operations-ui-v7-1 | 2bd23025292ef0d3a858bd01fc8c7d7952bbc3be | v7.1 before release documentation changes |
+
+Earlier backups are retained. Restore code through a revert or restoration commit. Browser records require a separate JSON export; Git backups contain application code only.
 
 ## Validation
 
@@ -36,7 +47,7 @@ GPCH Kanban consolidates daily tasks, ordering, receiving, guest notes, shift ha
 
 https://averydimbulb79.github.io/GPCH_kanban/
 
-Current version: 7.0
+Current version: 7.1
 
 ---
 
