@@ -1,39 +1,13 @@
-# v7.1 · Operations Dashboard Refresh
+# Rollback: v7.0 restored · 15 October 2026
 
-The dashboard now uses a quieter teal and slate interface, clearer card hierarchy and a schedule panel below the board. Existing browser storage keys and operational records remain compatible.
-
-| Update | Behaviour |
-| --- | --- |
-| Hotel branding | Supplied Grand Park City Hall logo appears beside the Crystal Club heading, with accessible alternative text and responsive sizing. Image is embedded so no external asset request is needed. |
-| Full Screen | Enter or exit browser full screen to maximise workspace; browser restrictions are reported in the status line. |
-| Compact View | Reduce card and summary spacing; preference survives refresh. |
-| Column filtering | Hide other columns and widen the selected workflow. |
-| Priority filtering | Needs Attention shows rank 3 and above; Urgent Only shows URGENT cards. |
-| Board sorting | Priority, newest, oldest or alphabetical order within each column. |
-| Quick add | Add directly to a column without opening the category picker. |
-| Reset Filters | Clear search and restore all columns, priorities and default sorting. |
-| Schedule | Docked below the board; visibility preference survives refresh. |
-| Keyboard | Press / to focus board search; Enter or Space opens a focused column heading. |
-| Storage feedback | A visible alert appears if local saving fails; export before closing. |
-
-Card counts show filtered results; summary tiles retain total active counts. The status line reports visible cards and active cards requiring attention. Receive statuses retain the existing priority ranking. Search and sort affect display only.
-
-This release retains the five board workflows, expanded workspaces, leave approval, inventory, recurring schedules and backup format. It remains local to each browser, without shared multi-user synchronisation. Interface preferences are stored separately from operational backups.
-
-## Release and recovery policy
-
-Released to the main branch for GitHub Pages deployment on 15 October 2026. Future updates are authorised for direct live deployment after backup and appropriate checks. Every incremental update must revise this README with its version, changes, validation, limitations and restore point.
+At the owner's request, the v7.1 interface and functionality changes have been reversed. The application file is restored exactly from the pre-release version; its displayed version returns to 7.0. Backup and direct-release instructions remain in AGENTS.md.
 
 | Restore point | Original branch | Commit | Purpose |
 | --- | --- | --- | --- |
-| backup/2026-10-15-1635-pre-live-7-1 | main | 3668202ee4b054268a4ad27130ffe523447dbaab | Live application immediately before publishing v7.1 |
-| backup/2026-10-15-1635-preview-7-1 | improve/operations-ui-v7-1 | 2bd23025292ef0d3a858bd01fc8c7d7952bbc3be | v7.1 before release documentation changes |
+| backup/2026-10-15-1642-before-rollback | main | e58dd66dc321b77f00bc2084da6d1f42100576e9 | Preserve v7.1 before reversal |
+| backup/2026-10-15-1635-pre-live-7-1 | main | 3668202ee4b054268a4ad27130ffe523447dbaab | Source of restored v7.0 application |
 
-Earlier backups are retained. Restore code through a revert or restoration commit. Browser records require a separate JSON export; Git backups contain application code only.
-
-## Validation
-
-JavaScript syntax, unique DOM IDs, literal DOM references, four sort modes, priority ranking, HTML escaping and legacy storage keys passed automated checks. Full browser smoke testing was blocked because the available runtime has no browser binary and the browser download failed. Visual rendering, full screen and interaction checks still require a browser review. No external UI dependencies are introduced.
+Validation: index.html uses the exact original Git blob e8623ecd7c690495868b64aa385883b912880fad. No browser records are modified by this code restoration. Full browser interaction testing remains outstanding. Every subsequent update must include a verified backup and README revision before direct live deployment.
 
 ---
 
@@ -47,7 +21,7 @@ GPCH Kanban consolidates daily tasks, ordering, receiving, guest notes, shift ha
 
 https://averydimbulb79.github.io/GPCH_kanban/
 
-Current version: 7.1
+Current version: 7.0
 
 ---
 
@@ -1195,5 +1169,3 @@ A shared backend or cloud database would be required for simultaneous multi-work
 Active development.
 
 The dashboard continues to evolve around practical GPCH Crystal Club operations, with emphasis on consistent interaction patterns, minimal-click workflows, efficient use of limited screen space, operational visibility, leave approval management, editable declined requests, inventory tracking, historical records, shift communication, recurring task management, data portability and traceability.
-
-
