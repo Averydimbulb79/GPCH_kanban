@@ -1,3 +1,32 @@
+# v7.0.1 · Visual polish only
+
+15 October 2026. This update keeps the v7.0 layout and operational functions and refines its visual finish.
+
+| Area | Visual change |
+| --- | --- |
+| Canvas | Cool neutral background and clearer slate text |
+| Controls | Subtle gradients, refined borders, hover and keyboard focus styling |
+| Cards and summaries | Lighter shadows, cleaner borders and aligned numeric glyphs |
+| Workflows | Original five colour identities retained with softer column backgrounds |
+| Schedule | Existing floating panel retained, with a clearer slate surface |
+| Dialogs | Refined overlay and shadow colours |
+
+No controls, workflows, positioning, dimensions, grid definitions, spacing, font sizes, storage keys or data formats were changed. Existing HTML markup is identical. JavaScript differs only in APP_VERSION, now 7.0.1. No logo or extra controls are introduced in this pass.
+
+## Validation and limitations
+
+Verified identical markup outside styles and identical scripts after normalising the version string; JavaScript syntax check passed. The original geometry rules are retained. Deployment verification checks the published version. Browser visual and interaction testing could not run because the installed Playwright runtime has no browser executable. This is a CSS-only pass with no layout geometry properties added.
+
+## Restore point
+
+| Backup | Original branch | Commit |
+| --- | --- | --- |
+| backup/2026-10-15-1646-before-ui-polish | main | 17b295a1b65cf2bbacf78a6d4e73c23edfc88b9b |
+
+Restore the prior application with a restoration commit. Browser records are separate from code backups. Future updates require a backup and README revision before direct deployment.
+
+---
+
 # Rollback: v7.0 restored · 15 October 2026
 
 At the owner's request, the v7.1 interface and functionality changes have been reversed. The application file is restored exactly from the pre-release version; its displayed version returns to 7.0. Backup and direct-release instructions remain in AGENTS.md.
