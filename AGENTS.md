@@ -17,3 +17,7 @@ The owner requires a recoverable backup before every subsequent change batch, in
 | --- | --- | --- | --- |
 | backup/2026-10-15-live | main | 5872c26616374b783654d37febbe67824cc92233 | Existing live application before v7.1 |
 | backup/2026-10-15-v7-1-preview | improve/operations-ui-v7-1 | 1157e84a707bafb4ae56c9f29fcad203cba32d02 | Pending v7.1 interface including hotel logo |
+
+## Incremental release workflow
+
+The owner authorises direct live deployment of future updates after backups and appropriate checks; no extra merge confirmation is required. Update the version number and README for every incremental update, documenting changes, validation, known limitations and backup restore point. Verify deployment status and report accurately whether the release is live or pending.
