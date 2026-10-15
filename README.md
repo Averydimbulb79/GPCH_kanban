@@ -1,72 +1,18 @@
-# v7.0.2 · Sleek surfaces and subtle motion
-
-16 October 2026. Applies the approved mockup direction to the existing board: softer surfaces, Segoe UI typography, gentle button/card hover feedback, 170 ms popup entrances, 160 ms schedule entrances and softly blurred backdrops. Motion is disabled when the device requests reduced motion.
-
-The five-column layout, floating schedule, controls, workflows, storage keys and data formats are retained. Application JavaScript changes only the version value. No data migration occurs.
-
-Validation: JavaScript syntax passed; markup and scripts match v7.0.1 after removing CSS and normalising the version. Existing grid dimensions, positions and responsive rules are retained. Full browser visual and interaction testing remains outstanding because no browser executable is installed. Popup close remains immediate, retaining existing interaction behaviour.
-
-Restore point: [backup/2026-10-16-0144-before-sleek-ui](https://github.com/Averydimbulb79/GPCH_kanban/tree/backup/2026-10-16-0144-before-sleek-ui), from main at `8309fa3468967f4b5557f2e365264447e4bed9b3`. Remote SHA verified before editing. Restore with a restoration commit; browser records require their own JSON export.
-
----
-
-# v7.0.1 · Visual polish only
-
-15 October 2026. This update keeps the v7.0 layout and operational functions and refines its visual finish.
-
-| Area | Visual change |
-| --- | --- |
-| Canvas | Cool neutral background and clearer slate text |
-| Controls | Subtle gradients, refined borders, hover and keyboard focus styling |
-| Cards and summaries | Lighter shadows, cleaner borders and aligned numeric glyphs |
-| Workflows | Original five colour identities retained with softer column backgrounds |
-| Schedule | Existing floating panel retained, with a clearer slate surface |
-| Dialogs | Refined overlay and shadow colours |
-
-No controls, workflows, positioning, dimensions, grid definitions, spacing, font sizes, storage keys or data formats were changed. Existing HTML markup is identical. JavaScript differs only in APP_VERSION, now 7.0.1. No logo or extra controls are introduced in this pass.
-
-## Validation and limitations
-
-Verified identical markup outside styles and identical scripts after normalising the version string; JavaScript syntax check passed. The original geometry rules are retained. Deployment verification checks the published version. Browser visual and interaction testing could not run because the installed Playwright runtime has no browser executable. This is a CSS-only pass with no layout geometry properties added.
-
-## Restore point
-
-| Backup | Original branch | Commit |
-| --- | --- | --- |
-| backup/2026-10-15-1646-before-ui-polish | main | 17b295a1b65cf2bbacf78a6d4e73c23edfc88b9b |
-
-Restore the prior application with a restoration commit. Browser records are separate from code backups. Future updates require a backup and README revision before direct deployment.
-
----
-
-# Rollback: v7.0 restored · 15 October 2026
-
-At the owner's request, the v7.1 interface and functionality changes have been reversed. The application file is restored exactly from the pre-release version; its displayed version returns to 7.0. Backup and direct-release instructions remain in AGENTS.md.
-
-| Restore point | Original branch | Commit | Purpose |
-| --- | --- | --- | --- |
-| backup/2026-10-15-1642-before-rollback | main | e58dd66dc321b77f00bc2084da6d1f42100576e9 | Preserve v7.1 before reversal |
-| backup/2026-10-15-1635-pre-live-7-1 | main | 3668202ee4b054268a4ad27130ffe523447dbaab | Source of restored v7.0 application |
-
-Validation: index.html uses the exact original Git blob e8623ecd7c690495868b64aa385883b912880fad. No browser records are modified by this code restoration. Full browser interaction testing remains outstanding. Every subsequent update must include a verified backup and README revision before direct live deployment.
-
----
-
-# GPCH Kanban
+### GPCH Kanban
 
 Single-page operational Kanban dashboard designed for GPCH Crystal Club.
 
 GPCH Kanban consolidates daily tasks, ordering, receiving, guest notes, shift handovers, leave requests, inventory, archived records and recurring operational schedules into one lightweight browser-based workspace.
 
-## Live Dashboard
+### Live Dashboard
 
-https://averydimbulb79.github.io/GPCH_kanban/
+[Open the live dashboard](https://averydimbulb79.github.io/GPCH_kanban/)
 
 Current version: 7.0.2
 
 ---
 
-# Overview
+## Overview
 
 The dashboard is designed around a simple operational principle:
 
@@ -92,43 +38,43 @@ This keeps the five-column board focused while allowing supporting operational f
 
 ---
 
-# Core Features
+## Core Features
 
-• Five colour-coded main Kanban workflows  
-• Dedicated Leave Requests workspace  
-• Two-column Pending and Approved leave workflow  
-• Direct leave approval and decline controls  
-• Declined requests remain editable  
-• Dedicated Inventory workspace  
-• Quick inventory quantity adjustments  
-• Matching colour-coded dashboard count boxes  
-• Clickable count boxes and column headers  
-• Full-window workspace views  
-• Consistent card creation and editing workflow  
-• Workspace-specific search and sorting  
-• Archive visibility within expanded workspaces  
-• Automatic urgency-based card sorting  
-• Card creation timestamps  
-• Inventory Last Updated timestamps  
-• One-click card duplication  
-• Complete and archive workflow  
-• Archived-card restoration  
-• Drag-and-drop Kanban workflow  
-• Streamlined ordering and receiving process  
-• Recurring scheduled tasks  
-• Weekly and monthly scheduling rules  
-• Floating Today's Scheduled Tasks overlay  
-• Board-wide search and filtering  
-• Centralised Settings menu  
-• JSON data export and import  
-• Leave Request and Inventory backup support  
-• Automatic pre-import safety backups  
-• Persistent browser storage  
-• Single-page static architecture
+- Five colour-coded main Kanban workflows
+- Dedicated Leave Requests workspace
+- Two-column Pending and Approved leave workflow
+- Direct leave approval and decline controls
+- Declined requests remain editable
+- Dedicated Inventory workspace
+- Quick inventory quantity adjustments
+- Matching colour-coded dashboard count boxes
+- Clickable count boxes and column headers
+- Full-window workspace views
+- Consistent card creation and editing workflow
+- Workspace-specific search and sorting
+- Archive visibility within expanded workspaces
+- Automatic urgency-based card sorting
+- Card creation timestamps
+- Inventory Last Updated timestamps
+- One-click card duplication
+- Complete and archive workflow
+- Archived-card restoration
+- Drag-and-drop Kanban workflow
+- Streamlined ordering and receiving process
+- Recurring scheduled tasks
+- Weekly and monthly scheduling rules
+- Floating Today's Scheduled Tasks overlay
+- Board-wide search and filtering
+- Centralised Settings menu
+- JSON data export and import
+- Leave Request and Inventory backup support
+- Automatic pre-import safety backups
+- Persistent browser storage
+- Single-page static architecture
 
 ---
 
-# Main Dashboard
+## Main Dashboard
 
 The main dashboard provides an overview of current Crystal Club operations.
 
@@ -154,7 +100,7 @@ Keyboard access using `Enter` and `Space` is also supported on the count boxes.
 
 ---
 
-# Main Controls
+## Main Controls
 
 The primary controls are organised around frequently used operational functions:
 
@@ -176,7 +122,7 @@ This preserves horizontal screen space while keeping both functions immediately 
 
 ---
 
-# Settings
+## Settings
 
 Administrative and data-management functions are grouped under:
 
@@ -194,7 +140,7 @@ This reduces header clutter and separates configuration functions from everyday 
 
 ---
 
-# Full-Window Workspaces
+## Full-Window Workspaces
 
 The five Kanban columns can each be opened as dedicated full-window workspaces:
 
@@ -224,7 +170,7 @@ This is particularly useful on smaller laptop screens where displaying five Kanb
 
 ---
 
-# Consistent Workspace Interface
+## Consistent Workspace Interface
 
 Expanded workspaces follow a common interaction pattern.
 
@@ -248,7 +194,7 @@ This consistency reduces the number of different interaction patterns staff need
 
 ---
 
-# Leave Requests
+## Leave Requests
 
 Leave Requests operates as a dedicated full-window workflow.
 
@@ -270,9 +216,9 @@ This separates requests requiring action from requests that have already been ap
 
 ---
 
-# Leave Request Workflow
+## Leave Request Workflow
 
-## Pending Column
+### Pending Column
 
 The left side of the workspace contains:
 
@@ -310,7 +256,7 @@ but deliberately keeps the card in the Pending column.
 
 This allows the requester or staff member managing the request to edit the information and resubmit or correct it without having to recover the request from another screen.
 
-## Approved Column
+### Approved Column
 
 The right side contains:
 
@@ -328,7 +274,7 @@ The card then returns to the Pending column.
 
 ---
 
-# Leave Request Status Logic
+## Leave Request Status Logic
 
 Leave requests use three statuses:
 
@@ -346,7 +292,7 @@ This is intentional.
 
 ---
 
-# Leave Request Counts
+## Leave Request Counts
 
 Each Leave Request column displays its current card count.
 
@@ -358,18 +304,18 @@ For example:
 
 The counts automatically update when requests are:
 
-• Added  
-• Approved  
-• Declined  
-• Archived  
-• Restored  
-• Filtered through the current workspace view
+- Added
+- Approved
+- Declined
+- Archived
+- Restored
+- Filtered through the current workspace view
 
 This gives an immediate indication of outstanding leave administration.
 
 ---
 
-# Leave Request Controls
+## Leave Request Controls
 
 The top Leave Requests toolbar retains:
 
@@ -387,7 +333,7 @@ These controls apply across the Leave Requests workspace.
 
 ---
 
-# Adding Leave Requests
+## Adding Leave Requests
 
 Select:
 
@@ -397,33 +343,33 @@ inside Leave Requests.
 
 A leave request can contain:
 
-• Staff Name  
-• Leave Type  
-• Start Date  
-• End Date  
-• Status  
-• Notes
+- Staff Name
+- Leave Type
+- Start Date
+- End Date
+- Status
+- Notes
 
 Available leave types include:
 
-• Annual Leave  
-• Off in Lieu  
-• Medical Leave  
-• Childcare Leave  
-• Unpaid Leave  
-• Other
+- Annual Leave
+- Off in Lieu
+- Medical Leave
+- Childcare Leave
+- Unpaid Leave
+- Other
 
 Available statuses include:
 
-• Pending  
-• Approved  
-• Declined
+- Pending
+- Approved
+- Declined
 
 Every leave request receives its own creation timestamp.
 
 ---
 
-# Approving Leave
+## Approving Leave
 
 A request awaiting approval appears in the Pending column.
 
@@ -443,7 +389,7 @@ No additional card needs to be created.
 
 ---
 
-# Declining Leave
+## Declining Leave
 
 Select:
 
@@ -459,11 +405,11 @@ The request remains in the Pending column.
 
 This is important because a declined request may require the requester to:
 
-• Correct the dates  
-• Change the leave type  
-• Amend the notes  
-• Clarify the request  
-• Resubmit the request
+- Correct the dates
+- Change the leave type
+- Amend the notes
+- Clarify the request
+- Resubmit the request
 
 The existing:
 
@@ -475,7 +421,7 @@ Once amended, the card can subsequently be approved.
 
 ---
 
-# Reversing an Approval
+## Reversing an Approval
 
 Approved leave is not permanently locked into the Approved column.
 
@@ -495,39 +441,39 @@ This provides a simple correction mechanism if circumstances change or an approv
 
 ---
 
-# Leave Request Search
+## Leave Request Search
 
 Search operates across both Pending and Approved leave requests.
 
 It can locate information contained within the leave record, including:
 
-• Staff name  
-• Leave type  
-• Status  
-• Dates  
-• Notes
+- Staff name
+- Leave type
+- Status
+- Dates
+- Notes
 
 Matching cards remain displayed in their appropriate workflow column.
 
 ---
 
-# Leave Request Sorting
+## Leave Request Sorting
 
 Leave Requests supports:
 
-• Start Date: Earliest First  
-• Start Date: Latest First  
-• Newest First  
-• Oldest First  
-• Staff Name: A → Z  
-• Staff Name: Z → A  
-• Status: A → Z
+- Start Date: Earliest First
+- Start Date: Latest First
+- Newest First
+- Oldest First
+- Staff Name: A → Z
+- Staff Name: Z → A
+- Status: A → Z
 
 Sorting is applied within the two-column workflow.
 
 ---
 
-# Leave Request Archive
+## Leave Request Archive
 
 Leave requests can still be completed and archived.
 
@@ -553,7 +499,7 @@ The request then returns to the appropriate Pending or Approved column according
 
 ---
 
-# Leave Request Duplication
+## Leave Request Duplication
 
 Leave cards support:
 
@@ -563,16 +509,16 @@ Copy opens a new Leave Request form prefilled using the selected request.
 
 The copied request receives:
 
-• A new unique ID  
-• A new creation timestamp  
-• Active status  
-• No inherited archive timestamp
+- A new unique ID
+- A new creation timestamp
+- Active status
+- No inherited archive timestamp
 
 The copied information can be edited before saving.
 
 ---
 
-# Inventory
+## Inventory
 
 Version 6.9 introduced Inventory as a dedicated full-window operational workspace.
 
@@ -586,7 +532,7 @@ This provides stock visibility without making the existing five-column dashboard
 
 ---
 
-# Inventory Workspace
+## Inventory Workspace
 
 Selecting:
 
@@ -612,7 +558,7 @@ Inventory cards are displayed in a responsive grid using the same visual and int
 
 ---
 
-# Adding Inventory Items
+## Adding Inventory Items
 
 Select:
 
@@ -622,23 +568,23 @@ inside Inventory.
 
 The inventory card form contains:
 
-• Item Name  
-• Item Type / Category  
-• Kept Location  
-• Quantity  
-• Unit  
-• Notes
+- Item Name
+- Item Type / Category
+- Kept Location
+- Quantity
+- Unit
+- Notes
 
 Available units include:
 
-• pcs  
-• boxes  
-• bottles  
-• packets  
-• cartons  
-• sets  
-• units  
-• other
+- pcs
+- boxes
+- bottles
+- packets
+- cartons
+- sets
+- units
+- other
 
 Inventory deliberately does not require minimum stock levels, par levels or automatically calculated stock statuses.
 
@@ -646,7 +592,7 @@ The workspace is intended to remain a straightforward operational stock record r
 
 ---
 
-# Inventory Quantity Controls
+## Inventory Quantity Controls
 
 Inventory cards provide two direct stock-adjustment controls:
 
@@ -672,7 +618,7 @@ Both actions automatically update the item's Last Updated timestamp.
 
 ---
 
-# Inventory Timestamps
+## Inventory Timestamps
 
 Inventory records maintain:
 
@@ -692,31 +638,31 @@ The Updated timestamp changes when quantity is adjusted, the card is edited, arc
 
 ---
 
-# Inventory Search and Sorting
+## Inventory Search and Sorting
 
 Inventory search can locate:
 
-• Item name  
-• Item type  
-• Category  
-• Storage location  
-• Unit  
-• Notes
+- Item name
+- Item type
+- Category
+- Storage location
+- Unit
+- Notes
 
 Sorting options include:
 
-• Item: A → Z  
-• Item: Z → A  
-• Item Type: A → Z  
-• Location: A → Z  
-• Quantity: Low → High  
-• Quantity: High → Low  
-• Recently Updated  
-• Oldest Updated
+- Item: A → Z
+- Item: Z → A
+- Item Type: A → Z
+- Location: A → Z
+- Quantity: Low → High
+- Quantity: High → Low
+- Recently Updated
+- Oldest Updated
 
 ---
 
-# Inventory Archive
+## Inventory Archive
 
 Inventory records that are no longer required can be archived using:
 
@@ -736,21 +682,21 @@ Archived inventory cards can be returned to active status using:
 
 ---
 
-# Board Structure
+## Board Structure
 
 The main Kanban retains five permanent columns.
 
-## TO DO
+### TO DO
 
 For operational tasks, follow-ups, administrative duties, equipment matters and time-sensitive work.
 
-## TO ORDER
+### TO ORDER
 
 For items requiring procurement or replenishment.
 
 Cards can include item, quantity, urgency, order status, supplier or department and notes.
 
-## TO RECEIVE
+### TO RECEIVE
 
 For items already ordered but awaiting delivery or collection.
 
@@ -762,17 +708,17 @@ from:
 
 `Already ordered and awaiting receipt`
 
-## GUEST NOTES
+### GUEST NOTES
 
 For guest preferences, special requests, room information, arrival and departure details, service requirements and follow-up matters.
 
-## HANDOVER
+### HANDOVER
 
 For matters requiring continuity between shifts.
 
 ---
 
-# Card Actions
+## Card Actions
 
 Active Kanban cards use three common management controls:
 
@@ -788,7 +734,7 @@ This prevents narrow cards from becoming overloaded with buttons while keeping f
 
 ---
 
-# TO ORDER Workflow
+## TO ORDER Workflow
 
 TO ORDER cards position the primary workflow action directly beside Quantity.
 
@@ -804,7 +750,7 @@ The standard footer remains:
 
 ---
 
-# TO RECEIVE Workflow
+## TO RECEIVE Workflow
 
 TO RECEIVE cards provide:
 
@@ -818,7 +764,7 @@ The standard footer remains:
 
 ---
 
-# Complete and Archive Workflow
+## Complete and Archive Workflow
 
 Active Kanban cards use:
 
@@ -840,7 +786,7 @@ Archived records can subsequently be restored.
 
 ---
 
-# Automatic Urgency Sorting
+## Automatic Urgency Sorting
 
 The main Kanban automatically orders cards by operational urgency.
 
@@ -852,16 +798,16 @@ Cards with equal urgency are generally sorted newest first.
 
 ---
 
-# Expanded Workspace Sorting
+## Expanded Workspace Sorting
 
 The five expanded Kanban workspaces support common sorting including:
 
-• Urgency: High → Low  
-• Urgency: Low → High  
-• Newest First  
-• Oldest First  
-• Title: A → Z  
-• Title: Z → A
+- Urgency: High → Low
+- Urgency: Low → High
+- Newest First
+- Oldest First
+- Title: A → Z
+- Title: Z → A
 
 Additional workspace-specific sorting is available.
 
@@ -877,7 +823,7 @@ Leave Requests and Inventory use their own purpose-specific sorting controls.
 
 ---
 
-# Today's Scheduled Tasks
+## Today's Scheduled Tasks
 
 Recurring operational duties appear in a floating:
 
@@ -893,7 +839,7 @@ The task returns on its next applicable date.
 
 ---
 
-# Schedule Manager
+## Schedule Manager
 
 Schedule management is accessed through:
 
@@ -911,21 +857,21 @@ Supported scheduling rules include:
 
 ---
 
-# Data Storage
+## Data Storage
 
 GPCH Crystal Club uses browser `localStorage`.
 
 Stored information includes:
 
-• Active and archived Kanban cards  
-• Creation and archive timestamps  
-• Leave requests and their approval status  
-• Archived leave requests  
-• Inventory records and quantities  
-• Inventory updated timestamps  
-• Archived inventory records  
-• Scheduled tasks  
-• Schedule completion information
+- Active and archived Kanban cards
+- Creation and archive timestamps
+- Leave requests and their approval status
+- Archived leave requests
+- Inventory records and quantities
+- Inventory updated timestamps
+- Archived inventory records
+- Scheduled tasks
+- Schedule completion information
 
 Data remains available after refreshing the page, closing the browser, restarting the computer and reopening the dashboard.
 
@@ -933,7 +879,7 @@ No external database or login is required.
 
 ---
 
-# Export and Import
+## Export and Import
 
 Data-management controls are located under:
 
@@ -943,17 +889,17 @@ Export Data creates a portable JSON backup containing the operational dataset.
 
 This includes:
 
-• Kanban cards  
-• Archived records  
-• Leave requests  
-• Leave approval statuses  
-• Inventory records  
-• Inventory quantities  
-• Scheduled tasks  
-• Schedule completion state  
-• Application version  
-• Export timestamp  
-• Record counts
+- Kanban cards
+- Archived records
+- Leave requests
+- Leave approval statuses
+- Inventory records
+- Inventory quantities
+- Scheduled tasks
+- Schedule completion state
+- Application version
+- Export timestamp
+- Record counts
 
 Import Data restores a previously exported GPCH Crystal Club backup.
 
@@ -961,7 +907,7 @@ Older valid backups that do not contain newer Leave Request or Inventory data re
 
 ---
 
-# Automatic Safety Backup
+## Automatic Safety Backup
 
 Before imported data replaces the current browser dataset, GPCH Crystal Club automatically exports the existing data.
 
@@ -969,16 +915,16 @@ This provides a recovery point if an incorrect or outdated backup is imported.
 
 ---
 
-# Technology
+## Technology
 
 GPCH Kanban deliberately uses a lightweight architecture:
 
-• HTML  
-• CSS  
-• Vanilla JavaScript  
-• Browser localStorage  
-• JSON backup and restore  
-• GitHub Pages
+- HTML
+- CSS
+- Vanilla JavaScript
+- Browser localStorage
+- JSON backup and restore
+- GitHub Pages
 
 There is no JavaScript framework, external database, server-side application or installation requirement.
 
@@ -986,218 +932,237 @@ The application remains contained within a single HTML page.
 
 ---
 
-# Version History
+## Version History
 
-## v7.0 · Leave Approval Workflow
+### Documentation refresh · 16 October 2026
 
-• Redesigned Leave Requests into a two-column workflow  
-• Added dedicated PENDING column  
-• Added dedicated APPROVED column  
-• Added live card counts to both leave columns  
-• Pending requests remain in PENDING  
-• Approved requests automatically move to APPROVED  
-• Declined requests remain in PENDING for correction or amendment  
-• Added direct `✓ Approve` action  
-• Added direct `Decline` action  
-• Added `Move to Declined` action for previously approved requests  
-• Preserved Edit access for declined requests  
-• Preserved Copy, Edit and Complete controls  
-• Preserved Leave Request search  
-• Preserved Leave Request sorting  
-• Preserved archive visibility  
-• Archived requests restore into the correct workflow column according to status  
-• Added distinct visual treatment for Pending, Approved and Declined statuses  
-• Added responsive behaviour so the two-column leave workflow remains usable on smaller screens
+- Reformatted this guide with smaller headings and consistent lists.
+- Removed rollback and restore-point logs from this guide.
+- Application code and displayed version remain unchanged.
 
-## v6.9 · Inventory Workspace
+Validation: application file verified byte-for-byte against the current live branch.
 
-• Added dedicated Inventory button  
-• Added full-window INVENTORY workspace  
-• Kept Inventory outside the five-column Kanban  
-• Added responsive inventory card grid  
-• Added Inventory search and sorting  
-• Added `+ Add Here`  
-• Added `Show Archived / Hide Archived`  
-• Added Item Name  
-• Added Item Type / Category  
-• Added Kept Location  
-• Added Quantity  
-• Added Unit  
-• Added Notes  
-• Added creation timestamps  
-• Added automatic Last Updated timestamps  
-• Added `− Use` quick quantity adjustment  
-• Added `+ Restock` quick quantity adjustment  
-• Prevented stock usage greater than recorded quantity  
-• Added Copy, Edit, Complete and Restore  
-• Added Inventory data to JSON export and import  
-• Maintained compatibility with backups created before Inventory support
+### v7.0.2 · Sleek surfaces and subtle motion
 
-## v6.8 · Unified Leave Request Workspace
+- Softer surfaces, Segoe UI typography and gentle hover feedback.
+- Brief popup and schedule entrances with softly blurred backdrops.
+- Reduced-motion support.
 
-• Redesigned Leave Requests as a full-window workspace  
-• Added responsive leave-request card grid  
-• Added Leave Request search and sorting  
-• Added `+ Add Here`  
-• Added archive visibility  
-• Standardised leave request creation around the common card-entry pattern  
-• Added Staff Name, Leave Type, Start Date, End Date, Status and Notes  
-• Added creation timestamps  
-• Kept Leave Requests outside the five-column main Kanban
+### v7.0.1 · Visual polish
 
-## v6.7 · Settings and Leave Requests
+- Refined colours, borders, shadows and keyboard focus styling.
 
-• Added persistent Leave Request storage  
-• Added Leave Request data to backups  
-• Added Settings menu  
-• Moved Manage Schedule, Export Data and Import Data under Settings  
-• Reduced main-header clutter
 
-## v6.6 · Expanded Archive Access
+### v7.0 · Leave Approval Workflow
 
-• Added archive visibility directly inside expanded Kanban workspaces  
-• Archived records can be reviewed without returning to the main board  
-• Retained search and sorting while archived records are displayed
+- Redesigned Leave Requests into a two-column workflow
+- Added dedicated PENDING column
+- Added dedicated APPROVED column
+- Added live card counts to both leave columns
+- Pending requests remain in PENDING
+- Approved requests automatically move to APPROVED
+- Declined requests remain in PENDING for correction or amendment
+- Added direct `✓ Approve` action
+- Added direct `Decline` action
+- Added `Move to Declined` action for previously approved requests
+- Preserved Edit access for declined requests
+- Preserved Copy, Edit and Complete controls
+- Preserved Leave Request search
+- Preserved Leave Request sorting
+- Preserved archive visibility
+- Archived requests restore into the correct workflow column according to status
+- Added distinct visual treatment for Pending, Approved and Declined statuses
+- Added responsive behaviour so the two-column leave workflow remains usable on smaller screens
 
-## v6.5 · Streamlined Card Actions
+### v6.9 · Inventory Workspace
 
-• Separated workflow actions from universal card-management actions  
-• Moved Move to Receive beside TO ORDER Quantity  
-• Moved Mark Received beside TO RECEIVE Quantity  
-• Standardised active card footer around Copy, Edit and Complete  
-• Reduced button congestion
+- Added dedicated Inventory button
+- Added full-window INVENTORY workspace
+- Kept Inventory outside the five-column Kanban
+- Added responsive inventory card grid
+- Added Inventory search and sorting
+- Added `+ Add Here`
+- Added `Show Archived / Hide Archived`
+- Added Item Name
+- Added Item Type / Category
+- Added Kept Location
+- Added Quantity
+- Added Unit
+- Added Notes
+- Added creation timestamps
+- Added automatic Last Updated timestamps
+- Added `− Use` quick quantity adjustment
+- Added `+ Restock` quick quantity adjustment
+- Prevented stock usage greater than recorded quantity
+- Added Copy, Edit, Complete and Restore
+- Added Inventory data to JSON export and import
+- Maintained compatibility with backups created before Inventory support
 
-## v6.4 · Card Duplication
+### v6.8 · Unified Leave Request Workspace
 
-• Added Copy to cards  
-• Copied cards receive new IDs and creation timestamps  
-• Original cards remain unchanged  
-• Archived cards can be copied into new active cards
+- Redesigned Leave Requests as a full-window workspace
+- Added responsive leave-request card grid
+- Added Leave Request search and sorting
+- Added `+ Add Here`
+- Added archive visibility
+- Standardised leave request creation around the common card-entry pattern
+- Added Staff Name, Leave Type, Start Date, End Date, Status and Notes
+- Added creation timestamps
+- Kept Leave Requests outside the five-column main Kanban
 
-## v6.3 · Dashboard Quick Access
+### v6.7 · Settings and Leave Requests
 
-• Made all five dashboard count boxes clickable  
-• Each count opens its corresponding expanded workspace  
-• Added keyboard access
+- Added persistent Leave Request storage
+- Added Leave Request data to backups
+- Added Settings menu
+- Moved Manage Schedule, Export Data and Import Data under Settings
+- Reduced main-header clutter
 
-## v6.2 · Complete and Archive Workflow
+### v6.6 · Expanded Archive Access
 
-• Replaced direct card deletion with Complete  
-• Added Archive, Delete Permanently and Cancel  
-• Added archive timestamps  
-• Added archive visibility  
-• Added Restore functionality  
-• Excluded archived cards from active counts
+- Added archive visibility directly inside expanded Kanban workspaces
+- Archived records can be reviewed without returning to the main board
+- Retained search and sorting while archived records are displayed
 
-## v6.1 · Dashboard Colour Integration
+### v6.5 · Streamlined Card Actions
 
-• Colour-coded dashboard count boxes  
-• Matched count boxes to corresponding workflows
+- Separated workflow actions from universal card-management actions
+- Moved Move to Receive beside TO ORDER Quantity
+- Moved Mark Received beside TO RECEIVE Quantity
+- Standardised active card footer around Copy, Edit and Complete
+- Reduced button congestion
 
-## v6.0 · Expanded View Sorting
+### v6.4 · Card Duplication
 
-• Added sorting controls to expanded workspaces  
-• Added urgency, creation-date, alphabetical and workspace-specific sorting
+- Added Copy to cards
+- Copied cards receive new IDs and creation timestamps
+- Original cards remain unchanged
+- Archived cards can be copied into new active cards
 
-## v5.9 · Expanded Column View
+### v6.3 · Dashboard Quick Access
 
-• Added full-window expanded workspaces  
-• Added responsive card grids  
-• Added dedicated workspace search  
-• Added + Add Here  
-• Improved usability on smaller laptop screens
+- Made all five dashboard count boxes clickable
+- Each count opens its corresponding expanded workspace
+- Added keyboard access
 
-## v5.8 · Priority Sorting
+### v6.2 · Complete and Archive Workflow
 
-• Added automatic urgency-based sorting  
-• Cards ordered from highest to lowest urgency
+- Replaced direct card deletion with Complete
+- Added Archive, Delete Permanently and Cancel
+- Added archive timestamps
+- Added archive visibility
+- Added Restore functionality
+- Excluded archived cards from active counts
 
-## v5.7 · Card Creation Timestamps
+### v6.1 · Dashboard Colour Integration
 
-• Added automatic creation date and time  
-• Preserved timestamps during editing and movement  
-• Included timestamps in backups
+- Colour-coded dashboard count boxes
+- Matched count boxes to corresponding workflows
 
-## v5.6 · Visual Cohesion
+### v6.0 · Expanded View Sorting
 
-• Colour-coded + Add category buttons  
-• Matched creation controls to destination columns
+- Added sorting controls to expanded workspaces
+- Added urgency, creation-date, alphabetical and workspace-specific sorting
 
-## v5.5 · Data Portability
+### v5.9 · Expanded Column View
 
-• Added Export Data and Import Data  
-• Added portable JSON backups  
-• Added validation and import confirmation  
-• Added automatic pre-import safety backup
+- Added full-window expanded workspaces
+- Added responsive card grids
+- Added dedicated workspace search
+- Added + Add Here
+- Improved usability on smaller laptop screens
 
-## v5.4 · Schedule Management Fix
+### v5.8 · Priority Sorting
 
-• Fixed scheduled-task deletion  
-• Added deletion confirmation
+- Added automatic urgency-based sorting
+- Cards ordered from highest to lowest urgency
 
-## v5.3 · Receiving Workflow
+### v5.7 · Card Creation Timestamps
 
-• Added TO RECEIVE  
-• Expanded Kanban to five operational columns  
-• Added TO ORDER → TO RECEIVE workflow  
-• Added Mark Received
+- Added automatic creation date and time
+- Preserved timestamps during editing and movement
+- Included timestamps in backups
 
-## v5.2 · Header Controls
+### v5.6 · Visual Cohesion
 
-• Consolidated primary controls into one header row  
-• Added Toggle Schedule
+- Colour-coded + Add category buttons
+- Matched creation controls to destination columns
 
-## v5.1 · Rendering Reliability
+### v5.5 · Data Portability
 
-• Improved initial board rendering  
-• Improved browser compatibility  
-• Strengthened localStorage handling
+- Added Export Data and Import Data
+- Added portable JSON backups
+- Added validation and import confirmation
+- Added automatic pre-import safety backup
 
-## v5.0 · Operational Redesign
+### v5.4 · Schedule Management Fix
 
-• Rebuilt dashboard around Crystal Club operations  
-• Introduced operational card types  
-• Added search, filtering and drag-and-drop workflow
+- Fixed scheduled-task deletion
+- Added deletion confirmation
 
-## v4.0 · Floating Schedule
+### v5.3 · Receiving Workflow
 
-• Converted Today's Scheduled Tasks into a floating overlay  
-• Added hide and restore functionality
+- Added TO RECEIVE
+- Expanded Kanban to five operational columns
+- Added TO ORDER → TO RECEIVE workflow
+- Added Mark Received
 
-## v3.x · Scheduling Expansion
+### v5.2 · Header Controls
 
-• Added recurring schedule management  
-• Added weekly and monthly scheduling rules  
-• Added one-off tasks  
-• Renamed application GPCH Crystal Club
+- Consolidated primary controls into one header row
+- Added Toggle Schedule
+
+### v5.1 · Rendering Reliability
+
+- Improved initial board rendering
+- Improved browser compatibility
+- Strengthened localStorage handling
+
+### v5.0 · Operational Redesign
+
+- Rebuilt dashboard around Crystal Club operations
+- Introduced operational card types
+- Added search, filtering and drag-and-drop workflow
+
+### v4.0 · Floating Schedule
+
+- Converted Today's Scheduled Tasks into a floating overlay
+- Added hide and restore functionality
+
+### v3.x · Scheduling Expansion
+
+- Added recurring schedule management
+- Added weekly and monthly scheduling rules
+- Added one-off tasks
+- Renamed application GPCH Crystal Club
 
 ---
 
-# Current Architecture
+## Current Architecture
 
 GPCH Crystal Club remains a client-side application.
 
 GitHub Pages distributes the application while operational data remains in browser localStorage.
 
-## Advantages
+### Advantages
 
-• Fast loading  
-• Simple deployment  
-• No login required  
-• No server maintenance  
-• Local persistence  
-• Portable backups  
-• Archived operational history  
-• Dedicated Leave Request approval workflow  
-• Editable declined leave requests  
-• Dedicated Inventory workspace  
-• Fast inventory quantity adjustments  
-• Consistent workspace interaction  
-• Direct workflow controls  
-• Easy migration between computers  
-• Static GitHub Pages deployment
+- Fast loading
+- Simple deployment
+- No login required
+- No server maintenance
+- Local persistence
+- Portable backups
+- Archived operational history
+- Dedicated Leave Request approval workflow
+- Editable declined leave requests
+- Dedicated Inventory workspace
+- Fast inventory quantity adjustments
+- Consistent workspace interaction
+- Direct workflow controls
+- Easy migration between computers
+- Static GitHub Pages deployment
 
-## Current Limitation
+### Current Limitation
 
 The dashboard does not provide real-time synchronisation between multiple computers.
 
@@ -1205,7 +1170,7 @@ A shared backend or cloud database would be required for simultaneous multi-work
 
 ---
 
-# Project Status
+## Project Status
 
 Active development.
 
